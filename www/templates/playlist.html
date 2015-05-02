@@ -1,0 +1,12 @@
+<ion-view view-title="Playlist">
+  <ion-content>
+   <ion-list>
+  <ion-item ng-repeat="item in data.items">
+<b>{{item.storeName}}</b>
+<div>Available:{{item.availabilityFlag}}</div>
+<div>deliveryHoursIfAvailable:{{item.deliveryHoursIfAvailable}}</div>
+<div>deliveryHoursIfUnavailable:{{item.deliveryHoursIfUnavailable}}</div>
+  </ion-item>
+</ion-list>
+  </ion-content>
+</ion-view>

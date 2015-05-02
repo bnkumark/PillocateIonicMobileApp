@@ -1,0 +1,16 @@
+<ion-view view-title="Search Results">
+  <ion-content>
+  <ion-list>
+  <ion-item ng-repeat="item in data.items">
+<b>{{item.storeName}}</b>
+<div>Available:{{item.availabilityFlag}}</div>
+<div>deliveryHoursIfAvailable:{{item.deliveryHoursIfAvailable}}</div>
+<div>deliveryHoursIfUnavailable:{{item.deliveryHoursIfUnavailable}}</div>
+  </ion-item>
+</ion-list>
+<!--<div class="list">
+        <li class="item" ng-repeat="item in data.items" ng-click="brandSelected(airline)">{{airline.label}}</li>
+      </div>
+-->
+ </ion-content>
+</ion-view>

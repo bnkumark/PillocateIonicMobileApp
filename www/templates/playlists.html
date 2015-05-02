@@ -1,0 +1,56 @@
+﻿<ion-view>
+  <ion-nav-title>
+<!--      <img src="img/logo.png">-->
+<div >
+  <h1 style="color:#0F75BC">Pillocate7</h1>
+</div>
+    </ion-nav-title>
+  <ion-content>
+   <div class="list">
+ <div class="list" padding="false" >
+  <label class="item item-input item-select">
+    <div style="color:#0F75BC" class="input-label">
+      Circle
+    </div>
+    <select>
+      <option>Kandanchavadi</option>
+      <option>Kottivakkam</option>
+      <option selected>Thiruvanmiyur</option>
+    </select>
+  </label>
+</div>
+
+<div class="list" padding="false">
+  <label class="item item-input item-select"  padding="false">
+    <div style="color:#0F75BC" class="input-label">
+      City
+    </div>
+    <select>
+      <option>Chennai</option>
+    </select>
+  </label>
+</div>
+ <div  padding="false">
+<!--    <ion-header-bar class="bar-subheader item-input-inset">-->
+<div class="item-input-inset" padding="false">
+  <label class="item-input-wrapper">
+    <i class="icon ion-ios7-search placeholder-icon"></i>
+    <input type="search" placeholder="Enter medicine brand" ng-change="search()" ng-blur="clearAutoSuggestions()" ng-model="data.search">
+  </label>
+      </div>
+<!--    </ion-header-bar>-->
+<!--   <ion-content padding="true">-->
+     <!-- <div class="list">
+        <li class="item" ng-repeat="airline in data.airlines" href="#/app/searchresults" ng-click="brandSelected(airline)">{{airline.label}}</li>
+      </div>
+--><!--  </ion-content>-->
+ <ion-list>
+      <ion-item ng-repeat="airline in data.airlines" href="#/app/searchresults">
+       {{airline.label}}
+      </ion-item>
+    </ion-list>
+
+</div>
+</div>
+  </ion-content>
+</ion-view>
