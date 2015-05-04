@@ -58,7 +58,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     })
 
  .state('app.searchresults', {
-      url: "/searchresults",
+      url: "/searchresults/:id",
       views: {
         'menuContent': {
           templateUrl: "templates/searchresults.html",

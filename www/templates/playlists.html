@@ -2,7 +2,7 @@
   <ion-nav-title>
 <!--      <img src="img/logo.png">-->
 <div >
-  <h1 style="color:#0F75BC">Pillocate</h1>
+  <h1 style="color:#0F75BC">Pillocate13</h1>
 </div>
     </ion-nav-title>
   <ion-content>
@@ -12,11 +12,11 @@
     <div style="color:#0F75BC" class="input-label">
       Circle
     </div>
-    <select>
-      <option>Kandanchavadi</option>
+    <select ng-model="data.selectedCircle" ng-options="option for option in data.circleOptions">
+    <!--  <option>Kandanchavadi</option>
       <option>Kottivakkam</option>
       <option selected>Thiruvanmiyur</option>
-    </select>
+-->    </select>
   </label>
 </div>
 
@@ -25,7 +25,7 @@
     <div style="color:#0F75BC" class="input-label">
       City
     </div>
-    <select>
+    <select ng-model="selectedCity">
       <option>Chennai</option>
     </select>
   </label>
@@ -45,7 +45,7 @@
       </div>
 --><!--  </ion-content>-->
  <ion-list>
-      <ion-item ng-repeat="airline in data.airlines" href="#/app/searchresults" ng-click="brandSelected(airline)">
+      <ion-item ng-repeat="airline in data.airlines" href="#/app/searchresults/{{airline.id}}">
        {{airline.label}}
       </ion-item>
     </ion-list>

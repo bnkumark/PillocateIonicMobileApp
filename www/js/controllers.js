@@ -35,22 +35,25 @@ var app = angular.module('starter.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', ['$scope','$http','$state','SelectedValues', function($scope,$http,$state,$SelectedValues) {
+.controller('PlaylistsCtrl', ['$scope','$http','$state','SelectedValues','$ionicPopup', function($scope,$http,$state,$SelectedValues,$ionicPopup) {
 
   var airlines;
   var searchTerm;
   var searchGotFocus = false;
-  $scope.data = { "airlines" : [], "search" : '' };
+  $scope.data = { "airlines" : [], "search" : '', "circleOptions": [], selectedCircle : 'Thiruvanmiyur' };
+  $scope.data.circleOptions = ["Kandanchavadi","Kottivakkam","Thiruvanmiyur"];
+  $scope.data.selectedCircle = 'Thiruvanmiyur';
 // $state.go('app.searchresults');
    console.log('PlaylistsCtrl method');
 
    
      $scope.clearAutoSuggestions = function() {
-      console.log('clearAutoSuggestions called');
+     
       if($scope.data.airlines.length != 0)
       {
       $scope.data.airlines = [];
       searchGotFocus = false;
+       console.log('clearing the auto suggestions');
       };
      };
      
@@ -60,9 +63,11 @@ var app = angular.module('starter.controllers', [])
  console.log('search method');
 if($scope.data.search != '')
 {
-    	$http.get("http://demo.pillocate.com/search/listOfBrandNameStartingWith?term="+$scope.data.search+"&circle=Thiruvanmiyur")
-    	.success(function(data) {
+		$http.get("http://192.168.49.1:8100/api/search/listOfBrandNameStartingWith?term="+$scope.data.search+"&circle="+$scope.data.selectedCircle)
+    	//$http.get("http://demo.pillocate.com/search/listOfBrandNameStartingWith?term="+$scope.data.search+"&circle=Thiruvanmiyur")
+    		.success(function(data) {
 																	                   $scope.data.airlines = data;
+																	                    $SelectedValues.setSelectedBrand(data);
 																	                     searchGotFocus = true ;
 																		                })
 																		                }
@@ -77,7 +82,13 @@ if($scope.data.search != '')
     
     //Start
     $scope.brandSelected = function(item) {
-    $SelectedValues.selectedBrand = item;
+   /* var alertPopup = $ionicPopup.alert({
+     title: 'brandSelected method!',
+     template: 'It might taste good'
+   });
+*/
+ console.log('brandSelected method');
+    $SelectedValues.setSelectedBrand(item);
   /*  $SelectedValues.selectedBrandId =item.id;
         $SelectedValues.selectedBrandName=item.label;
         $SelectedValues.selectedCircle = 'Thiruvanmiyur';
@@ -93,20 +104,22 @@ if($scope.data.search != '')
 }])
 
 //start searchResultsCtrl
-.controller('SearchResultsCtrl',['$scope','$http','SelectedValues','SelectedStore', function($scope, $http, $SelectedValues, $SelectedStore) {
-console.log('searchResultsCtrl method');
+.controller('SearchResultsCtrl',['$scope','$http','SelectedValues','$ionicPopup','SelectedStore','$stateParams', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore,$stateParams) {
+console.log('searchResultsCtrl method'+$stateParams.id);
+var selectedBrand = $SelectedValues.getSelectedBrand($stateParams.id);
  /*$scope.data = { "items" : [{"storeName":"Demo Thiruvanmiyur Pharma"},{"storeName":"Demo Thiruvanmiyur Pharma"}] };*/
- $scope.data = { "items" : [], "localBrand" : $SelectedValues.selectedBrand.label };
+ $scope.data = { "items" : [], "localBrand" : selectedBrand.label };
  console.log($scope.data.items);
 
-
-  
+ 
 //$http.get("http://demo.pillocate.com/webservice/search?brandName=T.T-0.5ML&circle=Thiruvanmiyur&brandId=1828&inventoryId=1828")
-  	$http.get("http://demo.pillocate.com/webservice/search?brandName="+$SelectedValues.selectedBrand.label+"&circle="+$SelectedValues.selectedCircle +"&brandId="+$SelectedValues.selectedBrand.id+"&inventoryId="+$SelectedValues.selectedInventoryId)
+//TODO we need to read the combobox values
+  	$http.get("http://192.168.49.1:8100/api/webservice/search?brandName="+$SelectedValues.getSelectedBrand($stateParams.id).label+"&circle=Thiruvanmiyur"+"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.selectedInventoryId)
+  	//$http.get("http://demo.pillocate.com/webservice/search?brandName="+selectedBrand.label+"&circle="+selectedBrand.selectedCircle +"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.selectedInventoryId)
     	.success(function(data) {
     	console.log('searchResultsCtrl success');
 																	                   $scope.data.items = data.storesList;
-																		                })
+																		                });
 																		                
 	//Start
     $scope.storeSelected = function(item) {
@@ -142,13 +155,24 @@ console.log('searchResultsCtrl method');
 //start SelectValues service
 //TODO: Probably we can move this to a seperate JS file
 app.service('SelectedValues', function($q) {
+var selectedBrand = {};
   return {
   selectedCircle : '=test',
   selectedCity : '=',
   selectedBrandId :'=',
   selectedBrandName: '=defaultBrandName',
   selectedInventoryId :'=',
-  selectedBrand : '={}',
+  getSelectedBrand : function(id) {
+  for(i=0;i<selectedBrand.length;i++){
+				if(selectedBrand[i].id == id){
+					return selectedBrand[i];
+				}
+				}
+  return null;
+  },
+  setSelectedBrand : function(x) {
+  selectedBrand = x;
+  },
   }
 })
 //end SelectValues service
