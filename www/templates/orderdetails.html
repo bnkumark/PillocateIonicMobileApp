@@ -1,0 +1,90 @@
+﻿<ion-view view-title="Enter details">
+  <ion-content>
+<div class="list">
+<div class="item item-divider">
+  Order details
+  </div>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Item Name</span>
+    <input type="text" readonly="true" placeholder="{{data.brandName}}">
+  </label>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Store Name</span>
+    <input type="text" readonly="true" placeholder="{{data.store.storeName}}">
+  </label>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Quantity</span>
+    <input type="number" placeholder="1" ng-model="quantity">
+  </label>
+   <div class="item item-divider">
+   Delivery details
+  </div>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">*Name</span>
+    <input type="text" placeholder="Full name" ng-model="name">
+  </label>
+ 
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">*Age</span>
+    <input type="number" placeholder="1" ng-model="age">
+  </label>
+ <label class="item item-input item-stacked-label">
+    <span class="input-label">*Phone</span>
+    <input type="tel" placeholder="phone" ng-model="phone">
+  </label>
+   <label class="item item-input item-stacked-label">
+    <span class="input-label">*Email Id</span>
+    <input type="email" placeholder="email id" ng-model="email">
+  </label>
+<label class="item item-input item-stacked-label">
+    <span class="input-label">*Address</span>
+    <input type="text" placeholder="Your addres line 1" ng-model="addressline1">
+    <input type="text" placeholder="Your addres line 2" ng-model="addressline2">
+  </label>
+ <label class="item item-input item-stacked-label">
+    <span class="input-label">Circle</span>
+    <input type="text" readonly="true" placeholder="{{data.store.circle}}">
+  </label>
+
+ <label class="item item-input item-stacked-label">
+    <span class="input-label">City</span>
+    <input type="text" readonly="true" placeholder="{{data.store.city}}">
+  </label>
+
+ <label class="item item-input item-stacked-label">
+    <span class="input-label">State</span>
+    <input type="text" readonly="true" placeholder="{{data.store.state}}">
+  </label>
+
+ <label class="item item-input item-stacked-label">
+    <span class="input-label">Country</span>
+    <input type="text" readonly="true" placeholder="{{data.store.country}}">
+  </label>
+
+ <label class="item item-input item-stacked-label">
+    <span class="input-label">Payment Method</span>
+    <input type="text" readonly="true" placeholder="Cash on delivery">
+  </label>
+
+ <div class="item item-input-inset">
+    <label class="item-input-wrapper">
+        <span class="input-label">Offer code</span>
+      <input type="text" placeholder="Enter offer code" ng-model="offercode">
+    </label>
+    <button class="button button-small">
+      Apply
+    </button>
+  </div>
+<div class="item"> Please note, the pharmacist may ask for a valid prescription at the time of delivery.</div>
+</div>
+<div class="item">
+ <button class="item button button-positive" ng-click="submitorder()">
+  Submit
+</button>
+</div>
+<!--<div class="list">
+        <li class="item" ng-repeat="item in data.items" ng-click="brandSelected(airline)">{{airline.label}}</li>
+      </div>
+-->
+ </ion-content>
+</ion-view>

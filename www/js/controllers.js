@@ -77,12 +77,13 @@ if($scope.data.search != '')
     
     //Start
     $scope.brandSelected = function(item) {
-    
-    $SelectedValues.selectedBrandId =item.id;
+    $SelectedValues.selectedBrand = item;
+  /*  $SelectedValues.selectedBrandId =item.id;
         $SelectedValues.selectedBrandName=item.label;
         $SelectedValues.selectedCircle = 'Thiruvanmiyur';
         $SelectedValues.selectedInventoryId = item.id;
-//    $state.go('app.searchresults');
+*/         // $state.go('app.searchresults');
+
     }
     //end
   
@@ -92,32 +93,72 @@ if($scope.data.search != '')
 }])
 
 //start searchResultsCtrl
-.controller('SearchResultsCtrl',['$scope','$http','SelectedValues', function($scope, $http, $SelectedValues) {
+.controller('SearchResultsCtrl',['$scope','$http','SelectedValues','SelectedStore', function($scope, $http, $SelectedValues, $SelectedStore) {
 console.log('searchResultsCtrl method');
  /*$scope.data = { "items" : [{"storeName":"Demo Thiruvanmiyur Pharma"},{"storeName":"Demo Thiruvanmiyur Pharma"}] };*/
- $scope.data = { "items" : [] };
+ $scope.data = { "items" : [], "localBrand" : $SelectedValues.selectedBrand.label };
  console.log($scope.data.items);
 
 
   
 //$http.get("http://demo.pillocate.com/webservice/search?brandName=T.T-0.5ML&circle=Thiruvanmiyur&brandId=1828&inventoryId=1828")
-  	$http.get("http://demo.pillocate.com/webservice/search?brandName="+$SelectedValues.selectedBrandName+"&circle="+$SelectedValues.selectedCircle +"&brandId="+$SelectedValues.selectedBrandId+"&inventoryId="+$SelectedValues.selectedInventoryId)
+  	$http.get("http://demo.pillocate.com/webservice/search?brandName="+$SelectedValues.selectedBrand.label+"&circle="+$SelectedValues.selectedCircle +"&brandId="+$SelectedValues.selectedBrand.id+"&inventoryId="+$SelectedValues.selectedInventoryId)
     	.success(function(data) {
     	console.log('searchResultsCtrl success');
 																	                   $scope.data.items = data.storesList;
-
 																		                })
+																		                
+	//Start
+    $scope.storeSelected = function(item) {
+    
+    $SelectedStore.selectedStore =item;
+    $SelectedStore.selectedBrandName = $scope.data.localBrand;
+     //$state.go('app.orderdetails'); //TODO comment
+    }
+    //end
 
+
+}])
+//end searchResultsCtrl
+
+//start OrderDetailsCtrl
+.controller('OrderDetailsCtrl',['$scope','$http','SelectedValues','SelectedStore', function($scope, $http, SelectedValues, $SelectedStore) {
+	console.log('OrderDetailsCtrlmethod');
+	$scope.data = { "store" : $SelectedStore.selectedStore, "brandName" : $SelectedStore.selectedBrandName};
+	console.log($scope.data.store);
+	
+	$scope.submitorder = function()
+	{
+	/*	$http.get("http://demo.pillocate.com/webservice/saveOrder?brandName="+$SelectedStore.selectedBrandName+"&circle="+$SelectedValues.selectedCircle +"&brandId="+$SelectedValues.selectedBrand.id+"&inventoryId="+$SelectedValues.selectedInventoryId)
+    	.success(function(data) {
+    	console.log('searchResultsCtrl success');
+																	                   $scope.data.items = data.storesList;
+																		                })
+*/
+	}
 }]);
 //end searchResultsCtrl
 
+//start SelectValues service
 //TODO: Probably we can move this to a seperate JS file
 app.service('SelectedValues', function($q) {
   return {
   selectedCircle : '=test',
   selectedCity : '=',
   selectedBrandId :'=',
-  selectedBrandName: '=',
+  selectedBrandName: '=defaultBrandName',
   selectedInventoryId :'=',
+  selectedBrand : '={}',
   }
 })
+//end SelectValues service
+
+//start SelectStore service
+//TODO: Probably we can move this to a seperate JS file
+app.service('SelectedStore', function($q) {
+  return {
+  selectedStore : '={}',
+    selectedBrandName: '=defaultBrandName',
+  }
+})
+//end SelectValues service

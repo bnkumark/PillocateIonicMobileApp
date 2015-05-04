@@ -2,7 +2,7 @@
   <ion-nav-title>
 <!--      <img src="img/logo.png">-->
 <div >
-  <h1 style="color:#0F75BC">Pillocate7</h1>
+  <h1 style="color:#0F75BC">Pillocate</h1>
 </div>
     </ion-nav-title>
   <ion-content>
@@ -45,7 +45,7 @@
       </div>
 --><!--  </ion-content>-->
  <ion-list>
-      <ion-item ng-repeat="airline in data.airlines" href="#/app/searchresults">
+      <ion-item ng-repeat="airline in data.airlines" href="#/app/searchresults" ng-click="brandSelected(airline)">
        {{airline.label}}
       </ion-item>
     </ion-list>
