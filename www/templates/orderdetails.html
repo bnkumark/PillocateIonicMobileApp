@@ -1,5 +1,6 @@
 ﻿<ion-view view-title="Enter details">
   <ion-content>
+  <form ng-submit="submitorder(order)">
 <div class="list">
 <div class="item item-divider">
   Order details
@@ -21,7 +22,7 @@
   </div>
   <label class="item item-input item-stacked-label">
     <span class="input-label">*Name</span>
-    <input type="text" placeholder="Full name" ng-model="name">
+    <input type="text" placeholder="Full name" ng-model="order.name">
   </label>
  
   <label class="item item-input item-stacked-label">
@@ -78,10 +79,11 @@
 <div class="item"> Please note, the pharmacist may ask for a valid prescription at the time of delivery.</div>
 </div>
 <div class="item">
- <button class="item button button-positive" ng-click="submitorder()">
+ <button class="item button button-positive" type="submit">
   Submit
 </button>
 </div>
+</form>
 <!--<div class="list">
         <li class="item" ng-repeat="item in data.items" ng-click="brandSelected(airline)">{{airline.label}}</li>
       </div>

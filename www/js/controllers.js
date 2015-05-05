@@ -63,16 +63,20 @@ var app = angular.module('starter.controllers', [])
  console.log('search method');
 if($scope.data.search != '')
 {
-		$http.get("http://192.168.49.1:8100/api/search/listOfBrandNameStartingWith?term="+$scope.data.search+"&circle="+$scope.data.selectedCircle)
-    	//$http.get("http://demo.pillocate.com/search/listOfBrandNameStartingWith?term="+$scope.data.search+"&circle=Thiruvanmiyur")
+		//$http.get("http://192.168.49.1:8100/api/search/listOfBrandNameStartingWith?term="+$scope.data.search+"&circle="+$scope.data.selectedCircle)
+         $http.get("http://demo.pillocate.com/search/listOfBrandNameStartingWith?term="+$scope.data.search+"&circle="+$scope.data.selectedCircle)
     		.success(function(data) {
+    		console.log('setting auto suggestions '+data);
 																	                   $scope.data.airlines = data;
 																	                    $SelectedValues.setSelectedBrand(data);
+																	                     $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
 																	                     searchGotFocus = true ;
 																		                })
 																		                }
 																		                else
 																		                {
+																		                console.log('setting auto suggestions failed');
+
 																		                $scope.data.airlines = [];
 																		                }
     		
@@ -88,7 +92,7 @@ if($scope.data.search != '')
    });
 */
  console.log('brandSelected method');
-    $SelectedValues.setSelectedBrand(item);
+    $SelectedValues.setselectedBrandItem (item);
   /*  $SelectedValues.selectedBrandId =item.id;
         $SelectedValues.selectedBrandName=item.label;
         $SelectedValues.selectedCircle = 'Thiruvanmiyur';
@@ -104,18 +108,23 @@ if($scope.data.search != '')
 }])
 
 //start searchResultsCtrl
-.controller('SearchResultsCtrl',['$scope','$http','SelectedValues','$ionicPopup','SelectedStore','$stateParams', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore,$stateParams) {
+/*.controller('SearchResultsCtrl',['$scope','$http','SelectedValues','$ionicPopup','SelectedStore','$stateParams', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore,$stateParams) {
 console.log('searchResultsCtrl method'+$stateParams.id);
-var selectedBrand = $SelectedValues.getSelectedBrand($stateParams.id);
+*/
+.controller('SearchResultsCtrl',['$scope','$http','SelectedValues','$ionicPopup','SelectedStore', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore) {
+console.log('searchResultsCtrl method');
+var selectedBrand = $SelectedValues.getselectedBrandItem();
+
+var selectedCircle = $SelectedValues.getSelectedCircle();
  /*$scope.data = { "items" : [{"storeName":"Demo Thiruvanmiyur Pharma"},{"storeName":"Demo Thiruvanmiyur Pharma"}] };*/
- $scope.data = { "items" : [], "localBrand" : selectedBrand.label };
+ $scope.data = { "items" : [], "localBrand" : selectedBrand};
  console.log($scope.data.items);
 
  
 //$http.get("http://demo.pillocate.com/webservice/search?brandName=T.T-0.5ML&circle=Thiruvanmiyur&brandId=1828&inventoryId=1828")
 //TODO we need to read the combobox values
-  	$http.get("http://192.168.49.1:8100/api/webservice/search?brandName="+$SelectedValues.getSelectedBrand($stateParams.id).label+"&circle=Thiruvanmiyur"+"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.selectedInventoryId)
-  	//$http.get("http://demo.pillocate.com/webservice/search?brandName="+selectedBrand.label+"&circle="+selectedBrand.selectedCircle +"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.selectedInventoryId)
+  //$http.get("http://192.168.49.1:8100/api/webservice/search?brandName="+selectedBrand.label+"&circle="+ selectedCircle +"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.selectedInventoryId)
+       $http.get("http://demo.pillocate.com/webservice/search?brandName="+selectedBrand.label+"&circle="+ selectedCircle +"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.selectedInventoryId)
     	.success(function(data) {
     	console.log('searchResultsCtrl success');
 																	                   $scope.data.items = data.storesList;
@@ -125,7 +134,7 @@ var selectedBrand = $SelectedValues.getSelectedBrand($stateParams.id);
     $scope.storeSelected = function(item) {
     
     $SelectedStore.selectedStore =item;
-    $SelectedStore.selectedBrandName = $scope.data.localBrand;
+    $SelectedStore.selectedBrand = $scope.data.localBrand;
      //$state.go('app.orderdetails'); //TODO comment
     }
     //end
@@ -137,17 +146,22 @@ var selectedBrand = $SelectedValues.getSelectedBrand($stateParams.id);
 //start OrderDetailsCtrl
 .controller('OrderDetailsCtrl',['$scope','$http','SelectedValues','SelectedStore', function($scope, $http, SelectedValues, $SelectedStore) {
 	console.log('OrderDetailsCtrlmethod');
-	$scope.data = { "store" : $SelectedStore.selectedStore, "brandName" : $SelectedStore.selectedBrandName};
-	console.log($scope.data.store);
+	$scope.data = { "store" : $SelectedStore.selectedStore, "brandName" : SelectedValues.getselectedBrandItem().label};
+	var selectedBrand = SelectedValues.getselectedBrandItem();
+	var selectedStore = $scope.data.store;
+		console.log('selected brand value in OrderDetailsCtrl'+selectedBrand.label );
+	console.log('store value in OrderDetailsCtrl'+$scope.data.store.storename);
 	
-	$scope.submitorder = function()
+	$scope.submitorder = function(order)
 	{
-	/*	$http.get("http://demo.pillocate.com/webservice/saveOrder?brandName="+$SelectedStore.selectedBrandName+"&circle="+$SelectedValues.selectedCircle +"&brandId="+$SelectedValues.selectedBrand.id+"&inventoryId="+$SelectedValues.selectedInventoryId)
+     	$http.get("http://192.168.49.1:8100/api/webservice/saveOrder?brandName="+selectedBrand.label+"&circle="+SelectedValues.getSelectedCircle()+"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.id+"&storeId="+selectedStore.storeId+"&name="+order.name+"&phoneNumber="+$scope.phone+"&emailID="+$scope.email+"&age="+$scope.age+"&addressLine1="+$scope.addressline1+"+&addressLine2="+$scope.addressline2+"&city="+selectedStore.city+"&state="+selectedStore.state+"&country=India&quantity="+$scope.quantity)
+//    	$http.get("http://192.168.49.1:8100/api/webservice/saveOrder?brandName="+$SelectedStore.selectedBrandName+"&circle="+$SelectedValues.getSelectedCircle() +"&brandId="+$SelectedValues.selectedBrand.id+"&inventoryId="+$SelectedValues.selectedInventoryId)
+		//$http.get("http://demo.pillocate.com/webservice/saveOrder?brandName="+$SelectedStore.selectedBrandName+"&circle="+$SelectedValues.selectedCircle +"&brandId="+$SelectedValues.selectedBrand.id+"&inventoryId="+$SelectedValues.selectedInventoryId)
     	.success(function(data) {
-    	console.log('searchResultsCtrl success');
-																	                   $scope.data.items = data.storesList;
-																		                })
-*/
+    	console.log('searchResultsCtrl success'+data);
+																	                   
+																		                });
+
 	}
 }]);
 //end searchResultsCtrl
@@ -156,12 +170,9 @@ var selectedBrand = $SelectedValues.getSelectedBrand($stateParams.id);
 //TODO: Probably we can move this to a seperate JS file
 app.service('SelectedValues', function($q) {
 var selectedBrand = {};
+var selectedBrandItem = {};
+var selectedCircle ={};
   return {
-  selectedCircle : '=test',
-  selectedCity : '=',
-  selectedBrandId :'=',
-  selectedBrandName: '=defaultBrandName',
-  selectedInventoryId :'=',
   getSelectedBrand : function(id) {
   for(i=0;i<selectedBrand.length;i++){
 				if(selectedBrand[i].id == id){
@@ -173,6 +184,19 @@ var selectedBrand = {};
   setSelectedBrand : function(x) {
   selectedBrand = x;
   },
+  getSelectedCircle : function() {
+    return selectedCircle;
+  },
+  setSelectedCircle : function(x) {
+  selectedCircle = x;
+  },
+ getselectedBrandItem : function() {
+    return selectedBrandItem ;
+  },
+  setselectedBrandItem : function(x) {
+  selectedBrandItem = x;
+  },
+
   }
 })
 //end SelectValues service
@@ -180,9 +204,10 @@ var selectedBrand = {};
 //start SelectStore service
 //TODO: Probably we can move this to a seperate JS file
 app.service('SelectedStore', function($q) {
+
   return {
   selectedStore : '={}',
-    selectedBrandName: '=defaultBrandName',
+
   }
 })
 //end SelectValues service
