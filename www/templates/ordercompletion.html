@@ -1,0 +1,40 @@
+﻿<ion-view view-title="Enter details">
+  <ion-content>
+  <form ng-submit="submitorder(order)">
+<div class="list">
+<div class="item item-divider">
+  Order Status
+  </div>
+  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="1" disabled="true">Placed</ion-checkbox>
+  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="2" disabled="true">Accepted</ion-checkbox>
+  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="3" disabled="true">Dispatched</ion-checkbox>
+  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="4" disabled="true">Delivered</ion-checkbox>
+<div class="item item-divider">
+  Order Details
+  </div>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Order Name</span>
+    <span class="input-label">{{data.orderDetails.brandName}}</span>
+  </label>
+
+ <label class="item item-input item-stacked-label">
+    <span class="input-label">Tracking Id</span>
+    <span class="input-label">{{data.orderDetails.trackingId}}</span>
+  </label>
+
+ <label class="item item-input item-stacked-label">
+    <span class="input-label">Expected Delivery</span>
+    <span class="input-label">{{data.orderDetails.estimatedDeliveryTime}}</span>
+  </label>
+ <label class="item item-input item-stacked-label">
+    <span class="input-label">seller:</span>
+    <span class="input-label">{{data.orderDetails.storeName}}</span>
+  </label>
+ <label class="item item-input item-stacked-label">
+    <span class="input-label">seller contact no:</span>
+    <span class="input-label">{{data.orderDetails.storePhoneNumber}}</span>
+  </label>
+  </div>
+</form>
+ </ion-content>
+</ion-view>

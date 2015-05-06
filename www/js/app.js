@@ -67,6 +67,16 @@ angular.module('starter', ['ionic', 'starter.controllers'])
       }
     })
 
+ .state('app.ordercompletion', {
+      url: "/ordercompletion",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/ordercompletion.html",
+          controller: 'OrderCompletionCtrl'
+        }
+      }
+    })
+
  .state('app.orderdetails', {
       url: "/orderdetails",
       views: {

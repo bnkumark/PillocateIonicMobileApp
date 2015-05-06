@@ -15,7 +15,7 @@
   </label>
   <label class="item item-input item-stacked-label">
     <span class="input-label">Quantity</span>
-    <input type="number" placeholder="1" ng-model="quantity">
+    <input type="number" placeholder="1" ng-model="order.quantity">
   </label>
    <div class="item item-divider">
    Delivery details
@@ -27,20 +27,20 @@
  
   <label class="item item-input item-stacked-label">
     <span class="input-label">*Age</span>
-    <input type="number" placeholder="1" ng-model="age">
+    <input type="number" placeholder="1" ng-model="order.age">
   </label>
  <label class="item item-input item-stacked-label">
     <span class="input-label">*Phone</span>
-    <input type="tel" placeholder="phone" ng-model="phone">
+    <input type="tel" placeholder="phone" ng-model="order.phone">
   </label>
    <label class="item item-input item-stacked-label">
     <span class="input-label">*Email Id</span>
-    <input type="email" placeholder="email id" ng-model="email">
+    <input type="email" placeholder="email id" ng-model="order.email">
   </label>
 <label class="item item-input item-stacked-label">
     <span class="input-label">*Address</span>
-    <input type="text" placeholder="Your addres line 1" ng-model="addressline1">
-    <input type="text" placeholder="Your addres line 2" ng-model="addressline2">
+    <input type="text" placeholder="Your addres line 1" ng-model="order.addressline1">
+    <input type="text" placeholder="Your addres line 2" ng-model="order.addressline2">
   </label>
  <label class="item item-input item-stacked-label">
     <span class="input-label">Circle</span>
@@ -70,7 +70,7 @@
  <div class="item item-input-inset">
     <label class="item-input-wrapper">
         <span class="input-label">Offer code</span>
-      <input type="text" placeholder="Enter offer code" ng-model="offercode">
+      <input type="text" placeholder="Enter offer code" ng-model="order.offercode">
     </label>
     <button class="button button-small">
       Apply
