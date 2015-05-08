@@ -1,14 +1,24 @@
-﻿<ion-view view-title="Enter details">
+﻿<ion-view view-title="Order Completed">
   <ion-content>
   <form ng-submit="submitorder(order)">
 <div class="list">
+<div class="item item-input-inset" ng-show="data.showTracking">
+    <label class="item-input-wrapper">
+        <span class="input-label">Tracking id</span>
+      <input type="text" placeholder="Enter tracking id" ng-model="order.offercode">
+    </label>
+    <button class="button button-small button-positive">
+      Apply
+    </button>
+  </div>
+  <div ng-show="data.showOrderDetails">
 <div class="item item-divider">
   Order Status
   </div>
-  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="1" disabled="true">Placed</ion-checkbox>
-  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="2" disabled="true">Accepted</ion-checkbox>
-  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="3" disabled="true">Dispatched</ion-checkbox>
-  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="4" disabled="true">Delivered</ion-checkbox>
+  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="1" ng-disabled="true">Placed</ion-checkbox>
+  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="2" ng-disabled="true">Accepted</ion-checkbox>
+  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="3" ng-disabled="true">Dispatched</ion-checkbox>
+  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="4" ng-disabled="true">Delivered</ion-checkbox>
 <div class="item item-divider">
   Order Details
   </div>
@@ -34,6 +44,7 @@
     <span class="input-label">seller contact no:</span>
     <span class="input-label">{{data.orderDetails.storePhoneNumber}}</span>
   </label>
+  </div>
   </div>
 </form>
  </ion-content>

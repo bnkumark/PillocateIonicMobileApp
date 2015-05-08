@@ -40,9 +40,12 @@ var app = angular.module('starter.controllers', [])
   var airlines;
   var searchTerm;
   var searchGotFocus = false;
-  $scope.data = { "airlines" : [], "search" : '', "circleOptions": [], selectedCircle : 'Thiruvanmiyur' };
+  $scope.data = { "airlines" : [], "search" : '', "circleOptions": [], selectedCircle : 'Thiruvanmiyur', 'cityOptions':[], selectedCity : 'Chennai' };
   $scope.data.circleOptions = ["Kandanchavadi","Kottivakkam","Thiruvanmiyur"];
   $scope.data.selectedCircle = 'Thiruvanmiyur';
+    $scope.data.cityOptions = ["Chennai"];
+  $scope.data.selectedCity = 'Chennai';
+
 // $state.go('app.searchresults');
    console.log('PlaylistsCtrl method');
 
@@ -155,7 +158,6 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
 	$scope.submitorder = function(order)
 	{
      	//$http.get("http://192.168.49.1:8100/api/webservice/saveOrder?brandName="+selectedBrand.label+"&circle="+$SelectedValues.getSelectedCircle()+"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.id+"&storeId="+selectedStore.storeId+"&name="+order.name+"&phoneNumber="+order.phone+"&emailID="+order.email+"&age="+order.age+"&addressLine1="+order.addressline1+"+&addressLine2="+order.addressline2+"&city="+selectedStore.city+"&state="+selectedStore.state+"&country=India&quantity="+order.quantity)
-//    	$http.get("http://192.168.49.1:8100/api/webservice/saveOrder?brandName="+$SelectedStore.selectedBrandName+"&circle="+$SelectedValues.getSelectedCircle() +"&brandId="+$SelectedValues.selectedBrand.id+"&inventoryId="+$SelectedValues.selectedInventoryId)
 		$http.get("http://demo.pillocate.com/webservice/saveOrder?brandName="+selectedBrand.label+"&circle="+$SelectedValues.getSelectedCircle()+"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.id+"&storeId="+selectedStore.storeId+"&name="+order.name+"&phoneNumber="+order.phone+"&emailID="+order.email+"&age="+order.age+"&addressLine1="+order.addressline1+"+&addressLine2="+order.addressline2+"&city="+selectedStore.city+"&state="+selectedStore.state+"&country=India&quantity="+order.quantity)
     	.success(function(data) {
     	console.log('submitorder success:'+data);
@@ -164,6 +166,7 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
     	{
     	console.log('no errors in order');
     	$OrderDetailsService.setorderDetails(data.orderStatusCommand);
+    	$OrderDetailsService.setScreen('orderCompletion'); 
          $state.go('app.ordercompletion');
     	}
     	else
@@ -177,12 +180,41 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
 //end OrderDetailsCtrl
 
 //start OrderDetailsCtrl
-.controller('OrderCompletionCtrl',['$scope','$http','SelectedValues','SelectedStore','OrderDetailsService', function($scope, $http, $SelectedValues, $SelectedStore,$OrderDetailsService) {
-	console.log('OrdercompletionCtrl called');
-	$scope.data = { "orderDetails" : $OrderDetailsService.getorderDetails()};
+.controller('OrderCompletionCtrl',['$scope','$http','SelectedValues','SelectedStore','OrderDetailsService','$state', function($scope, $http, $SelectedValues, $SelectedStore,$OrderDetailsService,$state) {
+if($OrderDetailsService.getReload() == false)
+{
+$state.go($state.current, {}, {reload: true});
+$OrderDetailsService.setReload(true);
+}
+else
+{
+$OrderDetailsService.setReload(false);
+}
+	console.log('OrdercompletionCtrl called with:' + $OrderDetailsService.getScreen());
+	var screen = $OrderDetailsService.getScreen();
+	$scope.data = { "orderDetails" : $OrderDetailsService.getorderDetails(), "showTracking":(screen != 'orderCompletion'), "showOrderDetails": (screen == 'orderCompletion')};
+	console.log('showTracking:'+$scope.data.showTracking+' showOrderDetails:'+$scope.data.showOrderDetails)
 		
-}]);
+}])
 //end OrdercompletionCtrl
+
+//start FeedbackCtrl
+.controller('FeedbackCtrl',['$scope','$http','SelectedValues','SelectedStore','OrderDetailsService','$state', function($scope, $http, $SelectedValues, $SelectedStore,$OrderDetailsService,$state) {
+	
+	$scope.data = {"feedbackstatus" : ''};
+	$scope.submitfeedback = function(feedback)
+	{
+	//$http.get("http://192.168.49.1:8100/api/webservice/sendFeedback?name="+feedback.name+"&emailID="+feedback.email+"&message="+feedback.message)
+	$http.get("http://demo.pillocate.com/webservice/sendFeedback?name="+feedback.name+"&emailID="+feedback.email+"&message="+feedback.message)
+    	.success(function(data) {
+    	$scope.data.feedbackstatus = data;
+    	console.log('feedback submit success:'+data);   	             
+	});
+}
+
+}]);
+//end FeedbackCtrl
+
 
 //start SelectValues service
 //TODO: Probably we can move this to a seperate JS file
@@ -241,12 +273,26 @@ getselectedBrandItem : function() {
 //TODO: Probably we can move this to a seperate JS file
 app.service('OrderDetailsService', function($q) {
 var orderDetails = {};
+var screen = {};
+var reloading = {};
   return {
 getorderDetails : function() {
     return orderDetails ;
   },
   setorderDetails : function(x) {
   orderDetails = x;
+  },
+getScreen : function() {
+    return screen;
+  },
+  setScreen : function(x) {
+  screen = x;
+  },
+getReload : function() {
+    return reloading ;
+  },
+  setReload : function(x) {
+  reloading = x;
   },
 
   }

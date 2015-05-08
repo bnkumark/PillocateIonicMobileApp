@@ -39,11 +39,12 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     }
   })
 
-  .state('app.browse', {
-    url: "/browse",
+  .state('app.feedback', {
+    url: "/feedback",
     views: {
       'menuContent': {
-        templateUrl: "templates/browse.html"
+        templateUrl: "templates/feedback.html",
+        controller: 'FeedbackCtrl'
       }
     }
   })
@@ -69,6 +70,7 @@ angular.module('starter', ['ionic', 'starter.controllers'])
 
  .state('app.ordercompletion', {
       url: "/ordercompletion",
+      cache: false,
       views: {
         'menuContent': {
           templateUrl: "templates/ordercompletion.html",
