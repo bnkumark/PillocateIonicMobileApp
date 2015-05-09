@@ -2,11 +2,11 @@
   <ion-nav-title>
 <!--      <img src="img/logo.png">-->
 <div >
-  <h1 style="color:#0F75BC">Pillocate20</h1>
+  <h1 style="color:#0F75BC">Pillocate21</h1>
 </div>
     </ion-nav-title>
   <ion-content>
-  <h2 class="positive item" style="text-align:center;font-weight:bold;color:#0F75BC">Online portal to find medicines near you</h2>
+  <h2 class="positive item" style="text-align:center;color:#0F75BC">Online portal to find medicines near you</h2>
    <div class="list">
  <div class="list" padding="false" >
   <label class="item item-input item-select">
@@ -33,12 +33,14 @@
 </div>
 <!-- <div  padding="false">-->
 <!--    <ion-header-bar class="bar-subheader item-input-inset">-->
-<div class="list item-input-inset" padding="false">
-  <label class="item-input-wrapper">
+    <ion-scroll delegate-handle="searchbox" style="height: 100px;background-color:white">
+<div class="list item-input-inset" padding="false" style="background-color:white">
+  <label class="item item-input-wrapper" style="background-color:white">
     <i class="icon ion-ios7-search placeholder-icon"></i>
-    <input type="search" placeholder="Enter medicine brand" ng-change="search()" ng-blur="clearAutoSuggestions()" ng-model="data.search">
+    <input type="search" style="background-color:white" placeholder="Enter medicine brand" ng-change="search()" ng-blur="clearAutoSuggestions()" ng-model="data.search">
   </label>
       </div>
+       </ion-scroll>
 <!--    </ion-header-bar>-->
 <!--   <ion-content padding="true">-->
      <!-- <div class="list">
@@ -61,5 +63,14 @@ Place order & get medicine delivered in hours!<br/><br/>
 OR<br/><br/>
  Call us/ whatsapp/ SMS on +91-9591729831<br/>
 to place your order now!</div>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
   </ion-content>
 </ion-view>

@@ -35,7 +35,7 @@ var app = angular.module('starter.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', ['$scope','$http','$state','SelectedValues','$ionicPopup', function($scope,$http,$state,$SelectedValues,$ionicPopup) {
+.controller('PlaylistsCtrl', ['$scope','$http','$state','SelectedValues','$ionicPopup','$ionicScrollDelegate', function($scope,$http,$state,$SelectedValues,$ionicPopup,$ionicScrollDelegate) {
 
   var airlines;
   var searchTerm;
@@ -54,6 +54,7 @@ var app = angular.module('starter.controllers', [])
      
       if($scope.data.airlines.length != 0)
       {
+
       $scope.data.airlines = [];
       searchGotFocus = false;
        console.log('clearing the auto suggestions');
@@ -62,7 +63,7 @@ var app = angular.module('starter.controllers', [])
      
      //Start of  $scope.search
   $scope.search = function() {
-   
+          $ionicScrollDelegate.$getByHandle('searchbox').scrollTop();
  console.log('search method');
 if($scope.data.search != '')
 {
@@ -192,8 +193,36 @@ $OrderDetailsService.setReload(false);
 }
 	console.log('OrdercompletionCtrl called with:' + $OrderDetailsService.getScreen());
 	var screen = $OrderDetailsService.getScreen();
-	$scope.data = { "orderDetails" : $OrderDetailsService.getorderDetails(), "showTracking":(screen != 'orderCompletion'), "showOrderDetails": (screen == 'orderCompletion')};
-	console.log('showTracking:'+$scope.data.showTracking+' showOrderDetails:'+$scope.data.showOrderDetails)
+	$scope.data = { "orderDetails" : $OrderDetailsService.getorderDetails(), "showTracking":(screen != 'orderCompletion'), "showOrderDetails": (screen == 'orderCompletion'), "canceSuccess":''};
+	console.log('showTracking:'+$scope.data.showTracking+' showOrderDetails:'+$scope.data.showOrderDetails);
+	
+	$scope.getOrderDetails = function(trackingId)
+	{
+	//$http.get("http://192.168.49.1:8100/api/webservice/showTrackedOrderDetails?trackingId="+trackingId)
+	$http.get("http://demo.pillocate.com/webservice/cancelOrder?orderId="+orderId)
+    	.success(function(data) {
+    	console.log('order details fetched:'+data); 
+    	  	$OrderDetailsService.setorderDetails(data.orderStatusCommand); 
+    	  	    	$OrderDetailsService.setScreen('orderCompletion'); 
+					$state.go($state.current, {}, {reload: true});         
+	});
+	};
+	
+	$scope.goHome = function()
+	{
+	$state.go('app.playlists');
+	};
+	
+	$scope.cancelOrder = function(orderId)
+	{
+	//$http.get("http://192.168.49.1:8100/api/webservice/cancelOrder?orderId="+orderId)
+	$http.get("http://demo.pillocate.com/webservice/cancelOrder?orderId="+orderId)
+    	.success(function(data) {
+    	$scope.data.canceSuccess = "Your order has been cancelled!";
+    	console.log('order cancelled:'+data);   	             
+	});
+
+	};
 		
 }])
 //end OrdercompletionCtrl

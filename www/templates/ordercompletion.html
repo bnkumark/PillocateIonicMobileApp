@@ -7,11 +7,12 @@
         <span class="input-label">Tracking id</span>
       <input type="text" placeholder="Enter tracking id" ng-model="order.offercode">
     </label>
-    <button class="button button-small button-positive">
-      Apply
+    <button class="button button-small button-positive" type="button" ng-click="getOrderDetails(order.offercode)">
+      Track Order
     </button>
   </div>
   <div ng-show="data.showOrderDetails">
+   <label class="item positive">{{data.canceSuccess}}</label>
 <div class="item item-divider">
   Order Status
   </div>
@@ -44,7 +45,21 @@
     <span class="input-label">seller contact no:</span>
     <span class="input-label">{{data.orderDetails.storePhoneNumber}}</span>
   </label>
+  <div class="item item-input-inset">
+      <div >
+ <button class="button button-positive" type="button" ng-click="goHome()">
+  Next Order
+</button>   
+</div>
+    <div>
+ <button class="button button-assertive" style="margin-left:10px" type="button" ng-click="cancelOrder(data.orderDetails.orderId)">
+  Cancel Order
+</button>   
+</div>
+</div>
+
   </div>
+
   </div>
 </form>
  </ion-content>
