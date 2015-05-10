@@ -63,12 +63,12 @@ var app = angular.module('starter.controllers', [])
      
      //Start of  $scope.search
   $scope.search = function() {
-          $ionicScrollDelegate.$getByHandle('searchbox').scrollTop();
+//          $ionicScrollDelegate.$getByHandle('searchbox').scrollTop();
  console.log('search method');
 if($scope.data.search != '')
 {
 		//$http.get("http://192.168.49.1:8100/api/search/listOfBrandNameStartingWith?term="+$scope.data.search+"&circle="+$scope.data.selectedCircle)
-         $http.get("http://demo.pillocate.com/search/listOfBrandNameStartingWith?term="+$scope.data.search+"&circle="+$scope.data.selectedCircle)
+          $http.get("http://demo.pillocate.com/search/listOfBrandNameStartingWith?term="+$scope.data.search+"&circle="+$scope.data.selectedCircle)
     		.success(function(data) {
     		console.log('setting auto suggestions '+data);
 																	                   $scope.data.airlines = data;
