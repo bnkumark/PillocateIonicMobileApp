@@ -33,14 +33,14 @@
 </div>
 <!-- <div  padding="false">-->
 <!--    <ion-header-bar class="bar-subheader item-input-inset">-->
-
-<div class="list item-input-inset" padding="false" style="background-color:white;margin-bottom:-20px">
+<!--<ion-scroll delegate-handle="small" style="height: 400px;">-->
+<div id="searchbox" class="list item-input-inset" padding="false" style="background-color:white;margin-bottom:-20px">
   <label class="item item-input-wrapper" style="background-color:white;border-left:none;margin-left:-20px;margin-right:-20px;">
     <i class="icon ion-search placeholder-icon" style="margin-left:20px"></i>
-    <input type="search" style="background-color:white;border-color:blue" placeholder="Enter medicine brand" ng-change="search()" ng-blur="clearAutoSuggestions()" ng-model="data.search">
+    <input  type="search" style="background-color:white;border-color:blue" placeholder="Enter medicine brand" ng-focus="scrollToTop()" ng-change="search()" ng-blur="clearAutoSuggestions()" ng-model="data.search">
   </label>
       </div>
-
+<!--  </ion-scroll>-->
 <!--    </ion-header-bar>-->
 <!--   <ion-content padding="true">-->
      <!-- <div class="list">
@@ -63,5 +63,6 @@ Place order & get medicine delivered in hours!<br/>
 <b>OR</b><br/>
  Call us/ Whatsapp/ SMS on +91-9591729831<br/>
 to place your order now!</div>
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
   </ion-content>
 </ion-view>

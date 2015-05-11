@@ -78,6 +78,16 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
+ .state('app.trackorder', {
+      url: "/trackorder",
+      cache: false,
+      views: {
+        'menuContent': {
+          templateUrl: "templates/trackorder.html",
+          controller: 'TrackOrderCtrl'
+        }
+      }
+    })
 
  .state('app.orderdetails', {
       url: "/orderdetails",

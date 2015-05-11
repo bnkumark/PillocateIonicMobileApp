@@ -50,6 +50,18 @@ var app = angular.module('starter.controllers', [])
    console.log('PlaylistsCtrl method');
 
    
+  $scope.scrollToTop = function()
+  {
+  console.log('scrollToTop called');
+  var el = document.querySelector("#searchbox");
+var top = el.getBoundingClientRect().top;
+var height = el.getBoundingClientRect().height;
+console.log("JS Top: "+top+"height:"+height);
+//window.scrollTo(0, top+top);
+    $ionicScrollDelegate.scrollTo(0,top-height,true);
+  
+  };
+   
      $scope.clearAutoSuggestions = function() {
      
       if($scope.data.airlines.length != 0)
@@ -63,6 +75,9 @@ var app = angular.module('starter.controllers', [])
      
      //Start of  $scope.search
   $scope.search = function() {
+  console.log($ionicScrollDelegate.getScrollPosition());
+//$ionicScrollDelegate.$getByHandle('small').scrollTo(0,154,true);
+  console.log($ionicScrollDelegate.getScrollPosition());
 //          $ionicScrollDelegate.$getByHandle('searchbox').scrollTop();
  console.log('search method');
 if($scope.data.search != '')
@@ -180,31 +195,57 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
 }])
 //end OrderDetailsCtrl
 
+//start TrackOrderCtrl
+.controller('TrackOrderCtrl',['$scope','$http','$state','SelectedValues','SelectedStore','OrderDetailsService', function($scope, $http,$state, $SelectedValues, $SelectedStore,$OrderDetailsService) {
+	console.log('TrackOrderCtrl called');
+	$scope.data = { "trackingId" : ''};
+	
+	$scope.getOrderDetails= function()
+	{
+     //$http.get("http://192.168.49.1:8100/api/webservice/showTrackedOrderDetails?trackingId="+$scope.data.trackingId)
+	$http.get("http://demo.pillocate.com/webservice/showTrackedOrderDetails?trackingId="+$scope.data.trackingId)
+    	.success(function(data) {
+    	console.log('order details fetched:'+data); 
+    	  	$OrderDetailsService.setorderDetails(data.orderStatusCommand); 
+    	  	    	$OrderDetailsService.setScreen('orderCompletion'); 
+         $state.go('app.ordercompletion');    	             
+	});
+
+	}
+}])
+//end TrackOrderCtrl
+
+
 //start OrderDetailsCtrl
 .controller('OrderCompletionCtrl',['$scope','$http','SelectedValues','SelectedStore','OrderDetailsService','$state', function($scope, $http, $SelectedValues, $SelectedStore,$OrderDetailsService,$state) {
 if($OrderDetailsService.getReload() == false)
 {
 $state.go($state.current, {}, {reload: true});
 $OrderDetailsService.setReload(true);
+console.log('reloading order complete');
 }
 else
 {
+console.log('normally loading the order complete');
 $OrderDetailsService.setReload(false);
 }
 	console.log('OrdercompletionCtrl called with:' + $OrderDetailsService.getScreen());
 	var screen = $OrderDetailsService.getScreen();
-	$scope.data = { "orderDetails" : $OrderDetailsService.getorderDetails(), "showTracking":(screen != 'orderCompletion'), "showOrderDetails": (screen == 'orderCompletion'), "canceSuccess":''};
+	$scope.data = { "trackingId":'',"orderDetails" : $OrderDetailsService.getorderDetails(), "showTracking":(screen != 'orderCompletion'), "showOrderDetails": (screen == 'orderCompletion'), "canceSuccess":''};
 	console.log('showTracking:'+$scope.data.showTracking+' showOrderDetails:'+$scope.data.showOrderDetails);
 	
-	$scope.getOrderDetails = function(trackingId)
+	$scope.getOrderDetails = function()
 	{
-	//$http.get("http://192.168.49.1:8100/api/webservice/showTrackedOrderDetails?trackingId="+trackingId)
-	$http.get("http://demo.pillocate.com/webservice/cancelOrder?orderId="+orderId)
+	$http.get("http://192.168.49.1:8100/api/webservice/showTrackedOrderDetails?trackingId="+$scope.data.trackingId)
+	//$http.get("http://demo.pillocate.com/webservice/cancelOrder?orderId="+$scope.offercode)
     	.success(function(data) {
     	console.log('order details fetched:'+data); 
     	  	$OrderDetailsService.setorderDetails(data.orderStatusCommand); 
-    	  	    	$OrderDetailsService.setScreen('orderCompletion'); 
-					$state.go($state.current, {}, {reload: true});         
+    	  	    	//$OrderDetailsService.setScreen('orderCompletion'); 
+					//$state.go($state.current, {}, {reload: true});  
+					$scope.data.orderDetails = data.orderStatusCommand;
+					$scope.data.showTracking = false;
+					 $scope.data.showOrderDetails = true;      
 	});
 	};
 	
