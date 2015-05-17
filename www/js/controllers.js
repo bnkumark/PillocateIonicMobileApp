@@ -41,7 +41,7 @@ var app = angular.module('starter.controllers', [])
   var searchTerm;
   var searchGotFocus = false;
   $scope.data = { "airlines" : [], "search" : '', "circleOptions": [], selectedCircle : 'Thiruvanmiyur', 'cityOptions':[], selectedCity : 'Chennai' };
-  $scope.data.circleOptions = ["Kandanchavadi","Kottivakkam","Thiruvanmiyur"];
+  $scope.data.circleOptions = ["Adyar","Besant Nagar","Kandanchavadi","Kottivakkam","Thiruvanmiyur"];
   $scope.data.selectedCircle = 'Thiruvanmiyur';
     $scope.data.cityOptions = ["Chennai"];
   $scope.data.selectedCity = 'Chennai';
@@ -82,7 +82,6 @@ console.log("JS Top: "+top+"height:"+height);
  console.log('search method');
 if($scope.data.search != '')
 {
-		//$http.get("http://192.168.49.1:8100/api/search/listOfBrandNameStartingWith?term="+$scope.data.search+"&circle="+$scope.data.selectedCircle)
           $http.get("http://demo.pillocate.com/search/listOfBrandNameStartingWith?term="+$scope.data.search+"&circle="+$scope.data.selectedCircle)
     		.success(function(data) {
     		console.log('setting auto suggestions '+data);
@@ -140,9 +139,6 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
  console.log($scope.data.items);
 
  
-//$http.get("http://demo.pillocate.com/webservice/search?brandName=T.T-0.5ML&circle=Thiruvanmiyur&brandId=1828&inventoryId=1828")
-//TODO we need to read the combobox values
-      //$http.get("http://192.168.49.1:8100/api/webservice/search?brandName="+selectedBrand.label+"&circle="+ selectedCircle +"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.selectedInventoryId)
        $http.get("http://demo.pillocate.com/webservice/search?brandName="+selectedBrand.label+"&circle="+ selectedCircle +"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.selectedInventoryId)
     	.success(function(data) {
     	console.log('searchResultsCtrl success');
@@ -166,6 +162,7 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
 .controller('OrderDetailsCtrl',['$scope','$http','$state','SelectedValues','SelectedStore','OrderDetailsService', function($scope, $http,$state, $SelectedValues, $SelectedStore,$OrderDetailsService) {
 	console.log('OrderDetailsCtrlmethod called');
 	$scope.data = { "store" : $SelectedStore.selectedStore, "brandName" : $SelectedStore.getselectedBrandItem().label};
+	$scope.order = { "quantity": 1};
 	var selectedBrand = $SelectedStore.getselectedBrandItem();
 	var selectedStore = $scope.data.store;
 		console.log('selected brand value in OrderDetailsCtrl:'+selectedBrand.label );
@@ -173,8 +170,7 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
 	
 	$scope.submitorder = function(order)
 	{
-     	//$http.get("http://192.168.49.1:8100/api/webservice/saveOrder?brandName="+selectedBrand.label+"&circle="+$SelectedValues.getSelectedCircle()+"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.id+"&storeId="+selectedStore.storeId+"&name="+order.name+"&phoneNumber="+order.phone+"&emailID="+order.email+"&age="+order.age+"&addressLine1="+order.addressline1+"+&addressLine2="+order.addressline2+"&city="+selectedStore.city+"&state="+selectedStore.state+"&country=India&quantity="+order.quantity)
-		$http.get("http://demo.pillocate.com/webservice/saveOrder?brandName="+selectedBrand.label+"&circle="+$SelectedValues.getSelectedCircle()+"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.id+"&storeId="+selectedStore.storeId+"&name="+order.name+"&phoneNumber="+order.phone+"&emailID="+order.email+"&age="+order.age+"&addressLine1="+order.addressline1+"+&addressLine2="+order.addressline2+"&city="+selectedStore.city+"&state="+selectedStore.state+"&country=India&quantity="+order.quantity)
+       $http.get("http://demo.pillocate.com/webservice/saveOrder?brandName="+selectedBrand.label+"&circle="+$SelectedValues.getSelectedCircle()+"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.id+"&storeId="+selectedStore.storeId+"&name="+order.name+"&phoneNumber="+order.phone+"&emailID="+order.email+"&age="+order.age+"&addressLine1="+order.addressline1+"+&addressLine2="+order.addressline2+"&city="+selectedStore.city+"&state="+selectedStore.state+"&country=India&quantity="+order.quantity)
     	.success(function(data) {
     	console.log('submitorder success:'+data);
     	console.log('data.errors values:' + data.orderStatusCommand.errors.errors.length);
@@ -202,7 +198,6 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
 	
 	$scope.getOrderDetails= function()
 	{
-     //$http.get("http://192.168.49.1:8100/api/webservice/showTrackedOrderDetails?trackingId="+$scope.data.trackingId)
 	$http.get("http://demo.pillocate.com/webservice/showTrackedOrderDetails?trackingId="+$scope.data.trackingId)
     	.success(function(data) {
     	console.log('order details fetched:'+data); 
@@ -234,21 +229,6 @@ $OrderDetailsService.setReload(false);
 	$scope.data = { "trackingId":'',"orderDetails" : $OrderDetailsService.getorderDetails(), "showTracking":(screen != 'orderCompletion'), "showOrderDetails": (screen == 'orderCompletion'), "canceSuccess":''};
 	console.log('showTracking:'+$scope.data.showTracking+' showOrderDetails:'+$scope.data.showOrderDetails);
 	
-	$scope.getOrderDetails = function()
-	{
-	$http.get("http://192.168.49.1:8100/api/webservice/showTrackedOrderDetails?trackingId="+$scope.data.trackingId)
-	//$http.get("http://demo.pillocate.com/webservice/cancelOrder?orderId="+$scope.offercode)
-    	.success(function(data) {
-    	console.log('order details fetched:'+data); 
-    	  	$OrderDetailsService.setorderDetails(data.orderStatusCommand); 
-    	  	    	//$OrderDetailsService.setScreen('orderCompletion'); 
-					//$state.go($state.current, {}, {reload: true});  
-					$scope.data.orderDetails = data.orderStatusCommand;
-					$scope.data.showTracking = false;
-					 $scope.data.showOrderDetails = true;      
-	});
-	};
-	
 	$scope.goHome = function()
 	{
 	$state.go('app.playlists');
@@ -256,7 +236,6 @@ $OrderDetailsService.setReload(false);
 	
 	$scope.cancelOrder = function(orderId)
 	{
-	//$http.get("http://192.168.49.1:8100/api/webservice/cancelOrder?orderId="+orderId)
 	$http.get("http://demo.pillocate.com/webservice/cancelOrder?orderId="+orderId)
     	.success(function(data) {
     	$scope.data.canceSuccess = "Your order has been cancelled!";
@@ -274,7 +253,6 @@ $OrderDetailsService.setReload(false);
 	$scope.data = {"feedbackstatus" : ''};
 	$scope.submitfeedback = function(feedback)
 	{
-	//$http.get("http://192.168.49.1:8100/api/webservice/sendFeedback?name="+feedback.name+"&emailID="+feedback.email+"&message="+feedback.message)
 	$http.get("http://demo.pillocate.com/webservice/sendFeedback?name="+feedback.name+"&emailID="+feedback.email+"&message="+feedback.message)
     	.success(function(data) {
     	$scope.data.feedbackstatus = data;
