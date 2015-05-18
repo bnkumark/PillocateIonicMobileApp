@@ -1,4 +1,4 @@
-﻿<ion-view view-title="Order Completed">
+﻿<ion-view view-title="Order Completed" hide-back-button="true">
   <ion-content>
 
 <div class="list">
@@ -23,26 +23,26 @@
 <div class="item item-divider">
   Order Details
   </div>
-  <label class="item item-input item-stacked-label">
+  <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Order Name</span>
     <span class="input-label">{{data.orderDetails.brandName}}</span>
   </label>
 
- <label class="item item-input item-stacked-label">
+ <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Tracking Id</span>
     <span class="input-label">{{data.orderDetails.trackingId}}</span>
   </label>
 
- <label class="item item-input item-stacked-label">
+ <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Expected Delivery</span>
-    <span class="input-label">{{data.orderDetails.estimatedDeliveryTime}}</span>
+    <span class="input-label datatime">{{data.orderDetails.estimatedDeliveryTime | date:'medium'}}</span>
   </label>
- <label class="item item-input item-stacked-label">
-    <span class="input-label">seller:</span>
+ <label class="item item-input item-stacked-label item-text-wrap">
+    <span class="input-label">Seller</span>
     <span class="input-label">{{data.orderDetails.storeName}}</span>
   </label>
- <label class="item item-input item-stacked-label">
-    <span class="input-label">seller contact no:</span>
+ <label class="item item-input item-stacked-label item-text-wrap">
+    <span class="input-label">Seller contact no</span>
     <span class="input-label">{{data.orderDetails.storePhoneNumber}}</span>
   </label>
   <div class="item item-input-inset">

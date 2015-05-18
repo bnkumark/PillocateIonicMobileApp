@@ -6,13 +6,13 @@
 <div class="item item-divider">
   Order details
   </div>
-  <label class="item item-input item-stacked-label">
+  <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Item Name</span>
-    <input type="text" readonly="true" placeholder="{{data.brandName}}">
+    <span class="input-label">{{data.brandName}}</span>
   </label>
-  <label class="item item-input item-stacked-label">
+  <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Store Name</span>
-    <input type="text" readonly="true" placeholder="{{data.store.storeName}}">
+    <span class="input-label">{{data.store.storeName}}</span>
   </label>
   <label class="item item-input item-stacked-label">
     <span class="input-label">Quantity</span>
@@ -48,27 +48,27 @@
   </label>
  <label class="item item-input item-stacked-label">
     <span class="input-label">Circle</span>
-    <input type="text" readonly="true" placeholder="{{data.store.circle}}">
+    <span class="input-label">{{data.store.circle}}</span>
   </label>
 
  <label class="item item-input item-stacked-label">
     <span class="input-label">City</span>
-    <input type="text" readonly="true" placeholder="{{data.store.city}}">
+    <span class="input-label">{{data.store.city}}</span>
   </label>
 
  <label class="item item-input item-stacked-label">
     <span class="input-label">State</span>
-    <input type="text" readonly="true" placeholder="{{data.store.state}}">
+    <span class="input-label">{{data.store.state}}</span>
   </label>
 
  <label class="item item-input item-stacked-label">
     <span class="input-label">Country</span>
-    <input type="text" readonly="true" placeholder="{{data.store.country}}">
+    <span class="input-label">{{data.store.country}}</span>
   </label>
 
- <label class="item item-input item-stacked-label">
+ <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Payment Method</span>
-    <input type="text" readonly="true" placeholder="Cash on delivery">
+    <span class="input-label">Cash on delivery</span>
   </label>
 
  <div class="item item-input-inset">
@@ -76,11 +76,12 @@
         <span class="input-label">Offer code</span>
       <input type="text" placeholder="Enter offer code" ng-model="order.offercode">
     </label>
-    <button class="button button-small">
+    <button class="button button-small" ng-click="applyOffer()">
       Apply
     </button>
   </div>
-<div class="item"> Please note, the pharmacist may ask for a valid prescription at the time of delivery.</div>
+      <span class="item item-text-wrap calm">{{order.offerstatus}}</span>
+<div class="item item-text-wrap"> Please note, the pharmacist may ask for a valid prescription at the time of delivery.</div>
 </div>
 <div class="item">
  <button class="item button button-positive" type="submit">

@@ -35,12 +35,24 @@ var app = angular.module('starter.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', ['$scope','$http','$state','SelectedValues','$ionicPopup','$ionicScrollDelegate', function($scope,$http,$state,$SelectedValues,$ionicPopup,$ionicScrollDelegate) {
-
+.controller('PlaylistsCtrl', ['$scope','$http','$state','SelectedValues','$ionicHistory','$ionicScrollDelegate','$ionicNavBarDelegate','$timeout', function($scope,$http,$state,$SelectedValues,$ionicHistory,$ionicScrollDelegate,$ionicNavBarDelegate, $timeout) {
+$ionicHistory.clearHistory();
+//we need to do timeout to avoid race condition while redering views
+/* $timeout(function() {
+$ionicNavBarDelegate.showBar(true);
+    }, 1000);
+*//* $scope.$on('$ionicView.enter', function() {
+    console.log('Parent: enter');
+    
+$ionicHistory.clearHistory();
+$ionicNavBarDelegate.showBar(true);
+  });
+*/  
   var airlines;
   var searchTerm;
   var searchGotFocus = false;
   $scope.data = { "airlines" : [], "search" : '', "circleOptions": [], selectedCircle : 'Thiruvanmiyur', 'cityOptions':[], selectedCity : 'Chennai' };
+  //TODO get this from web service
   $scope.data.circleOptions = ["Adyar","Besant Nagar","Kandanchavadi","Kottivakkam","Thiruvanmiyur"];
   $scope.data.selectedCircle = 'Thiruvanmiyur';
     $scope.data.cityOptions = ["Chennai"];
@@ -162,7 +174,8 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
 .controller('OrderDetailsCtrl',['$scope','$http','$state','SelectedValues','SelectedStore','OrderDetailsService', function($scope, $http,$state, $SelectedValues, $SelectedStore,$OrderDetailsService) {
 	console.log('OrderDetailsCtrlmethod called');
 	$scope.data = { "store" : $SelectedStore.selectedStore, "brandName" : $SelectedStore.getselectedBrandItem().label};
-	$scope.order = { "quantity": 1};
+	$scope.order = { "quantity": 1, "offerstatus":''};
+	$scope.data.store.circle = $SelectedValues.getSelectedCircle();
 	var selectedBrand = $SelectedStore.getselectedBrandItem();
 	var selectedStore = $scope.data.store;
 		console.log('selected brand value in OrderDetailsCtrl:'+selectedBrand.label );
@@ -170,7 +183,7 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
 	
 	$scope.submitorder = function(order)
 	{
-       $http.get("http://demo.pillocate.com/webservice/saveOrder?brandName="+selectedBrand.label+"&circle="+$SelectedValues.getSelectedCircle()+"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.id+"&storeId="+selectedStore.storeId+"&name="+order.name+"&phoneNumber="+order.phone+"&emailID="+order.email+"&age="+order.age+"&addressLine1="+order.addressline1+"+&addressLine2="+order.addressline2+"&city="+selectedStore.city+"&state="+selectedStore.state+"&country=India&quantity="+order.quantity)
+       $http.get("http://demo.pillocate.com/webservice/saveOrder?circle="+$SelectedValues.getSelectedCircle()+"&brandId="+selectedBrand.id+"&inventoryId="+selectedBrand.id+"&storeId="+selectedStore.storeId+"&name="+order.name+"&phoneNumber="+order.phone+"&emailID="+order.email+"&age="+order.age+"&addressLine1="+order.addressline1+"+&addressLine2="+order.addressline2+"&city="+selectedStore.city+"&state="+selectedStore.state+"&country=India&quantity="+order.quantity+"&offerCode="+order.offercode)
     	.success(function(data) {
     	console.log('submitorder success:'+data);
     	console.log('data.errors values:' + data.orderStatusCommand.errors.errors.length);
@@ -187,6 +200,17 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
     	             
 	});
 
+	};
+	
+	$scope.applyOffer = function()
+	{
+	$http.get("http://demo.pillocate.com/webservice/isValidOfferCode?offerCode="+$scope.order.offercode)
+	.success(function(data) {
+	$scope.order.offerstatus= data;
+	})
+	.error(function(data) {
+		$scope.order.offerstatus= data;
+	});
 	}
 }])
 //end OrderDetailsCtrl
@@ -194,16 +218,24 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
 //start TrackOrderCtrl
 .controller('TrackOrderCtrl',['$scope','$http','$state','SelectedValues','SelectedStore','OrderDetailsService', function($scope, $http,$state, $SelectedValues, $SelectedStore,$OrderDetailsService) {
 	console.log('TrackOrderCtrl called');
-	$scope.data = { "trackingId" : ''};
+	$scope.data = { "trackingId" : '', "status" : ''};
 	
 	$scope.getOrderDetails= function()
 	{
 	$http.get("http://demo.pillocate.com/webservice/showTrackedOrderDetails?trackingId="+$scope.data.trackingId)
     	.success(function(data) {
     	console.log('order details fetched:'+data); 
+    	if(data != -2)
+    	{
     	  	$OrderDetailsService.setorderDetails(data.orderStatusCommand); 
     	  	    	$OrderDetailsService.setScreen('orderCompletion'); 
-         $state.go('app.ordercompletion');    	             
+         $state.go('app.ordercompletion');   
+                  $scope.data.status = "";
+         } 	  
+         else
+         {
+         $scope.data.status = "Invalid Tracking Id";
+         }           
 	});
 
 	}
@@ -212,7 +244,8 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
 
 
 //start OrderDetailsCtrl
-.controller('OrderCompletionCtrl',['$scope','$http','SelectedValues','SelectedStore','OrderDetailsService','$state', function($scope, $http, $SelectedValues, $SelectedStore,$OrderDetailsService,$state) {
+.controller('OrderCompletionCtrl',['$scope','$http','SelectedValues','$ionicHistory','SelectedStore','OrderDetailsService','$state', function($scope, $http, $SelectedValues, $ionicHistory, $SelectedStore,$OrderDetailsService,$state) {
+$ionicHistory.clearHistory();
 if($OrderDetailsService.getReload() == false)
 {
 $state.go($state.current, {}, {reload: true});
