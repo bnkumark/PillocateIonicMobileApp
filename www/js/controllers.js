@@ -36,18 +36,8 @@ var app = angular.module('starter.controllers', [])
 })
 
 .controller('PlaylistsCtrl', ['$scope','$http','$state','SelectedValues','$ionicHistory','$ionicScrollDelegate','$ionicNavBarDelegate','$timeout', function($scope,$http,$state,$SelectedValues,$ionicHistory,$ionicScrollDelegate,$ionicNavBarDelegate, $timeout) {
-$ionicHistory.clearHistory();
-//we need to do timeout to avoid race condition while redering views
-/* $timeout(function() {
-$ionicNavBarDelegate.showBar(true);
-    }, 1000);
-*//* $scope.$on('$ionicView.enter', function() {
-    console.log('Parent: enter');
-    
-$ionicHistory.clearHistory();
-$ionicNavBarDelegate.showBar(true);
-  });
-*/  
+  
+  $ionicHistory.clearHistory();
   var airlines;
   var searchTerm;
   var searchGotFocus = false;
@@ -58,20 +48,17 @@ $ionicNavBarDelegate.showBar(true);
     $scope.data.cityOptions = ["Chennai"];
   $scope.data.selectedCity = 'Chennai';
 
-// $state.go('app.searchresults');
-   console.log('PlaylistsCtrl method');
+  console.log('PlaylistsCtrl method');
 
    
   $scope.scrollToTop = function()
   {
-  console.log('scrollToTop called');
-  var el = document.querySelector("#searchbox");
-var top = el.getBoundingClientRect().top;
-var height = el.getBoundingClientRect().height;
-console.log("JS Top: "+top+"height:"+height);
-//window.scrollTo(0, top+top);
-    $ionicScrollDelegate.scrollTo(0,top-height,true);
-  
+	  console.log('scrollToTop called');
+	  var el = document.querySelector("#searchbox");
+	  var top = el.getBoundingClientRect().top;	
+	  var height = el.getBoundingClientRect().height;
+	  console.log("JS Top: "+top+"height:"+height);
+	  $ionicScrollDelegate.scrollTo(0,top-height,true);
   };
    
      $scope.clearAutoSuggestions = function() {
@@ -88,12 +75,10 @@ console.log("JS Top: "+top+"height:"+height);
      //Start of  $scope.search
   $scope.search = function() {
   console.log($ionicScrollDelegate.getScrollPosition());
-//$ionicScrollDelegate.$getByHandle('small').scrollTo(0,154,true);
   console.log($ionicScrollDelegate.getScrollPosition());
-//          $ionicScrollDelegate.$getByHandle('searchbox').scrollTop();
- console.log('search method');
-if($scope.data.search != '')
-{
+  console.log('search method');
+  if($scope.data.search != '')
+  {
           $http.get("http://demo.pillocate.com/search/listOfBrandNameStartingWith?term="+$scope.data.search+"&circle="+$scope.data.selectedCircle)
     		.success(function(data) {
     		console.log('setting auto suggestions '+data);
@@ -116,37 +101,16 @@ if($scope.data.search != '')
     
     //Start
     $scope.brandSelected = function(item) {
-   /* var alertPopup = $ionicPopup.alert({
-     title: 'brandSelected method!',
-     template: 'It might taste good'
-   });
-*/
- console.log('brandSelected method');
+     console.log('brandSelected method');
     $SelectedValues.setselectedBrandItem (item);
-  /*  $SelectedValues.selectedBrandId =item.id;
-        $SelectedValues.selectedBrandName=item.label;
-        $SelectedValues.selectedCircle = 'Thiruvanmiyur';
-        $SelectedValues.selectedInventoryId = item.id;
-*/         // $state.go('app.searchresults');
-
-    }
-    //end
-  
-  
-  
-  
 }])
 
 //start searchResultsCtrl
-/*.controller('SearchResultsCtrl',['$scope','$http','SelectedValues','$ionicPopup','SelectedStore','$stateParams', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore,$stateParams) {
-console.log('searchResultsCtrl method'+$stateParams.id);
-*/
 .controller('SearchResultsCtrl',['$scope','$http','SelectedValues','$ionicPopup','SelectedStore', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore) {
 console.log('searchResultsCtrl method');
 var selectedBrand = $SelectedValues.getselectedBrandItem();
 
 var selectedCircle = $SelectedValues.getSelectedCircle();
- /*$scope.data = { "items" : [{"storeName":"Demo Thiruvanmiyur Pharma"},{"storeName":"Demo Thiruvanmiyur Pharma"}] };*/
  $scope.data = { "items" : [], "localBrand" : selectedBrand};
  console.log($scope.data.items);
 
@@ -159,10 +123,8 @@ var selectedCircle = $SelectedValues.getSelectedCircle();
 																		                
 	//Start
     $scope.storeSelected = function(item) {
-    
     $SelectedStore.selectedStore =item;
     $SelectedStore.setselectedBrandItem($SelectedValues.getselectedBrandItem());
-     //$state.go('app.orderdetails'); //TODO comment
     }
     //end
 
