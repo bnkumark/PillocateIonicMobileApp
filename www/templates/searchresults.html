@@ -1,12 +1,13 @@
-<ion-view view-title="Search Results for {{data.localBrand.label}}">
+<ion-view view-title="Search Results">
   <ion-content>
-  <div class="item">Select a store to proceed</div>
+  <div class="item item-text-wrap">Search Results for {{data.localBrand.label}}. Select a store to proceed!</div>
+<!--  <div class="item">Select a store to proceed</div>-->
   <ion-list>
   <ion-item ng-repeat="item in data.items" href="#/app/orderdetails" ng-click="storeSelected(item)">
 <b>{{item.storeName}}</b>
-<div>Available:{{item.availabilityFlag}}</div>
-<div>deliveryHoursIfAvailable:{{item.deliveryHoursIfAvailable}}</div>
-<div>deliveryHoursIfUnavailable:{{item.deliveryHoursIfUnavailable}}</div>
+<div class="balanced">Home Delivery Available</div>
+<div>Delivery in: <span ng-if="item.availabilityFlag">{{item.deliveryHoursIfAvailable}}</span><span ng-if="!item.availabilityFlag">{{item.deliveryHoursIfUnavailable}}</span><span> hours</span></div>
+<div>(Subject to order acceptance by pharmacy)</div>
   </ion-item>
 </ion-list>
 <!--<div class="list">
