@@ -1,9 +1,9 @@
-﻿<ion-view view-title="Enter order details">
+﻿<ion-view view-title="Enter order details" cache-view="false">
   <ion-content>
-  <form ng-submit="submitorder(order)">
+  <form novalidate class="css-form" ng-submit="submitorder(order)">
 <div class="list">
 
-<div class="item item-divider">
+<div class="item item-divider positive">
   Order details
   </div>
   <label class="item item-input item-stacked-label item-text-wrap">
@@ -18,7 +18,7 @@
     <span class="input-label">Quantity</span>
     <input type="number" placeholder="1" ng-model="order.quantity" required>
   </label>
-   <div class="item item-divider">
+   <div class="item item-divider positive">
    Delivery details
   </div>
   <label class="item item-input item-stacked-label">
@@ -28,7 +28,7 @@
  
   <label class="item item-input item-stacked-label">
     <span class="input-label">*Age</span>
-    <input type="number" placeholder="1" ng-model="order.age" required>
+    <input type="number" placeholder=40 ng-model="order.age" required>
   </label>
  <label class="item item-input item-stacked-label">
     <span class="input-label">*Phone</span>
@@ -95,3 +95,12 @@
 -->
  </ion-content>
 </ion-view>
+<style type="text/css">
+  .css-form input.ng-invalid.ng-touched {
+    background-color: #FA787E;
+  }
+
+  .css-form input.ng-valid.ng-touched {
+    background-color: #78FA89;
+  }
+</style>

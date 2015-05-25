@@ -34,7 +34,7 @@ var app = angular.module('starter.controllers', [])
         }, 1000);
     };
 })
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 .controller('HomeCtrl', ['$scope', '$http', '$state', 'SelectedValues', '$ionicHistory', '$ionicScrollDelegate', '$ionicNavBarDelegate', '$timeout', function($scope, $http, $state, $SelectedValues, $ionicHistory, $ionicScrollDelegate, $ionicNavBarDelegate, $timeout) {
 
     $ionicHistory.clearHistory();
@@ -98,8 +98,6 @@ var app = angular.module('starter.controllers', [])
 
                 $scope.data.airlines = [];
             }
-
-
         }
         //end of  $scope.search
 
@@ -107,9 +105,10 @@ var app = angular.module('starter.controllers', [])
     $scope.brandSelected = function(item) {
         console.log('brandSelected method');
         $SelectedValues.setselectedBrandItem(item);
+        $scope.data.search = ''; //clear the search box
     }
 }])
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start searchResultsCtrl
 .controller('SearchResultsCtrl', ['$scope', '$http', 'SelectedValues', '$ionicPopup', 'SelectedStore', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore) {
         console.log('searchResultsCtrl method');
@@ -117,16 +116,18 @@ var app = angular.module('starter.controllers', [])
 
         var selectedCircle = $SelectedValues.getSelectedCircle();
         $scope.data = {
+        	"searchResults": [],
             "items": [],
             "localBrand": selectedBrand
         };
         console.log($scope.data.items);
 
 
-        $http.get("http://demo.pillocate.com/webservice/search?brandName=" + selectedBrand.label + "&circle=" + selectedCircle + "&brandId=" + selectedBrand.id + "&inventoryId=" + selectedBrand.selectedInventoryId)
+        $http.get("http://demo.pillocate.com/webservice/search?brandName=" + selectedBrand.label + "&circle=" + selectedCircle + "&brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id)
             .success(function(data) {
                 console.log('searchResultsCtrl success');
-                $scope.data.items = data.storesList;
+                $scope.data.searchResults= data;
+                //$scope.data.items = data.storesList;
             });
 
         //Start
@@ -139,6 +140,8 @@ var app = angular.module('starter.controllers', [])
 
     }])
     //end searchResultsCtrl
+    
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start OrderDetailsCtrl
 .controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService) {
@@ -161,7 +164,12 @@ var app = angular.module('starter.controllers', [])
         console.log('store value in OrderDetailsCtrl:' + $scope.data.store.storename);
 
         $scope.submitorder = function(order) {
-            $http.get("http://demo.pillocate.com/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&brandId=" + selectedBrand.id + "&inventoryId=" + selectedBrand.id + "&storeId=" + selectedStore.storeId + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=" + order.age + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + selectedStore.city + "&state=" + selectedStore.state + "&country=India&quantity=" + order.quantity + "&offerCode=" + order.offercode)
+        if(selectedBrand.name == null)
+        {
+        selectedBrand.name = '';
+        console.log('selectedBrand.name is null');
+        }
+            $http.get("http://demo.pillocate.com/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id+ "&storeId=" + selectedStore.storeId + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=" + order.age + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + selectedStore.city + "&state=" + selectedStore.state + "&country=India&quantity=" + order.quantity + "&offerCode=" + order.offercode)
                 .success(function(data) {
 
                     console.log('submitorder success:' + data);
@@ -188,7 +196,7 @@ var app = angular.module('starter.controllers', [])
         }
     }])
     //end OrderDetailsCtrl
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start TrackOrderCtrl
 .controller('TrackOrderCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService) {
         console.log('TrackOrderCtrl called');
@@ -215,7 +223,7 @@ var app = angular.module('starter.controllers', [])
     }])
     //end TrackOrderCtrl
 
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start OrderDetailsCtrl
 .controller('OrderCompletionCtrl', ['$scope', '$http', 'SelectedValues', '$ionicHistory', 'SelectedStore', 'OrderDetailsService', '$state', function($scope, $http, $SelectedValues, $ionicHistory, $SelectedStore, $OrderDetailsService, $state) {
         $ionicHistory.clearHistory();
@@ -236,7 +244,7 @@ var app = angular.module('starter.controllers', [])
             "orderDetails": $OrderDetailsService.getorderDetails(),
             "showTracking": (screen != 'orderCompletion'),
             "showOrderDetails": (screen == 'orderCompletion'),
-            "canceSuccess": ''
+            "cancelSuccess": ''
         };
         console.log('showTracking:' + $scope.data.showTracking + ' showOrderDetails:' + $scope.data.showOrderDetails);
 
@@ -247,7 +255,7 @@ var app = angular.module('starter.controllers', [])
         $scope.cancelOrder = function(orderId) {
             $http.get("http://demo.pillocate.com/webservice/cancelOrder?orderId=" + orderId)
                 .success(function(data) {
-                    $scope.data.canceSuccess = "Your order has been cancelled!";
+                    $scope.data.cancelSuccess = "Your order has been cancelled!";
                     console.log('order cancelled:' + data);
                 });
 
@@ -255,7 +263,7 @@ var app = angular.module('starter.controllers', [])
 
     }])
     //end OrdercompletionCtrl
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start FeedbackCtrl
 .controller('FeedbackCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', '$state', function($scope, $http, $SelectedValues, $SelectedStore, $OrderDetailsService, $state) {
 
@@ -273,7 +281,7 @@ var app = angular.module('starter.controllers', [])
 }]);
 //end FeedbackCtrl
 
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start SelectValues service
 //TODO: Probably we can move this to a seperate JS file
 app.service('SelectedValues', function($q) {
@@ -308,7 +316,7 @@ app.service('SelectedValues', function($q) {
         }
     })
     //end SelectValues service
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start SelectStore service
 //TODO: Probably we can move this to a seperate JS file
 app.service('SelectedStore', function($q) {
@@ -326,7 +334,7 @@ app.service('SelectedStore', function($q) {
     })
     //end SelectValues service
 
-
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start OrderDetailsService
 //TODO: Probably we can move this to a seperate JS file
 app.service('OrderDetailsService', function($q) {
