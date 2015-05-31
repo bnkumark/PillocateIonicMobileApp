@@ -35,7 +35,7 @@ var app = angular.module('starter.controllers', [])
     };
 })
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-.controller('HomeCtrl', ['$scope', '$http', '$state', 'SelectedValues', '$ionicHistory', '$ionicScrollDelegate', '$ionicNavBarDelegate', '$timeout', function($scope, $http, $state, $SelectedValues, $ionicHistory, $ionicScrollDelegate, $ionicNavBarDelegate, $timeout) {
+.controller('HomeCtrl', ['$scope', '$http', '$state', 'SelectedValues', '$ionicHistory', '$ionicScrollDelegate', '$ionicNavBarDelegate', '$timeout','CheckNetwork', function($scope, $http, $state, $SelectedValues, $ionicHistory, $ionicScrollDelegate, $ionicNavBarDelegate, $timeout,$CheckNetwork) {
 
     $ionicHistory.clearHistory();
 
@@ -93,9 +93,11 @@ var app = angular.module('starter.controllers', [])
                         $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
                         searchGotFocus = true;
                     })
+                    .error(function(data) {
+                    console.log('getting auto suggestions failed');
+                     $CheckNetwork.check();
+                    })
             } else {
-                console.log('setting auto suggestions failed');
-
                 $scope.data.airlines = [];
             }
         }
@@ -109,8 +111,9 @@ var app = angular.module('starter.controllers', [])
     }
 }])
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 //start searchResultsCtrl
-.controller('SearchResultsCtrl', ['$scope', '$http', 'SelectedValues', '$ionicPopup', 'SelectedStore', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore) {
+.controller('SearchResultsCtrl', ['$scope', '$http', 'SelectedValues', '$ionicPopup', 'SelectedStore','CheckNetwork', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore, $CheckNetwork) {
         console.log('searchResultsCtrl method');
         var selectedBrand = $SelectedValues.getselectedBrandItem();
 
@@ -128,6 +131,9 @@ var app = angular.module('starter.controllers', [])
                 console.log('searchResultsCtrl success');
                 $scope.data.searchResults= data;
                 //$scope.data.items = data.storesList;
+            })
+            .error(function(data) {
+            $CheckNetwork.check();
             });
 
         //Start
@@ -144,7 +150,7 @@ var app = angular.module('starter.controllers', [])
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start OrderDetailsCtrl
-.controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService) {
+.controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
         console.log('OrderDetailsCtrlmethod called');
         $scope.data = {
             "store": $SelectedStore.selectedStore,
@@ -181,6 +187,9 @@ var app = angular.module('starter.controllers', [])
                         $OrderDetailsService.setScreen('orderCompletion');
                         $state.go('app.ordercompletion');
                     } else {}
+                })
+                .error(function(data) {
+                $CheckNetwork.check();
                 });
 
         };
@@ -191,6 +200,7 @@ var app = angular.module('starter.controllers', [])
                     $scope.order.offerstatus = data;
                 })
                 .error(function(data) {
+                  $CheckNetwork.check();
                     $scope.order.offerstatus = data;
                 });
         }
@@ -198,7 +208,7 @@ var app = angular.module('starter.controllers', [])
     //end OrderDetailsCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start TrackOrderCtrl
-.controller('TrackOrderCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService) {
+.controller('TrackOrderCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
         console.log('TrackOrderCtrl called');
         $scope.data = {
             "trackingId": '',
@@ -217,6 +227,9 @@ var app = angular.module('starter.controllers', [])
                     } else {
                         $scope.data.status = "Invalid Tracking Id";
                     }
+                })
+                .error(function(data) {
+                $CheckNetwork.check();
                 });
 
         }
@@ -225,7 +238,7 @@ var app = angular.module('starter.controllers', [])
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start OrderDetailsCtrl
-.controller('OrderCompletionCtrl', ['$scope', '$http', 'SelectedValues', '$ionicHistory', 'SelectedStore', 'OrderDetailsService', '$state', function($scope, $http, $SelectedValues, $ionicHistory, $SelectedStore, $OrderDetailsService, $state) {
+.controller('OrderCompletionCtrl', ['$scope', '$http', 'SelectedValues', '$ionicHistory', 'SelectedStore', 'OrderDetailsService', '$state','CheckNetwork', function($scope, $http, $SelectedValues, $ionicHistory, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork) {
         $ionicHistory.clearHistory();
         if ($OrderDetailsService.getReload() == false) {
             $state.go($state.current, {}, {
@@ -257,6 +270,9 @@ var app = angular.module('starter.controllers', [])
                 .success(function(data) {
                     $scope.data.cancelSuccess = "Your order has been cancelled!";
                     console.log('order cancelled:' + data);
+                })
+                .error(function(data) {
+                $CheckNetwork.check();
                 });
 
         };
@@ -265,7 +281,7 @@ var app = angular.module('starter.controllers', [])
     //end OrdercompletionCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start FeedbackCtrl
-.controller('FeedbackCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', '$state', function($scope, $http, $SelectedValues, $SelectedStore, $OrderDetailsService, $state) {
+.controller('FeedbackCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', '$state','CheckNetwork', function($scope, $http, $SelectedValues, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork) {
 
     $scope.data = {
         "feedbackstatus": ''
@@ -275,6 +291,9 @@ var app = angular.module('starter.controllers', [])
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
                 console.log('feedback submit success:' + data);
+            })
+            .error(function(data) {
+            $CheckNetwork.check();
             });
     }
 
@@ -335,6 +354,25 @@ app.service('SelectedStore', function($q) {
     //end SelectValues service
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
+//start SelectStore service
+//TODO: Probably we can move this to a seperate JS file
+app.service('CheckNetwork', function($q) {
+        return {
+            check: function() {
+                                    if(window.Connection) {
+   if(navigator.connection.type == Connection.NONE) {
+   console.log("No active internet connection!! Please check and try again");
+  alert("No active internet connection!!");
+}
+}
+            },
+        }
+    })
+    //end SelectValues service
+
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 //start OrderDetailsService
 //TODO: Probably we can move this to a seperate JS file
 app.service('OrderDetailsService', function($q) {

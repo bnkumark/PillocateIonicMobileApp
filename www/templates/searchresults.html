@@ -4,10 +4,10 @@
 <!--  <div class="item">Select a store to proceed</div>-->
   <ion-list>
   <ion-item ng-repeat="item in data.searchResults.storesList" href="#/app/orderdetails" ng-click="storeSelected(item)">
-<b>{{item.storeName}}</b>
-<div class="balanced">Home Delivery Available</div>
-<div>Delivery in: <span ng-if="data.searchResults.availabilityFlag">{{item.deliveryHoursIfAvailable}}</span><span ng-if="!data.searchResults.availabilityFlag">{{item.deliveryHoursIfUnavailable}}</span><span> hours</span></div>
-<div>(Subject to order acceptance by pharmacy)</div>
+<b class="item-text-wrap">{{item.storeName}}</b>
+<div class="balanced item-text-wrap">Home Delivery Available</div>
+<div class="item-text-wrap">Delivery in: <span ng-if="data.searchResults.availabilityFlag">{{item.deliveryHoursIfAvailable}}</span><span ng-if="!data.searchResults.availabilityFlag">{{item.deliveryHoursIfUnavailable}}</span><span> hours</span></div>
+<div class="item-text-wrap">(Subject to order acceptance by pharmacy)</div>
   </ion-item>
 </ion-list>
 <!--<div class="list">
