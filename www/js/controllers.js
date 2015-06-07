@@ -42,6 +42,7 @@ var app = angular.module('starter.controllers', [])
     var airlines;
     var searchTerm;
     var searchGotFocus = false;
+     var timer;
 
     $scope.data = {
         "airlines": [],
@@ -81,14 +82,16 @@ var app = angular.module('starter.controllers', [])
 
     //Start of  $scope.search
     $scope.search = function() {
-            console.log($ionicScrollDelegate.getScrollPosition());
-            console.log($ionicScrollDelegate.getScrollPosition());
+     console.log('Char entered' + Date());
+     $timeout.cancel( timer );
+     timer = $timeout(
+          function() {
             console.log('search method');
             if ($scope.data.search != '') {
                 $http.get("http://demo.pillocate.com/search/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle)
                     .success(function(data) {
                         console.log('setting auto suggestions ' + data);
-                        $scope.data.airlines = data;
+                        $scope.data.airlines = data.slice(0, 5); 
                         $SelectedValues.setSelectedBrand(data);
                         $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
                         searchGotFocus = true;
@@ -99,7 +102,18 @@ var app = angular.module('starter.controllers', [])
                     })
             } else {
                 $scope.data.airlines = [];
-            }
+            }          },
+        1000
+        );
+         //Console will log 'Timer rejected!' if it is cancelled.
+       timer.then(
+          function() {
+            console.log( "Timer resolved!"+Date());
+          },
+          function() {
+            console.log( "Timer rejected!"+Date());
+          }
+       );   
         }
         //end of  $scope.search
 
@@ -175,6 +189,15 @@ var app = angular.module('starter.controllers', [])
         selectedBrand.name = '';
         console.log('selectedBrand.name is null');
         }
+        
+        //If address line2 is undefined make it empty
+        console.log('addressline2 '+order.addressline2);
+        if(!order.addressline2)
+        {
+        order.addressline2 = '';
+        }
+        console.log('addressline2 '+order.addressline2);
+        
             $http.get("http://demo.pillocate.com/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id+ "&storeId=" + selectedStore.storeId + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=" + order.age + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + selectedStore.city + "&state=" + selectedStore.state + "&country=India&quantity=" + order.quantity + "&offerCode=" + order.offercode)
                 .success(function(data) {
 
