@@ -48,15 +48,15 @@ var app = angular.module('starter.controllers', [])
         "airlines": [],
         "search": '',
         "circleOptions": [],
-        selectedCircle: 'Thiruvanmiyur',
+        selectedCircle: 'Bandra(West)',
         'cityOptions': [],
-        selectedCity: 'Chennai'
+        selectedCity: 'Mumbai'
     };
     //TODO get this from web service
-    $scope.data.circleOptions = ["Adyar", "Besant Nagar", "Kandanchavadi", "Kottivakkam", "Thiruvanmiyur"];
-    $scope.data.selectedCircle = 'Thiruvanmiyur';
-    $scope.data.cityOptions = ["Chennai"];
-    $scope.data.selectedCity = 'Chennai';
+    $scope.data.circleOptions = ["Bandra(West)","SantaCruz(West)","Khar(West)"];
+    $scope.data.selectedCircle = 'Bandra(West)';
+    $scope.data.cityOptions = ["Mumbai"];
+    $scope.data.selectedCity = 'Mumbai';
 
     console.log('HomeCtrl method');
 
