@@ -91,7 +91,7 @@ var app = angular.module('starter.controllers', [])
                 $http.get("http://demo.pillocate.com/search/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle)
                     .success(function(data) {
                         console.log('setting auto suggestions ' + data);
-                        $scope.data.airlines = data.slice(0, 5); 
+                        $scope.data.airlines = data; 
                         $SelectedValues.setSelectedBrand(data);
                         $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
                         searchGotFocus = true;
