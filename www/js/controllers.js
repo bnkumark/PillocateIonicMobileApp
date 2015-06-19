@@ -9,7 +9,8 @@ var app = angular.module('starter.controllers', [])
     // Create the login modal that we will use later
     $ionicModal.fromTemplateUrl('templates/login.html', {
         scope: $scope
-    }).then(function(modal) {
+    })
+    .then(function(modal) {
         $scope.modal = modal;
     });
 
@@ -41,6 +42,10 @@ var app = angular.module('starter.controllers', [])
 
     var airlines;
     var searchTerm;
+
+
+
+
     var searchGotFocus = false;
      var timer;
 
@@ -88,7 +93,7 @@ var app = angular.module('starter.controllers', [])
           function() {
             console.log('search method');
             if ($scope.data.search != '') {
-                $http.get("http://demo.pillocate.com/search/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle)
+                $http.get("http://192.168.49.1:8100/api/search/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle)
                     .success(function(data) {
                         console.log('setting auto suggestions ' + data);
                         $scope.data.airlines = data; 
@@ -310,6 +315,7 @@ var app = angular.module('starter.controllers', [])
         "feedbackstatus": ''
     };
     $scope.submitfeedback = function(feedback) {
+        console.log(feedback.name);
         $http.get("http://demo.pillocate.com/webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
@@ -320,10 +326,40 @@ var app = angular.module('starter.controllers', [])
             });
     }
 
-}]);
+}])
 //end FeedbackCtrl
-
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//start LoginCtrl
+.controller('LoginCtrl', ['$scope','$state','$http' , function($scope,$state,$http) {
+$scope.signNew=function(){
+console.log("sas");
+$state.go('app.signup');
+console.log("sas");
+};
+$scope.loginNew = function(){
+        console.log($scope.user+"   daww");
+        console.log($scope.pass);
+        $http.get("http://demo.pillocate.com/webservice/Login?Username="+$scope.user+"&Password="+$scope.pass)
+            .success(function(data) {    
+            alert("Login was Successful.");
+            console.log("Login success" + data);
+            })
+            .error(function(data) {
+            alert("Wrong Credentials!!Username or Password was Wrong.")
+            });
+
+}
+}])
+//end LoginCtrl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//start SignupCtrl
+.controller('SignupCtrl', ['$scope',  function($scope) {
+
+
+}]);
+//end SignupCtrl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 //start SelectValues service
 //TODO: Probably we can move this to a seperate JS file
 app.service('SelectedValues', function($q) {
