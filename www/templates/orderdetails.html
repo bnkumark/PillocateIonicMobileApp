@@ -3,7 +3,7 @@
   <form novalidate class="css-form" ng-submit="submitorder(order)">
 <div class="list">
 
-<div class="item item-divider positive">
+<!--div class="item item-divider positive">
   Order details
   </div>
   <label class="item item-input item-stacked-label item-text-wrap">
@@ -17,7 +17,7 @@
   <label class="item item-input item-stacked-label">
     <span class="input-label">Quantity</span>
     <input type="number" placeholder="1" ng-model="order.quantity" required>
-  </label>
+  </label-->
    <div class="item item-divider positive">
    Delivery details
   </div>
@@ -25,10 +25,18 @@
     <span class="input-label">*Name</span>
     <input type="text" placeholder="Full name" ng-model="order.name" required>
   </label>
- 
   <label class="item item-input item-stacked-label">
-    <span class="input-label">*Age</span>
-    <input type="number" placeholder=40 ng-model="order.age" required>
+    <span class="input-label">*Address</span>
+    <input type="text" placeholder="Your address line 1" ng-model="order.addressline1" required>
+
+  </label>
+   <label class="item item-input item-stacked-label">
+       <input type="text" placeholder="Your address line 2" ng-model="order.addressline2" required>
+  </label>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Circle</span>
+    <span class="input-label">{{data.store.circle}}</span>
+    <p style="color: red;">(Delivery restricted to this area)</p>
   </label>
  <label class="item item-input item-stacked-label">
     <span class="input-label">*Phone</span>
@@ -37,21 +45,14 @@
    <label class="item item-input item-stacked-label">
     <span class="input-label">*Email Id</span>
     <input type="email" placeholder="email id" ng-model="order.email" required>
-  </label>
-<label class="item item-input item-stacked-label">
-    <span class="input-label">*Address</span>
-    <input type="text" placeholder="Your addres line 1" ng-model="order.addressline1" required>
+    <p style="color: red;">(Tracking information will be sent to this Email address)</p>
+    <p style="color: red;">(fields marked * are mandatory)</p>
+</label>
+  
 
-  </label>
-   <label class="item item-input item-stacked-label">
-       <input type="text" placeholder="Your addres line 2" ng-model="order.addressline2" required>
-  </label>
- <label class="item item-input item-stacked-label">
-    <span class="input-label">Circle</span>
-    <span class="input-label">{{data.store.circle}}</span>
-  </label>
 
- <label class="item item-input item-stacked-label">
+
+ <!--label class="item item-input item-stacked-label">
     <span class="input-label">City</span>
     <span class="input-label">{{data.store.city}}</span>
   </label>
@@ -64,7 +65,7 @@
  <label class="item item-input item-stacked-label">
     <span class="input-label">Country</span>
     <span class="input-label">{{data.store.country}}</span>
-  </label>
+  </label-->
 
  <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Payment Method</span>
@@ -82,13 +83,14 @@
   </div>
       <span class="item item-text-wrap calm">{{order.offerstatus}}</span>
 <div class="item item-text-wrap"> Please note, the pharmacist may ask for a valid prescription at the time of delivery.</div>
+<span class="text-danger"><input class="grey remember" type="checkbox" required="required">&nbsp;&nbsp;&nbsp;I accept <a href="#" onclick="window.open('http://www.pillocate.com/termsConditions', '_system', 'location=yes'); return false;">Terms &amp; Conditions</a></span>
 </div>
+
 <div class="item">
  <button class="item button button-positive" type="submit">
   Submit
 </button>
 </div>
-</form>
 <!--<div class="list">
         <li class="item" ng-repeat="item in data.items" ng-click="brandSelected(airline)">{{airline.label}}</li>
       </div>
