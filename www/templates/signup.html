@@ -1,0 +1,30 @@
+<ion-view view-title="Signup" name="signupView">
+<ion-header-bar>
+<h1 class="title">Signup or Register</h1>
+</ion-header-bar>
+<ion-content>
+<form ng-submit="doSignup()">
+  <div class="list">
+    <label class="item item-input item-stacked-label">
+    <span class="input-label">Username</span>
+    <input type="text" placeholder="Email" ng-model="signUser">
+    </label>
+    <label class="item item-input item-stacked-label">
+    <span class="input-label">Phone Number</span>
+    <input type="text" placeholder="+91" ng-model="signPhone">
+    </label>
+    <label class="item item-input item-stacked-label">
+    <span class="input-label">Password</span>
+    <input type="text" placeholder="Password" ng-model="signPass">
+    </label>
+    <label class="item item-input item-stacked-label">
+    <span class="input-label">Retype-Password</span>
+    <input type="text" placeholder="Retype-Password" ng-model="signRePass">
+    </label>
+    <label class="item">
+    <button class="button button-block button-positive" type="submit">Register</button>
+    </label>
+  </div>
+</form>
+</ion-content>
+</ion-view>

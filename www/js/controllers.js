@@ -3,13 +3,18 @@ var app = angular.module('starter.controllers', [])
 //TODO: each controller can be moved to a seperate file?
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
-    // Form data for the login modal
+    if (true) {
+    console.log("localStorage -"+window.localStorage.getItem("data"));
+    return window.localStorage.getItem("data");
+    };
+        // Form data for the login modal
     $scope.loginData = {};
 
     // Create the login modal that we will use later
     $ionicModal.fromTemplateUrl('templates/login.html', {
         scope: $scope
-    }).then(function(modal) {
+    })
+    .then(function(modal) {
         $scope.modal = modal;
     });
 
@@ -41,6 +46,10 @@ var app = angular.module('starter.controllers', [])
 
     var airlines;
     var searchTerm;
+
+
+
+
     var searchGotFocus = false;
      var timer;
 
@@ -88,7 +97,7 @@ var app = angular.module('starter.controllers', [])
           function() {
             console.log('search method');
             if ($scope.data.search != '') {
-                $http.get("http://demo.pillocate.com/search/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle)
+                $http.get("http://localhost:8100/api/search/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle)
                     .success(function(data) {
                         console.log('setting auto suggestions ' + data);
                         $scope.data.airlines = data; 
@@ -140,7 +149,7 @@ var app = angular.module('starter.controllers', [])
         console.log($scope.data.items);
 
 
-        $http.get("http://demo.pillocate.com/webservice/search?brandName=" + selectedBrand.label + "&circle=" + selectedCircle + "&brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id)
+        $http.get("http://localhost:8100/api/webservice/search?brandName=" + selectedBrand.label + "&circle=" + selectedCircle + "&brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id)
             .success(function(data) {
                 console.log('searchResultsCtrl success');
                 $scope.data.searchResults= data;
@@ -216,7 +225,7 @@ var app = angular.module('starter.controllers', [])
         }
         console.log('addressline2 '+order.addressline2);
         
-            $http.get("http://demo.pillocate.com/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id+ "&storeId=" + selectedStore.storeId + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=" + order.age + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + selectedStore.city + "&state=" + selectedStore.state + "&country=India&quantity=" + order.quantity + "&offerCode=" + order.offercode)
+            $http.get("http://localhost:8100/api/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id+ "&storeId=" + selectedStore.storeId + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=" + order.age + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + selectedStore.city + "&state=" + selectedStore.state + "&country=India&quantity=" + order.quantity + "&offerCode=" + order.offercode)
                 .success(function(data) {
 
                     console.log('submitorder success:' + data);
@@ -236,7 +245,7 @@ var app = angular.module('starter.controllers', [])
         };
 
         $scope.applyOffer = function() {
-            $http.get("http://demo.pillocate.com/webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
+            $http.get("http://localhost:8100/api/webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
                 .success(function(data) {
                     $scope.order.offerstatus = data;
                 })
@@ -257,7 +266,7 @@ var app = angular.module('starter.controllers', [])
         };
 
         $scope.getOrderDetails = function() {
-            $http.get("http://demo.pillocate.com/webservice/showTrackedOrderDetails?trackingId=" + $scope.data.trackingId)
+            $http.get("http://localhost:8100/api/webservice/showTrackedOrderDetails?trackingId=" + $scope.data.trackingId)
                 .success(function(data) {
                     console.log('order details fetched:' + data);
                     if (data != -2) {
@@ -307,7 +316,7 @@ var app = angular.module('starter.controllers', [])
         };
 
         $scope.cancelOrder = function(orderId) {
-            $http.get("http://demo.pillocate.com/webservice/cancelOrder?orderId=" + orderId)
+            $http.get("http://localhost:8100/api/webservice/cancelOrder?orderId=" + orderId)
                 .success(function(data) {
                     $scope.data.cancelSuccess = "Your order has been cancelled!";
                     console.log('order cancelled:' + data);
@@ -323,12 +332,13 @@ var app = angular.module('starter.controllers', [])
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start FeedbackCtrl
 .controller('FeedbackCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', '$state','CheckNetwork', function($scope, $http, $SelectedValues, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork) {
-
+    
     $scope.data = {
         "feedbackstatus": ''
     };
     $scope.submitfeedback = function(feedback) {
-        $http.get("http://demo.pillocate.com/webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
+        console.log(feedback.name);
+        $http.get("http://localhost:8100/api/webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
                 console.log('feedback submit success:' + data);
@@ -338,10 +348,65 @@ var app = angular.module('starter.controllers', [])
             });
     }
 
-}]);
+}])
 //end FeedbackCtrl
-
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//start LoginCtrl
+.controller('LoginCtrl', ['$log','$scope','$state','$http' , function($log,$scope,$state,$http) {
+$scope.signNew=function(){
+    console.log("Go Worked!");
+    $state.go('app.signup');
+};
+
+$scope.xxx = {'user': '' , 'pass': ''};
+
+var loadData1 =window.localStorage.getItem("data");
+console.log(loadData1);
+
+if (loadData1 != null){
+   $scope.xxx.user = loadData1;
+   console.log( $scope.xxx.user);
+};
+var loginState1 =true;
+console.log(loginState1);
+window.localStorage.setItem("login",loginState1);
+if(window.localStorage.getItem("login") == true){
+    $scope.loginState =true
+};
+
+
+ $scope.loginNew = function(xxx){
+
+      $http.get("http://localhost:8100/api/webservice/Login?Username="+xxx.user+"&Password="+xxx.pass)
+            .success(function() {    
+            alert("Login was Successful.");
+            console.log("Login success");
+            window.localStorage.setItem("login");
+            
+            })
+            .error(function() {
+            alert("Wrong Credentials!!Username or Password was Wrong.")
+            });
+
+};
+$scope.saveUser =function(xxx){
+    console.log(xxx.user,"localstorage");
+    window.localStorage.setItem("data",xxx.user);
+};
+
+
+
+}])
+//end LoginCtrl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//start SignupCtrl
+.controller('SignupCtrl', ['$scope',  function($scope) {
+
+
+}]);
+//end SignupCtrl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 //start SelectValues service
 //TODO: Probably we can move this to a seperate JS file
 app.service('SelectedValues', function($q) {

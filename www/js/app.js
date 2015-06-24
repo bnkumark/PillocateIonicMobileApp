@@ -4,7 +4,8 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers'])
+
+angular.module('starter', ['ionic', 'starter.controllers',])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -58,12 +59,21 @@ angular.module('starter', ['ionic', 'starter.controllers'])
     }
   })
 
-  .state('app.login', {
+.state('app.login', {
     url: "/login",
     views: {
       'menuContent': {
-        templateUrl: "templates/login.html",
+        templateUrl: 'templates/login.html',
         controller: 'LoginCtrl'
+      }
+    }
+  })
+  .state('app.signup', {
+    url: '/signup',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/signup.html',
+        controller: 'SignupCtrl'
       }
     }
   })
@@ -130,3 +140,33 @@ angular.module('starter', ['ionic', 'starter.controllers'])
   $urlRouterProvider.otherwise('/app/home');
 });
 
+
+/* var appi=angular.module('starter',['ngRoute']);
+appi.config(function($routeProvider){
+//set up routes
+$routeProvider
+.when('/signup',{
+  templateUrl:'templates/signup.html',
+  controller:'SignupCtrl'
+});
+
+}); */
+/*angular.module('login', ['ionic', 'starter.controllers'])
+.config(function($stateProvider, $urlRouterProvider) {
+  $stateProvider
+   .state('ap', {
+    url: "/ap",
+    abstract: true,
+    templateUrl: "templates/menu.html",
+    controller: 'AppCtrl'
+  })
+  .state('ap.signup', {
+    url: '/signup',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/signup.html',
+        controller: 'SignupCtrl'
+      }
+    }
+  })
+});*/
