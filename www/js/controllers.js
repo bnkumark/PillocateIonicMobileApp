@@ -164,6 +164,24 @@ var app = angular.module('starter.controllers', [])
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start OrderDetailsCtrl
+.controller('BuyNowCtrl',['$scope',function($scope,$localStorage){
+	$scope.data={
+		quantity:'1'
+	};
+	$scope.qdata='';
+	$scope.disablebutton="false";
+	$scope.addtocart=function(){
+			$scope.disablebutton="true";
+			window.localStorage['qdata']=$scope.data.quantity;
+				};
+	$scope.store=function(){
+		window.localStorage['qdata']=$scope.data.quantity;
+			};
+	$scope.buynow=function(){
+		$scope.qdata=window.localStorage['qdata'];
+	};
+		$scope.qdata1=window.localStorage['qdata'];
+}])
 .controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
         console.log('OrderDetailsCtrlmethod called');
         $scope.data = {

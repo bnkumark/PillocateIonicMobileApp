@@ -86,6 +86,15 @@ angular.module('starter', ['ionic', 'starter.controllers'])
         }
       }
     })
+	.state('app.buynow', {
+      url: "/buynow",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/buynow.html",
+          controller: 'BuyNowCtrl'
+        }
+      }
+    })
 
  .state('app.ordercompletion', {
       url: "/ordercompletion",
