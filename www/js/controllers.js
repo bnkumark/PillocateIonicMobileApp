@@ -175,35 +175,60 @@ var app = angular.module('starter.controllers', [])
 	$scope.data={
 		quantity:'1',
 		message: '',
-		itemlist:[],
+//		itemlist:[],
+		item:'',
 		message2:''
 	};
 	var selectedBrand = $SelectedValues.getselectedBrandItem();
-	$scope.item=selectedBrand.label;
+	$scope.item=selectedBrand;
 //	var selectedStore =  $SelectedStore.selectedStore;
 		$scope.qdata='';
 //	$scope.disablebutton="false";
 	$scope.cartdata=''
 	$scope.addtocart=function(){
 	//		$scope.disablebutton="true";
+		var selectedBrand = $SelectedValues.getselectedBrandItem();
 			window.localStorage['qdata']=$scope.data.quantity;
-			var quantity =  window.localStorage['qdata'];
-			 $http.get("http://demo.pillocate.com/webservice/addItemToCart?brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id+ "&quantity=" + quantity)
-						.success(function(data){
+			$scope.data.item = selectedBrand;
+			window.localStorage['item']=selectedBrand;
+
+//			console.log($scope.data.item);
+//			var quantity =  window.localStorage['qdata'];
+//			 $http.get("http://demo.pillocate.com/webservice/addItemToCart?brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id+ "&quantity=" + quantity)
+//						.success(function(data){
 							$scope.data.message="Item added to cart";
-							console.log($scope.data.message);
-				})
-						.error(function(data){
-							$scope.data.message="Item couldn't be added to cart";
-				});
-			console.log($scope.data.message);
-		};
+//							console.log($scope.data.message);
+//				})
+//						.error(function(data){
+//							$scope.data.message="Item couldn't be added to cart";
+//				});
+//			console.log($scope.data.message);
+		}
+//console.log($scope.data.item);
+	$scope.checkout=function(){
+	window.localStorage['qdata']=$scope.data.quantity;
+		window.localStorage['item']=selectedBrand;
+		console.log(selectedBrand);
+	}
+//	$scope.item=window.localStorage['item'];
+//	console.log($scope.item.label);
 	$scope.store=function(){
 		window.localStorage['qdata']=$scope.data.quantity;
-			};
-	$scope.buynow=function(){
+			}
+	$scope.placeorder=function(){
+	var quantity =  window.localStorage['qdata'];
 		$scope.qdata=window.localStorage['qdata'];
-	};
+		alert($scope.item.name);
+		alert($scope.item.id);
+		alert(quantity);
+		 $http.get("http://demo.pillocate.com/webservice/addItemToCart?brandId="+$scope.item.name+"&inventoryId=" + $scope.item.id+ "&quantity=" + quantity)
+            .success(function(data){
+              console.log(data);
+        })
+            .error(function(data){
+             	console.log(data);
+       });
+	}
 		$scope.qdata1=window.localStorage['qdata'];
 		$scope.display=function(){	
 		$http.get("http://demo.pillocate.com/webservice/showCartItems")
@@ -217,19 +242,19 @@ var app = angular.module('starter.controllers', [])
 				.error(function(data){
 					console.log("error");
 			});
-	};
+	}
 	$scope.destroy=function(){
-var quantity =  window.localStorage['qdata'];
-		$http.get("http://demo.pillocate.com/webservice/removeItemFromCart?inventoryId=" + selectedBrand.id+ "&quantity=" + quantity)
-      .success(function(data){
-        $scope.data.message2=data;
-				console.log(data);
-        })
-        .error(function(data){
-          console.log(data);
-      });
+//var quantity =  window.localStorage['qdata'];
+//		$http.get("http://demo.pillocate.com/webservice/removeItemFromCart?inventoryId=" + selectedBrand.id+ "&quantity=" + quantity)
+ //     .success(function(data){
+  //      $scope.data.message2=data;
+//				console.log(data);
+ //       })
+  //      .error(function(data){
+  //        console.log(data);
+    //  });
 
-	};
+	}
 }])
 
 .controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
