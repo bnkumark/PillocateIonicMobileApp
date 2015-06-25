@@ -136,10 +136,10 @@ var app = angular.module('starter.controllers', [])
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start searchResultsCtrl
-.controller('SearchResultsCtrl', ['$scope', '$http', 'SelectedValues', '$ionicPopup', 'SelectedStore','CheckNetwork', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore, $CheckNetwork) {
+.controller('SearchResultsCtrl', ['$scope', '$http', 'SelectedValues', '$ionicPopup', 'SelectedStore','CheckNetwork', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore, $CheckNetwork,$localStorage) {
         console.log('searchResultsCtrl method');
         var selectedBrand = $SelectedValues.getselectedBrandItem();
-
+		//		window.localStorage['brand']=selectedBrand;
         var selectedCircle = $SelectedValues.getSelectedCircle();
         $scope.data = {
         	"searchResults": [],
@@ -147,19 +147,17 @@ var app = angular.module('starter.controllers', [])
             "localBrand": selectedBrand
         };
         console.log($scope.data.items);
-
-
-        $http.get("http://localhost:8100/api/webservice/search?brandName=" + selectedBrand.label + "&circle=" + selectedCircle + "&brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id)
+								        $http.get("http://localhost:8100/api/webservice/search?brandName=" + selectedBrand.label + "&circle=" + selectedCircle + "&brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id)
             .success(function(data) {
                 console.log('searchResultsCtrl success');
                 $scope.data.searchResults= data;
                 //$scope.data.items = data.storesList;
-            })
+	//							console.log(data.storesList);
+								             })
             .error(function(data) {
             $CheckNetwork.check();
             });
-
-        //Start
+					        //Start
         $scope.storeSelected = function(item) {
                 $SelectedStore.selectedStore = item;
                 $SelectedStore.setselectedBrandItem($SelectedValues.getselectedBrandItem());
@@ -173,16 +171,33 @@ var app = angular.module('starter.controllers', [])
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start OrderDetailsCtrl
-.controller('BuyNowCtrl',['$scope',function($scope,$localStorage){
+.controller('BuyNowCtrl',['$scope','$http','SelectedValues','SelectedStore',function($scope,$http,$SelectedValues,$SelectedsStore,$localStorage){
 	$scope.data={
-		quantity:'1'
+		quantity:'1',
+		message: '',
+		itemlist:[],
+		message2:''
 	};
-	$scope.qdata='';
-	$scope.disablebutton="false";
+	var selectedBrand = $SelectedValues.getselectedBrandItem();
+	$scope.item=selectedBrand.label;
+//	var selectedStore =  $SelectedStore.selectedStore;
+		$scope.qdata='';
+//	$scope.disablebutton="false";
+	$scope.cartdata=''
 	$scope.addtocart=function(){
-			$scope.disablebutton="true";
+	//		$scope.disablebutton="true";
 			window.localStorage['qdata']=$scope.data.quantity;
-				};
+			var quantity =  window.localStorage['qdata'];
+			 $http.get("http://demo.pillocate.com/webservice/addItemToCart?brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id+ "&quantity=" + quantity)
+						.success(function(data){
+							$scope.data.message="Item added to cart";
+							console.log($scope.data.message);
+				})
+						.error(function(data){
+							$scope.data.message="Item couldn't be added to cart";
+				});
+			console.log($scope.data.message);
+		};
 	$scope.store=function(){
 		window.localStorage['qdata']=$scope.data.quantity;
 			};
@@ -190,7 +205,33 @@ var app = angular.module('starter.controllers', [])
 		$scope.qdata=window.localStorage['qdata'];
 	};
 		$scope.qdata1=window.localStorage['qdata'];
+		$scope.display=function(){	
+		$http.get("http://demo.pillocate.com/webservice/showCartItems")
+			.success(function(data){	
+				$scope.data.message2=data;
+					console.log(data);
+	//				for(d in data){
+	//								console.log(1);
+	//				}
+				})
+				.error(function(data){
+					console.log("error");
+			});
+	};
+	$scope.destroy=function(){
+var quantity =  window.localStorage['qdata'];
+		$http.get("http://demo.pillocate.com/webservice/removeItemFromCart?inventoryId=" + selectedBrand.id+ "&quantity=" + quantity)
+      .success(function(data){
+        $scope.data.message2=data;
+				console.log(data);
+        })
+        .error(function(data){
+          console.log(data);
+      });
+
+	};
 }])
+
 .controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
         console.log('OrderDetailsCtrlmethod called');
         $scope.data = {

@@ -1,12 +1,12 @@
 <ion-view view-title="Search Results" cache-view="false">
   <ion-content>
-  <div class="item item-text-wrap">Search Results for {{data.localBrand.label}}. Select a store to proceed!</div>
-<!--  <div class="item">Select a store to proceed</div>-->
-<!--  <ion-list>
+  <div class="item item-text-wrap">Search Results for {{data.localBrand.label}}</div>
+<!--  <div class="item">Select a store to proceed</div>
+  <ion-list>
   <ion-item ng-repeat="item in data.searchResults.storesList" href="#/app/orderdetails" ng-click="storeSelected(item)">
-<b class="item-text-wrap">{{item.storeName}}</b>-->
+<b class="item-text-wrap">{{item.storeName}}</b>
 <div class="balanced item-text-wrap">Home Delivery Available</div>
-<!--<div class="item-text-wrap">Delivery in: <span ng-if="data.searchResults.availabilityFlag">{{item.deliveryHoursIfAvailable}}</span><span ng-if="!data.searchResults.availabilityFlag">{{item.deliveryHoursIfUnavailable}}</span><span> hours</span></div>
+<div class="item-text-wrap">Delivery in: <span ng-if="data.searchResults.availabilityFlag">{{item.deliveryHoursIfAvailable}}</span><span ng-if="!data.searchResults.availabilityFlag">{{item.deliveryHoursIfUnavailable}}</span><span> hours</span></div>
 <div class="item-text-wrap">(Subject to order acceptance by pharmacy)</div>
 	  </ion-item>
 </ion-list>-->
@@ -24,7 +24,8 @@
 <button ng-click="addtocart()" ng-disabled={{disablebutton}} class="button button-positive">
     +Add to cart
   </button>
-<a ng-href="#/app/buynow" ng-click="store();" href="#/app/buynow">Buy Now</a>
+<a ng-href="#/app/buynow" href="#/app/buynow">Checkout</a>
+<div class="list" ><p>{{ data.message }}</p></div>
 </div>
  </ion-content>
 </ion-view>
