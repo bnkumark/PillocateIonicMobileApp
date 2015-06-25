@@ -46,29 +46,24 @@ var app = angular.module('starter.controllers', [])
 
     var airlines;
     var searchTerm;
-
-
-
-
     var searchGotFocus = false;
-     var timer;
+    var timer;
 
     $scope.data = {
         "airlines": [],
         "search": '',
         "circleOptions": [],
-        selectedCircle: 'Bandra(West)',
+        selectedCircle: 'Bandra (West)',
         'cityOptions': [],
         selectedCity: 'Mumbai'
     };
     //TODO get this from web service
-    $scope.data.circleOptions = ["Bandra(West)","SantaCruz(West)","Khar(West)"];
-    $scope.data.selectedCircle = 'Bandra(West)';
+    $scope.data.circleOptions = ["Bandra (West)","SantaCruz(West)","Khar(West)"];
+    $scope.data.selectedCircle = 'Bandra (West)';
     $scope.data.cityOptions = ["Mumbai"];
     $scope.data.selectedCity = 'Mumbai';
 
     console.log('HomeCtrl method');
-
 
     $scope.scrollToTop = function() {
         console.log('scrollToTop called');
@@ -100,7 +95,7 @@ var app = angular.module('starter.controllers', [])
                 $http.get("http://localhost:8100/api/search/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle)
                     .success(function(data) {
                         console.log('setting auto suggestions ' + data);
-                        $scope.data.airlines = data; 
+                        $scope.data.airlines = data.slice(0, 6);; 
                         $SelectedValues.setSelectedBrand(data);
                         $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
                         searchGotFocus = true;
@@ -141,18 +136,23 @@ var app = angular.module('starter.controllers', [])
         var selectedBrand = $SelectedValues.getselectedBrandItem();
 		//		window.localStorage['brand']=selectedBrand;
         var selectedCircle = $SelectedValues.getSelectedCircle();
+        
         $scope.data = {
         	"searchResults": [],
             "items": [],
-            "localBrand": selectedBrand
+            "localBrand": selectedBrand.label,
+            "storeId" : '',
+            quantity:'1',
+            availabiltyFlag: ''
         };
         console.log($scope.data.items);
-								        $http.get("http://localhost:8100/api/webservice/search?brandName=" + selectedBrand.label + "&circle=" + selectedCircle + "&brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id)
+        //TODO dont hardcode city
+								        $http.get("http://localhost:8100/api/webservice/search?brandName=" + selectedBrand.label + "&circle=" + selectedCircle + "&brandId="+"&inventoryId=" + selectedBrand.name+"&city=Mumbai")
             .success(function(data) {
                 console.log('searchResultsCtrl success');
                 $scope.data.searchResults= data;
                 //$scope.data.items = data.storesList;
-	//							console.log(data.storesList);
+				//console.log(data.storesList);
 								             })
             .error(function(data) {
             $CheckNetwork.check();
@@ -163,6 +163,18 @@ var app = angular.module('starter.controllers', [])
                 $SelectedStore.setselectedBrandItem($SelectedValues.getselectedBrandItem());
             }
             //end
+//http://demo.pillocate.com/webservice/addItemToCart?storeId=4&brandId=&inventoryId=23386&brandName=ABANA&quantity=1  storeId:"3" brandName:"Ecosprin 75mg TAB" inventoryId:"22500"
+//Start
+	$scope.addtocart=function(){
+  		   $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + $scope.data.searchResults.storeId+ "&brandId="+"&inventoryId="+$scope.data.searchResults.inventoryId + "&brandName=" + $scope.data.searchResults.brandName+"&quantity="+$scope.data.quantity)
+            .success(function(data) {
+                console.log('addItemToCartsuccess');
+								             })
+            .error(function(data) {
+            $CheckNetwork.check();
+            });
+		}
+		//end
 
 
     }])
@@ -170,7 +182,7 @@ var app = angular.module('starter.controllers', [])
     
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
-//start OrderDetailsCtrl
+//start BuyNowCtrl
 .controller('BuyNowCtrl',['$scope','$http','SelectedValues','SelectedStore',function($scope,$http,$SelectedValues,$SelectedsStore,$localStorage){
 	$scope.data={
 		quantity:'1',
@@ -221,14 +233,14 @@ var app = angular.module('starter.controllers', [])
 		alert($scope.item.name);
 		alert($scope.item.id);
 		alert(quantity);
-		 $http.get("http://demo.pillocate.com/webservice/addItemToCart?brandId="+$scope.item.name+"&inventoryId=" + $scope.item.id+ "&quantity=" + quantity)
+		/* $http.get("http://demo.pillocate.com/webservice/addItemToCart?brandId="+$scope.item.name+"&inventoryId=" + $scope.item.id+ "&quantity=" + quantity)
             .success(function(data){
               console.log(data);
         })
             .error(function(data){
              	console.log(data);
        });
-	}
+*/	}
 		$scope.qdata1=window.localStorage['qdata'];
 		$scope.display=function(){	
 		$http.get("http://demo.pillocate.com/webservice/showCartItems")
@@ -291,7 +303,7 @@ var app = angular.module('starter.controllers', [])
         }
         console.log('addressline2 '+order.addressline2);
         
-            $http.get("http://localhost:8100/api/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id+ "&storeId=" + selectedStore.storeId + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=" + order.age + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + selectedStore.city + "&state=" + selectedStore.state + "&country=India&quantity=" + order.quantity + "&offerCode=" + order.offercode)
+            $http.get("http://localhost:8100/api/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=" + order.age + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + selectedStore.city + "&state=" + selectedStore.state + "&country=India"+ "&offerCode=" + order.offercode)
                 .success(function(data) {
 
                     console.log('submitorder success:' + data);

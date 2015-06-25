@@ -1,6 +1,6 @@
 <ion-view view-title="Search Results" cache-view="false">
   <ion-content>
-  <div class="item item-text-wrap">Search Results for {{data.localBrand.label}}</div>
+  <div class="item item-text-wrap">Search Results for {{data.localBrand}}</div>
 <!--  <div class="item">Select a store to proceed</div>
   <ion-list>
   <ion-item ng-repeat="item in data.searchResults.storesList" href="#/app/orderdetails" ng-click="storeSelected(item)">
@@ -14,7 +14,7 @@
         <li class="item" ng-repeat="item in data.items" ng-click="brandSelected(airline)">{{airline.label}}</li>
       </div>
 -->
-<div ng-controller="BuyNowCtrl">
+
 <div class="quantity list">
 <label class="item item-input">
 <span class="input-label">Quantity:</span>
@@ -26,6 +26,6 @@
   </button>
 <a ng-href="#/app/buynow" ng-click="checkout()" href="#/app/buynow">Checkout</a>
 <div class="list" ><p>{{ data.message }}</p></div>
-</div>
+
  </ion-content>
 </ion-view>
