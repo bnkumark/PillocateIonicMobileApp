@@ -147,7 +147,7 @@ var app = angular.module('starter.controllers', [])
         };
         console.log($scope.data.items);
         //TODO dont hardcode city
-								        $http.get("http://localhost:8100/api/webservice/search?brandName=" + selectedBrand.label + "&circle=" + selectedCircle + "&brandId="+"&inventoryId=" + selectedBrand.name+"&city=Mumbai")
+								        $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle + +"&city=Mumbai"+"&brandId="+"&inventoryId=" + selectedBrand.name+"&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
             .success(function(data) {
                 console.log('searchResultsCtrl success');
                 $scope.data.searchResults= data;
@@ -169,6 +169,9 @@ var app = angular.module('starter.controllers', [])
   		   $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + $scope.data.searchResults.storeId+ "&brandId="+"&inventoryId="+$scope.data.searchResults.inventoryId + "&brandName=" + $scope.data.searchResults.brandName+"&quantity="+$scope.data.quantity)
             .success(function(data) {
                 console.log('addItemToCartsuccess');
+
+                  		   $http.get("http://localhost:8100/api/webservice/showCartItems");
+                  		   
 								             })
             .error(function(data) {
             $CheckNetwork.check();
