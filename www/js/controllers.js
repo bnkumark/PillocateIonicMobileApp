@@ -484,8 +484,82 @@ $scope.saveUser =function(xxx){
 .controller('SignupCtrl', ['$scope',  function($scope) {
 
 
-}]);
+}])
 //end SignupCtrl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//start LocationCtrl
+.controller('LocationCtrl', ['$scope','SelectedValues',  function($scope,$SelectedValues) {
+    $scope.data = {
+        "circleOptions": [],
+        selectedCircle: 'Bandra(West)',
+        'cityOptions': [],
+        selectedCity: 'Mumbai'
+    };
+    //TODO get this from web service
+    $scope.data.circleOptions = ["Bandra(West)","SantaCruz(West)","Khar(West)"];
+    $scope.data.selectedCircle = 'Bandra(West)';
+    $scope.data.cityOptions = ["Mumbai"];
+    $scope.data.selectedCity = 'Mumbai';
+console.log($scope.data.selectedCircle);
+$SelectedValues.setSelectedCircle($scope.data.selectedCircle);
+
+
+}])
+//end LocationCtrl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+/*/start FooterCtrl
+.controller('FooterCtrl', ['$scope','$state',  function($scope,$state) {
+alert("this is FooterCtrl");
+$scope.locationSelect =function(){
+    console.log("Go1 Worked!");
+    $state.go('app.location');
+};
+}])
+//end FooterCtrl*/
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//start UploadpageCtrl
+.controller('UploadpageCtrl', ['$scope','$cordovaCamera','$http',function($scope,$cordovaCamera,$http) {
+$scope.source = {};
+$scope.imgUpload = function(sourceTypevalue){
+    alert(sourceTypevalue);
+  document.addEventListener("deviceready", function () {
+alert(sourceTypevalue);
+    var options = {
+      quality: 50,
+      destinationType: Camera.DestinationType.DATA_URL,
+      sourceType: sourceTypevalue,
+      allowEdit: true,
+      encodingType: Camera.EncodingType.JPEG,
+      targetWidth: 100,
+      targetHeight: 100,
+      popoverOptions: CameraPopoverOptions,
+      saveToPhotoAlbum: false
+    };
+
+    $cordovaCamera.getPicture(options).then(function(imageData) {
+      var image = document.getElementById('myImage');
+      image.src = "data:image/jpeg;base64," + imageData;
+      $scope.source=image.src;
+      alert("He;llo");
+      $http.get("http://localhost:8100/api/webservice/uploadPrescriptionFile?inputFile="+"data:image/jpeg;base64," + imageData)
+            .success(function() {    
+            alert("Suceess");
+            
+            })
+            .error(function(imageData1) {
+            alert("Fail.due to "+imageData1);
+            });
+    }, function(err) {
+      // error
+      alert("This is main error");
+    });
+
+  }, false);
+};
+}]);
+//end UploadpageCtrl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start SelectValues service

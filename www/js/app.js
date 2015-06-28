@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 
-angular.module('starter', ['ionic', 'starter.controllers',])
+angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -74,6 +74,24 @@ angular.module('starter', ['ionic', 'starter.controllers',])
       'menuContent': {
         templateUrl: 'templates/signup.html',
         controller: 'SignupCtrl'
+      }
+    }
+  })
+      .state('app.uploadpage', {
+    url: '/uploadpage',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/uploadpage.html',
+        controller: 'UploadpageCtrl'
+      }
+    }
+  })
+    .state('app.location', {
+    url: '/location',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/location.html',
+        controller: 'LocationCtrl'
       }
     }
   })
