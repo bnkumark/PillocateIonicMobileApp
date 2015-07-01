@@ -4,14 +4,14 @@ var app = angular.module('starter.controllers', [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
     if (true) {
-    console.log("localStorage -"+window.localStorage.getItem("data"));
+    console.log("localStorage -"+window.lo
+    $ionicModal.fromTemplateUrl('templates/login.html', {calStorage.getItem("data"));
     return window.localStorage.getItem("data");
     };
         // Form data for the login modal
     $scope.loginData = {};
 
     // Create the login modal that we will use later
-    $ionicModal.fromTemplateUrl('templates/login.html', {
         scope: $scope
     })
     .then(function(modal) {
@@ -519,9 +519,7 @@ $scope.locationSelect =function(){
 .controller('UploadpageCtrl', ['$scope','$cordovaCamera','$http',function($scope,$cordovaCamera,$http) {
 $scope.source = {};
 $scope.imgUpload = function(sourceTypevalue){
-    alert(sourceTypevalue);
   document.addEventListener("deviceready", function () {
-alert(sourceTypevalue);
     var options = {
       quality: 50,
       destinationType: Camera.DestinationType.DATA_URL,
@@ -538,10 +536,9 @@ alert(sourceTypevalue);
       var image = document.getElementById('myImage');
       image.src = "data:image/jpeg;base64," + imageData;
       $scope.source=image.src;
-      alert("He;llo");
       $http.get("http://localhost:8100/api/webservice/uploadPrescriptionFile?inputFile="+"data:image/jpeg;base64," + imageData)
             .success(function() {    
-            alert("Suceess");
+            alert("Successfully Uploaded");
             
             })
             .error(function(imageData1) {
@@ -549,7 +546,7 @@ alert(sourceTypevalue);
             });
     }, function(err) {
       // error
-      alert("This is main error");
+      alert("Sorry!No picture was selected");
     });
 
   }, false);
