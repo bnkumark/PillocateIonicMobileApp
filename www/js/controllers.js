@@ -3,18 +3,13 @@ var app = angular.module('starter.controllers', [])
 //TODO: each controller can be moved to a seperate file?
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
-    if (true) {
-    console.log("localStorage -"+window.lo
-    $ionicModal.fromTemplateUrl('templates/login.html', {calStorage.getItem("data"));
-    return window.localStorage.getItem("data");
-    };
-        // Form data for the login modal
+    // Form data for the login modal
     $scope.loginData = {};
 
     // Create the login modal that we will use later
+    $ionicModal.fromTemplateUrl('templates/login.html', {
         scope: $scope
-    })
-    .then(function(modal) {
+    }).then(function(modal) {
         $scope.modal = modal;
     });
 
@@ -148,7 +143,7 @@ var app = angular.module('starter.controllers', [])
         };
         console.log($scope.data.items);
         //TODO dont hardcode city
-								        $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle + +"&city=Mumbai"+"&brandId="+"&inventoryId=" + selectedBrand.id+"&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
+$http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle + +"&city=Mumbai"+"&brandId="+"&inventoryId=" + selectedBrand.id+"&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
             .success(function(data) {
                 console.log('searchResultsCtrl success');
                 $scope.data.searchResults= data;
@@ -277,13 +272,13 @@ var app = angular.module('starter.controllers', [])
         console.log('OrderDetailsCtrlmethod called');
         $scope.data = {
             "store": $SelectedStore.selectedStore,
-            "brandName": $SelectedStore.getselectedBrandItem().label
+            "brandName": $SelectedStore.getselectedBrandItem().label,
+            "circle": $SelectedValues.getSelectedCircle()
         };
         $scope.order = {
             "quantity": 1,
             "offerstatus": ''
         };
-        $scope.data.store.circle = $SelectedValues.getSelectedCircle();
         //TODO hardcoding this for now
         $scope.data.store.country = 'India';
 
@@ -307,15 +302,17 @@ var app = angular.module('starter.controllers', [])
             $http.get("http://localhost:8100/api/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=Mumbai"+ "&state=Maharastra" + "&country=India"+ "&attachmentid=&offerCode=" + order.offercode)
                 .success(function(data) {
 
-                    console.log('submitorder success:' + data);
-                    console.log('data.errors values:' + data.orderStatusCommand.errors.errors.length);
-
-                    if (data.orderStatusCommand.errors.errors.length == 0) {
+                    console.log("data:" + data);
+                    console.log('data.errors:' + data.errors);
+                    console.log('data.trackingId:' + data.trackingId);
+                    console.log('data.patient:' + data.patient);
+                    
+                  //  if (data.orderStatusCommand.errors.errors.length == 0) {
                         console.log('no errors in order');
                         $OrderDetailsService.setorderDetails(data.orderStatusCommand);
                         $OrderDetailsService.setScreen('orderCompletion');
                         $state.go('app.ordercompletion');
-                    } else {}
+                    //} else {}
                 })
                 .error(function(data) {
                 $CheckNetwork.check();
@@ -366,7 +363,7 @@ var app = angular.module('starter.controllers', [])
     //end TrackOrderCtrl
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//start OrderDetailsCtrl
+//start OrderCompletionCtrl
 .controller('OrderCompletionCtrl', ['$scope', '$http', 'SelectedValues', '$ionicHistory', 'SelectedStore', 'OrderDetailsService', '$state','CheckNetwork', function($scope, $http, $SelectedValues, $ionicHistory, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork) {
         $ionicHistory.clearHistory();
         if ($OrderDetailsService.getReload() == false) {
@@ -431,7 +428,7 @@ var app = angular.module('starter.controllers', [])
 //end FeedbackCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start LoginCtrl
-.controller('LoginCtrl', ['$log','$scope','$state','$http' , function($log,$scope,$state,$http) {
+app.controller('LoginCtrl', ['$log','$scope','$state','$http' , function($log,$scope,$state,$http) {
 $scope.signNew=function(){
     console.log("Go Worked!");
     $state.go('app.signup');
@@ -486,22 +483,41 @@ $scope.saveUser =function(xxx){
 //end SignupCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start LocationCtrl
-.controller('LocationCtrl', ['$scope','SelectedValues',  function($scope,$SelectedValues) {
+.controller('LocationCtrl', ['$scope','SelectedValues','$http',function($scope,$SelectedValues,$http) {
+    
     $scope.data = {
-        "circleOptions": [],
-        selectedCircle: 'Bandra(West)',
-        'cityOptions': [],
+        "circleOptions": ["Bandra (West)","SantaCruz (West)","Khar (West)"],
+        selectedCircle: 'Bandra (West)',
+        'cityOptions': ['Mumbai'],
         selectedCity: 'Mumbai'
     };
-    //TODO get this from web service
-    $scope.data.circleOptions = ["Bandra(West)","SantaCruz(West)","Khar(West)"];
-    $scope.data.selectedCircle = 'Bandra(West)';
-    $scope.data.cityOptions = ["Mumbai"];
-    $scope.data.selectedCity = 'Mumbai';
-console.log($scope.data.selectedCircle);
-$SelectedValues.setSelectedCircle($scope.data.selectedCircle);
 
+ /*   $http.get("http://localhost:8100/api/webservice/getCityArray")
+            .success(function(cities) {    
+            $scope.data.cityOptions =cities;
 
+            })
+            .error(function() {
+            alert("Failed");
+            });*/
+
+$scope.citySelected =function(){
+   /* console.log($scope.data.selectedCity+"  das");
+    $SelectedValues.setSelectedCity($scope.data.selectedCity);
+        $http.get("http://localhost:8100/api/webservice/getCircleArray?city="+$scope.data.selectedCity)
+            .success(function(circles) {    
+            $scope.data.circleOptions= circles;
+            console.log(circles.Array);
+
+            })
+            .error(function() {
+            alert("Failed");
+            });*/
+    };
+    $scope.circleSelected= function(){
+   $SelectedValues.setSelectedCity($scope.data.selectedCity);
+   $SelectedValues.setSelectedCircle($scope.data.selectedCircle);     
+    };
 }])
 //end LocationCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -563,6 +579,7 @@ app.service('SelectedValues', function($q) {
         var selectedBrand = {};
         var selectedBrandItem = {};
         var selectedCircle = {};
+        var selectedCity={};
         return {
             getSelectedBrand: function(id) {
                 for (i = 0; i < selectedBrand.length; i++) {
@@ -580,6 +597,12 @@ app.service('SelectedValues', function($q) {
             },
             setSelectedCircle: function(x) {
                 selectedCircle = x;
+            },
+            getSelectedCity: function() {
+                return selectedCity;
+            },
+            setSelectedCity: function(x) {
+                selectedCity = x;
             },
             getselectedBrandItem: function() {
                 return selectedBrandItem;
