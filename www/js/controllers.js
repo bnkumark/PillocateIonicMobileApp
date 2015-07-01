@@ -92,7 +92,8 @@ var app = angular.module('starter.controllers', [])
           function() {
             console.log('search method');
             if ($scope.data.search != '') {
-                $http.get("http://localhost:8100/api/search/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle)
+            //TODO do not hardcode city here
+                $http.get("http://localhost:8100/api/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle+"&city=Mumbai")
                     .success(function(data) {
                         console.log('setting auto suggestions ' + data);
                         $scope.data.airlines = data.slice(0, 6);; 
@@ -147,7 +148,7 @@ var app = angular.module('starter.controllers', [])
         };
         console.log($scope.data.items);
         //TODO dont hardcode city
-								        $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle + +"&city=Mumbai"+"&brandId="+"&inventoryId=" + selectedBrand.name+"&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
+								        $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle + +"&city=Mumbai"+"&brandId="+"&inventoryId=" + selectedBrand.id+"&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
             .success(function(data) {
                 console.log('searchResultsCtrl success');
                 $scope.data.searchResults= data;
@@ -163,7 +164,7 @@ var app = angular.module('starter.controllers', [])
                 $SelectedStore.setselectedBrandItem($SelectedValues.getselectedBrandItem());
             }
             //end
-//http://demo.pillocate.com/webservice/addItemToCart?storeId=4&brandId=&inventoryId=23386&brandName=ABANA&quantity=1  storeId:"3" brandName:"Ecosprin 75mg TAB" inventoryId:"22500"
+//http://localhost:8100/api/webservice/addItemToCart?storeId=4&brandId=&inventoryId=23386&brandName=ABANA&quantity=1  storeId:"3" brandName:"Ecosprin 75mg TAB" inventoryId:"22500"
 //Start
 	$scope.addtocart=function(){
   		   $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + $scope.data.searchResults.storeId+ "&brandId="+"&inventoryId="+$scope.data.searchResults.inventoryId + "&brandName=" + $scope.data.searchResults.brandName+"&quantity="+$scope.data.quantity)
@@ -209,7 +210,7 @@ var app = angular.module('starter.controllers', [])
 
 //			console.log($scope.data.item);
 //			var quantity =  window.localStorage['qdata'];
-//			 $http.get("http://demo.pillocate.com/webservice/addItemToCart?brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id+ "&quantity=" + quantity)
+//			 $http.get("http://localhost:8100/api/webservice/addItemToCart?brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id+ "&quantity=" + quantity)
 //						.success(function(data){
 							$scope.data.message="Item added to cart";
 //							console.log($scope.data.message);
@@ -236,7 +237,7 @@ var app = angular.module('starter.controllers', [])
 		alert($scope.item.name);
 		alert($scope.item.id);
 		alert(quantity);
-		/* $http.get("http://demo.pillocate.com/webservice/addItemToCart?brandId="+$scope.item.name+"&inventoryId=" + $scope.item.id+ "&quantity=" + quantity)
+		/* $http.get("http://localhost:8100/api/webservice/addItemToCart?brandId="+$scope.item.name+"&inventoryId=" + $scope.item.id+ "&quantity=" + quantity)
             .success(function(data){
               console.log(data);
         })
@@ -246,7 +247,7 @@ var app = angular.module('starter.controllers', [])
 */	}
 		$scope.qdata1=window.localStorage['qdata'];
 		$scope.display=function(){	
-		$http.get("http://demo.pillocate.com/webservice/showCartItems")
+		$http.get("http://localhost:8100/api/webservice/showCartItems")
 			.success(function(data){	
 				$scope.data.message2=data;
 					console.log(data);
@@ -260,7 +261,7 @@ var app = angular.module('starter.controllers', [])
 	}
 	$scope.destroy=function(){
 //var quantity =  window.localStorage['qdata'];
-//		$http.get("http://demo.pillocate.com/webservice/removeItemFromCart?inventoryId=" + selectedBrand.id+ "&quantity=" + quantity)
+//		$http.get("http://localhost:8100/api/webservice/removeItemFromCart?inventoryId=" + selectedBrand.id+ "&quantity=" + quantity)
  //     .success(function(data){
   //      $scope.data.message2=data;
 //				console.log(data);
@@ -298,15 +299,12 @@ var app = angular.module('starter.controllers', [])
         console.log('selectedBrand.name is null');
         }
         
-        //If address line2 is undefined make it empty
+		order.addressline2 =  $CheckNetwork.UndefinedToEmpty(order.addressline2);
+		order.offercode =  $CheckNetwork.UndefinedToEmpty(order.offercode);     
+
         console.log('addressline2 '+order.addressline2);
-        if(!order.addressline2)
-        {
-        order.addressline2 = '';
-        }
-        console.log('addressline2 '+order.addressline2);
-        
-            $http.get("http://localhost:8100/api/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=" + order.age + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + selectedStore.city + "&state=" + selectedStore.state + "&country=India"+ "&offerCode=" + order.offercode)
+        //TODO do not hardcode city and state
+            $http.get("http://localhost:8100/api/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=Mumbai"+ "&state=Maharastra" + "&country=India"+ "&attachmentid=&offerCode=" + order.offercode)
                 .success(function(data) {
 
                     console.log('submitorder success:' + data);
@@ -618,19 +616,31 @@ app.service('SelectedStore', function($q) {
 
 //start SelectStore service
 //TODO: Probably we can move this to a seperate JS file
+//TODO change the name to utility
 app.service('CheckNetwork', function($q) {
-        return {
-            check: function() {
-                                    if(window.Connection) {
-   if(navigator.connection.type == Connection.NONE) {
-   console.log("No active internet connection!! Please check and try again");
-  alert("No active internet connection!!");
-}
-}
-            },
-        }
-    })
-    //end SelectValues service
+    return {
+        check: function() {
+            if (window.Connection) {
+                if (navigator.connection.type == Connection.NONE) {
+                    console.log("No active internet connection!! Please check and try again");
+                    alert("No active internet connection!!");
+                }
+            }
+        },
+        UndefinedToEmpty: function(data) {
+        console.log("UndefinedToEmpty passed value:"+data);
+            if (!data) {
+            console.log("returned empty from UndefinedToEmpty");
+                return '';
+            }
+            else
+            {
+            return data;
+            }
+        },
+
+    }
+})    //end SelectValues service
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
