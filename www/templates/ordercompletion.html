@@ -16,25 +16,25 @@
   </div>
   <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Order Name</span>
-    <span class="input-label">{{data.orderDetails.brandName}}</span>
+    <span class="input-label">{{data.orderDetails.orderDetailsList[0].brandName}}</span>
+  </label>
+    <label class="item item-input item-stacked-label item-text-wrap">
+    <span class="input-label">Order Quantity</span>
+    <span class="input-label">{{data.orderDetails.orderDetailsList[0].quantity}}</span>
+  </label>
+ <label class="item item-input item-stacked-label item-text-wrap">
+    <span class="input-label">Delivery address</span>
+    <span class="input-label">{{data.orderDetails.patient.addressLine1}}  {{data.orderDetails.patient.addressLine2}}</span>
   </label>
 
  <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Tracking Id</span>
-    <span class="input-label">{{data.orderDetails.trackingId}}</span>
+    <span class="input-label">{{data.orderDetails.orderDetailsList[0].trackingId}}</span>
   </label>
 
  <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Expected Delivery</span>
-    <span class="input-label datatime">{{data.orderDetails.estimatedDeliveryTime | date:'medium'}}</span>
-  </label>
- <label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Seller</span>
-    <span class="input-label">{{data.orderDetails.storeName}}</span>
-  </label>
- <label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Seller contact no</span>
-    <span class="input-label">{{data.orderDetails.storePhoneNumber}}</span>
+    <span class="input-label datatime">{{data.orderDetails.orderDetailsList[0].estimatedDeliveryTime | date:'medium'}}</span>
   </label>
   <div class="item item-input-inset">
       <div >
@@ -52,6 +52,5 @@
   </div>
 
   </div>
-
  </ion-content>
 </ion-view>

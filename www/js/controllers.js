@@ -267,7 +267,7 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
 
 	}
 }])
-
+//start OrderDetailsCtrl
 .controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
         console.log('OrderDetailsCtrlmethod called');
         $scope.data = {
@@ -305,7 +305,7 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
                     console.log("data:" + data);
                     console.log('data.orderDetailsList[0].errors.errors.length:' + data.orderDetailsList[0].errors.errors.length);
                     console.log('data.orderDetailsList[0].trackingId:' + data.orderDetailsList[0].trackingId);
-                    console.log('data.patient:addressLine1:' + data.patient.addressLine1);
+                    console.log('data.patient.addressLine1:' + data.patient.addressLine1);
                     
                     if (data.orderDetailsList[0].errors.errors.length == 0) {
                         console.log('no errors in order');
