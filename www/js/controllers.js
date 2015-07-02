@@ -139,7 +139,8 @@ var app = angular.module('starter.controllers', [])
             "localBrand": selectedBrand.label,
             "storeId" : '',
             quantity:'1',
-            availabiltyFlag: ''
+            availabiltyFlag: '',
+						message : ''
         };
         console.log($scope.data.items);
         //TODO dont hardcode city
@@ -161,33 +162,45 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
             //end
 //http://localhost:8100/api/webservice/addItemToCart?storeId=4&brandId=&inventoryId=23386&brandName=ABANA&quantity=1  storeId:"3" brandName:"Ecosprin 75mg TAB" inventoryId:"22500"
 //Start
+	$scope.isDisabled=false;
 	$scope.addtocart=function(){
-  		   $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + $scope.data.searchResults.storeId+ "&brandId="+"&inventoryId="+$scope.data.searchResults.inventoryId + "&brandName=" + $scope.data.searchResults.brandName+"&quantity="+$scope.data.quantity)
+        $scope.isDisabled = true;
+        return false;
+  	/*	   $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + $scope.data.searchResults.storeId+ "&brandId="+"&inventoryId="+$scope.data.searchResults.inventoryId + "&brandName=" + $scope.data.searchResults.brandName+"&quantity="+$scope.data.quantity)
             .success(function(data) {
-                console.log('addItemToCartsuccess');
-
-                  		   $http.get("http://localhost:8100/api/webservice/showCartItems");
-                  		   
-								             })
+            	console.log('addItemToCartsuccess');
+							$scope.data.message="Item added to cart"; 
+	//						$SelectedValues.setItems(data);
+						})
             .error(function(data) {
-            $CheckNetwork.check();
-            });
+            	$CheckNetwork.check();
+            });*/
 		}
 		//end
 
-
+$scope.checkout=function(){
+  		   $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + $scope.data.searchResults.storeId+ "&brandId="+"&inventoryId="+$scope.data.searchResults.inventoryId + "&brandName=" + $scope.data.searchResults.brandName+"&quantity="+$scope.data.quantity)
+            .success(function(data) {
+//							$SelectedValues.setItems(data);
+            	console.log('addItemToCartsuccess'); 
+						})
+            .error(function(data) {
+            	$CheckNetwork.check();
+            });
+		}
     }])
     //end searchResultsCtrl
     
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start BuyNowCtrl
-.controller('BuyNowCtrl',['$scope','$http','SelectedValues','SelectedStore',function($scope,$http,$SelectedValues,$SelectedsStore,$localStorage){
+.controller('BuyNowCtrl',['$scope','$http','SelectedValues','SelectedStore',function($scope,$http,$SelectedValues,$SelectedStore,$localStorage){
 	$scope.data={
 		quantity:'1',
 		message: '',
 //		itemlist:[],
 		item:'',
+		items: [],
 		message2:''
 	};
 	var selectedBrand = $SelectedValues.getselectedBrandItem();
@@ -216,11 +229,13 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
 //			console.log($scope.data.message);
 		}
 //console.log($scope.data.item);
-	$scope.checkout=function(){
+
+
+/*	$scope.checkout=function(){
 	window.localStorage['qdata']=$scope.data.quantity;
 		window.localStorage['item']=selectedBrand;
 		console.log(selectedBrand);
-	}
+	}*/
 //	$scope.item=window.localStorage['item'];
 //	console.log($scope.item.label);
 	$scope.store=function(){
@@ -241,20 +256,20 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
        });
 */	}
 		$scope.qdata1=window.localStorage['qdata'];
-		$scope.display=function(){	
 		$http.get("http://localhost:8100/api/webservice/showCartItems")
-			.success(function(data){	
-				$scope.data.message2=data;
-					console.log(data);
-	//				for(d in data){
-	//								console.log(1);
-	//				}
+			.success(function(data){
+						$SelectedValues.setItems(data);	
+					$scope.items=data;
+					console.log("fuck");
+			/*		for(i=0;i<data.length;i++){
+									console.log(data[i].item);
+									console.log(data[i].qty);
+					}*/
 				})
 				.error(function(data){
 					console.log("error");
 			});
-	}
-	$scope.destroy=function(){
+		$scope.destroy=function(){
 //var quantity =  window.localStorage['qdata'];
 //		$http.get("http://localhost:8100/api/webservice/removeItemFromCart?inventoryId=" + selectedBrand.id+ "&quantity=" + quantity)
  //     .success(function(data){
@@ -580,6 +595,7 @@ app.service('SelectedValues', function($q) {
         var selectedBrandItem = {};
         var selectedCircle = {};
         var selectedCity={};
+				var items=[];
         return {
             getSelectedBrand: function(id) {
                 for (i = 0; i < selectedBrand.length; i++) {
@@ -609,6 +625,9 @@ app.service('SelectedValues', function($q) {
             },
             setselectedBrandItem: function(x) {
                 selectedBrandItem = x;
+            },
+						setItems: function(x) {
+                items = x;
             },
 
         }
