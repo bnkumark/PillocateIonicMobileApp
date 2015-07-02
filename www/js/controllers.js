@@ -483,7 +483,7 @@ $scope.saveUser =function(xxx){
 //end SignupCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start LocationCtrl
-.controller('LocationCtrl', ['$scope','SelectedValues','$http',function($scope,$SelectedValues,$http) {
+.controller('LocationCtrl', ['$scope','SelectedValues','$http','CheckNetwork',function($scope,$SelectedValues,$http,$CheckNetwork) {
     
     $scope.data = {
         "circleOptions": ["Bandra (West)","SantaCruz (West)","Khar (West)"],
@@ -492,27 +492,27 @@ $scope.saveUser =function(xxx){
         selectedCity: 'Mumbai'
     };
 
- /*   $http.get("http://localhost:8100/api/webservice/getCityArray")
+   $http.get("http://localhost:8100/api/webservice/getCityArray")
             .success(function(cities) {    
             $scope.data.cityOptions =cities;
 
             })
             .error(function() {
-            alert("Failed");
-            });*/
+            $CheckNetwork.check();
+            });
 
 $scope.citySelected =function(){
-   /* console.log($scope.data.selectedCity+"  das");
+   console.log($scope.data.selectedCity+"  das");
     $SelectedValues.setSelectedCity($scope.data.selectedCity);
         $http.get("http://localhost:8100/api/webservice/getCircleArray?city="+$scope.data.selectedCity)
             .success(function(circles) {    
-            $scope.data.circleOptions= circles;
-            console.log(circles.Array);
+            $scope.data.circleOptions= circles.circleArray;
+            console.log(circles.circleArray);
 
             })
             .error(function() {
-            alert("Failed");
-            });*/
+            $CheckNetwork.check();
+            });
     };
     $scope.circleSelected= function(){
    $SelectedValues.setSelectedCity($scope.data.selectedCity);
