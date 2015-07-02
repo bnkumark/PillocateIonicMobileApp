@@ -303,16 +303,16 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
                 .success(function(data) {
 
                     console.log("data:" + data);
-                    console.log('data.errors:' + data.errors);
-                    console.log('data.trackingId:' + data.trackingId);
-                    console.log('data.patient:' + data.patient);
+                    console.log('data.orderDetailsList[0].errors.errors.length:' + data.orderDetailsList[0].errors.errors.length);
+                    console.log('data.orderDetailsList[0].trackingId:' + data.orderDetailsList[0].trackingId);
+                    console.log('data.patient:addressLine1:' + data.patient.addressLine1);
                     
-                  //  if (data.orderStatusCommand.errors.errors.length == 0) {
+                    if (data.orderDetailsList[0].errors.errors.length == 0) {
                         console.log('no errors in order');
-                        $OrderDetailsService.setorderDetails(data.orderStatusCommand);
+                        $OrderDetailsService.setorderDetails(data);
                         $OrderDetailsService.setScreen('orderCompletion');
                         $state.go('app.ordercompletion');
-                    //} else {}
+                    } else {}
                 })
                 .error(function(data) {
                 $CheckNetwork.check();
