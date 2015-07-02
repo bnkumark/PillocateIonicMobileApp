@@ -132,6 +132,7 @@ var app = angular.module('starter.controllers', [])
         var selectedBrand = $SelectedValues.getselectedBrandItem();
 		//		window.localStorage['brand']=selectedBrand;
         var selectedCircle = $SelectedValues.getSelectedCircle();
+        var selectedCity = $SelectedValues.getSelectedCity();
         
         $scope.data = {
         	"searchResults": [],
@@ -143,7 +144,7 @@ var app = angular.module('starter.controllers', [])
         };
         console.log($scope.data.items);
         //TODO dont hardcode city
-$http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle + +"&city=Mumbai"+"&brandId="+"&inventoryId=" + selectedBrand.id+"&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
+$http.get("http://localhost:8100/api/webservice/search?city="+selectedCity +"&brandId="+"&inventoryId=" + selectedBrand.id+"&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
             .success(function(data) {
                 console.log('searchResultsCtrl success');
                 $scope.data.searchResults= data;
