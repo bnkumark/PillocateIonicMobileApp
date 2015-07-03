@@ -165,9 +165,53 @@ $http.get("http://demo.pillocate.com/webservice/search?city="+selectedCity +"&br
 //Start
 	$scope.isDisabled=false;
 	$scope.addtocart=function(){
-        $scope.isDisabled = true;
-				var item = { item : selectedBrand.label , quantity : $scope.data.quantity };
+				$scope.isDisabled = true;
+				var item = { item : selectedBrand.label , quantity : $scope.data.quantity , storeid : $scope.data.searchResults.storeId , inventoryid : $scope.data.searchResults.inventoryId } ;
 				$SelectedValues.setItems(item);
+		/*		var allitems = $SelectedValues.getItems();
+				var item = { item : selectedBrand.label , quantity : $scope.data.quantity };
+				var c = 0;
+				if(allitems.length!=0)
+				{
+					for(i=0;i < allitems.length;i++)
+					{
+//						console.log(allitems[i].item);
+//						console.log(selectedBrand.label);
+						if( allitems[i].item != selectedBrand.label)
+						{
+							console.log(2);	
+						}
+						else if(allitems[i].item == selectedBrand.label)
+						{
+							console.log(3);
+							c++;
+							allitems[i].quantity = item.quantity;
+						}
+					}
+					console.log("count="+c);
+					if(c==0)
+					{
+//						$SelectedValues.setItems(item);
+						allitems.push(item);
+				//		console.log(allitems);
+						$SelectedValues.emptyItems();
+						for(i=0;i < allitems.length;i++)
+						{
+							console.log(allitems[i]);
+							$SelectedValues.setItems(allitems[i]);
+						}
+					}
+				}
+				else
+				{
+		//			console.log(1);
+					$SelectedValues.setItems(item);
+				}
+				var data=$SelectedValues.getItems();
+				for(i=0;i<data.length;i++)
+				{
+			//		console.log(data[i].item+','+data[i].quantity);	
+				}*/
         return false;
   			}	
 /*$scope.checkout=function(){
@@ -189,6 +233,7 @@ $http.get("http://demo.pillocate.com/webservice/search?city="+selectedCity +"&br
 		items: [],
 		message2:''
 	};
+	$scope.items="";
 	$scope.items=$SelectedValues.getItems();
 	$scope.destroy=function(x,y){
 	var items=$SelectedValues.getItems();
@@ -199,6 +244,19 @@ $http.get("http://demo.pillocate.com/webservice/search?city="+selectedCity +"&br
 					$SelectedValues.removeItems(items[i]);
 				}					
 			}
+	}
+	$scope.placeorder=function(){
+		var items=$SelectedValues.getItems();
+		for(i=0;i<items.length;i++)	
+		{
+			 $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + items[i].storeid+ "&brandId="+"&inventoryId="+items[i].inventoryid + "&brandName=" + items[i].item +"&quantity="+items[i].quantity)
+            .success(function(data) {
+            	console.log(data);
+							})
+							.error(function(data){
+							console.log("error");
+							});
+		}
 	}
 }])
 
@@ -557,7 +615,9 @@ app.service('SelectedValues', function($q) {
 								var index=items.indexOf(x);
 								items.splice(index,1);
 						},
-
+						emptyItems:function(){
+								items=[];
+						},
         }
     })
     //end SelectValues service
