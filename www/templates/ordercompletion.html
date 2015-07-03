@@ -7,10 +7,10 @@
 <div class="item item-divider positive" >
   Order Status
   </div>
-  <ion-checkbox ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="1" ng-disabled="true">Placed</ion-checkbox>
-  <ion-checkbox ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="2" ng-disabled="true">Accepted</ion-checkbox>
-  <ion-checkbox ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="3" ng-disabled="true">Dispatched</ion-checkbox>
-  <ion-checkbox ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="4" ng-disabled="true">Delivered</ion-checkbox>
+  <ion-item ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="1" ng-disabled="true">1. Placed (Yet to be accepted)</ion-item>
+  <ion-item ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="2" ng-disabled="true">2. Accepted</ion-item>
+  <ion-item ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="3" ng-disabled="true">3. Dispatched</ion-item>
+  <ion-item ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="4" ng-disabled="true">4. Delivered</ion-item>
 <div class="item item-divider positive">
   Order Details
   </div>
@@ -19,6 +19,11 @@
     <span class="input-label">Order Name</span>
     <span class="input-label">{{data.brandName}}</span>
   </label>
+<label class="item item-input item-stacked-label item-text-wrap">
+    <span class="input-label">Status</span>
+    <span class="input-label">{{data.orderStatus}}</span>
+  </label>
+
 <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Quantity</span>
     <span class="input-label">{{data.quantity}}</span>
