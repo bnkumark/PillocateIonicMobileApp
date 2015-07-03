@@ -165,21 +165,12 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
 	$scope.isDisabled=false;
 	$scope.addtocart=function(){
         $scope.isDisabled = true;
+				var item = { item : selectedBrand.label , quantity : $scope.data.quantity };
+				$SelectedValues.setItems(item);
         return false;
-  	/*	   $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + $scope.data.searchResults.storeId+ "&brandId="+"&inventoryId="+$scope.data.searchResults.inventoryId + "&brandName=" + $scope.data.searchResults.brandName+"&quantity="+$scope.data.quantity)
-            .success(function(data) {
-            	console.log('addItemToCartsuccess');
-							$scope.data.message="Item added to cart"; 
-	//						$SelectedValues.setItems(data);
-						})
-            .error(function(data) {
-            	$CheckNetwork.check();
-            });*/
-		}
-		//end
-
-$scope.checkout=function(){
-  		   $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + $scope.data.searchResults.storeId+ "&brandId="+"&inventoryId="+$scope.data.searchResults.inventoryId + "&brandName=" + $scope.data.searchResults.brandName+"&quantity="+$scope.data.quantity)
+  			}	
+/*$scope.checkout=function(){
+  		/*   $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + $scope.data.searchResults.storeId+ "&brandId="+"&inventoryId="+$scope.data.searchResults.inventoryId + "&brandName=" + $scope.data.searchResults.brandName+"&quantity="+$scope.data.quantity)
             .success(function(data) {
 //							$SelectedValues.setItems(data);
             	console.log('addItemToCartsuccess'); 
@@ -188,6 +179,10 @@ $scope.checkout=function(){
             	$CheckNetwork.check();
             });
 		}
+			var item = { name : selectedBrand.label , quantity : $scope.data.quantity };
+			console.log(item);
+      $SelectedValues.setItems(item);
+			}*/
     }])
     //end searchResultsCtrl
     
@@ -198,88 +193,19 @@ $scope.checkout=function(){
 	$scope.data={
 		quantity:'1',
 		message: '',
-//		itemlist:[],
-		item:'',
 		items: [],
 		message2:''
 	};
-	var selectedBrand = $SelectedValues.getselectedBrandItem();
-	$scope.item=selectedBrand;
-//	var selectedStore =  $SelectedStore.selectedStore;
-		$scope.qdata='';
-//	$scope.disablebutton="false";
-	$scope.cartdata=''
-	$scope.addtocart=function(){
-	//		$scope.disablebutton="true";
-		var selectedBrand = $SelectedValues.getselectedBrandItem();
-			window.localStorage['qdata']=$scope.data.quantity;
-			$scope.data.item = selectedBrand;
-			window.localStorage['item']=selectedBrand;
-
-//			console.log($scope.data.item);
-//			var quantity =  window.localStorage['qdata'];
-//			 $http.get("http://localhost:8100/api/webservice/addItemToCart?brandId="+selectedBrand.name+"&inventoryId=" + selectedBrand.id+ "&quantity=" + quantity)
-//						.success(function(data){
-							$scope.data.message="Item added to cart";
-//							console.log($scope.data.message);
-//				})
-//						.error(function(data){
-//							$scope.data.message="Item couldn't be added to cart";
-//				});
-//			console.log($scope.data.message);
-		}
-//console.log($scope.data.item);
-
-
-/*	$scope.checkout=function(){
-	window.localStorage['qdata']=$scope.data.quantity;
-		window.localStorage['item']=selectedBrand;
-		console.log(selectedBrand);
-	}*/
-//	$scope.item=window.localStorage['item'];
-//	console.log($scope.item.label);
-	$scope.store=function(){
-		window.localStorage['qdata']=$scope.data.quantity;
+		$scope.items=$SelectedValues.getItems();
+	$scope.destroy=function(x,y){
+	var items=$SelectedValues.getItems();
+			for(i=0;i<items.length;i++)
+			{
+				if(items[i].item==x && items[i].quantity==y)
+				{
+					$SelectedValues.removeItems(items[i]);
+				}					
 			}
-	$scope.placeorder=function(){
-	var quantity =  window.localStorage['qdata'];
-		$scope.qdata=window.localStorage['qdata'];
-		alert($scope.item.name);
-		alert($scope.item.id);
-		alert(quantity);
-		/* $http.get("http://localhost:8100/api/webservice/addItemToCart?brandId="+$scope.item.name+"&inventoryId=" + $scope.item.id+ "&quantity=" + quantity)
-            .success(function(data){
-              console.log(data);
-        })
-            .error(function(data){
-             	console.log(data);
-       });
-*/	}
-		$scope.qdata1=window.localStorage['qdata'];
-		$http.get("http://localhost:8100/api/webservice/showCartItems")
-			.success(function(data){
-						$SelectedValues.setItems(data);	
-					$scope.items=data;
-					console.log("fuck");
-			/*		for(i=0;i<data.length;i++){
-									console.log(data[i].item);
-									console.log(data[i].qty);
-					}*/
-				})
-				.error(function(data){
-					console.log("error");
-			});
-		$scope.destroy=function(){
-//var quantity =  window.localStorage['qdata'];
-//		$http.get("http://localhost:8100/api/webservice/removeItemFromCart?inventoryId=" + selectedBrand.id+ "&quantity=" + quantity)
- //     .success(function(data){
-  //      $scope.data.message2=data;
-//				console.log(data);
- //       })
-  //      .error(function(data){
-  //        console.log(data);
-    //  });
-
 	}
 }])
 
@@ -627,8 +553,15 @@ app.service('SelectedValues', function($q) {
                 selectedBrandItem = x;
             },
 						setItems: function(x) {
-                items = x;
+                items.push(x);
             },
+						getItems: function(){
+								return items;
+						},
+						removeItems:function(x){
+								var index=items.indexOf(x);
+								items.splice(index,1);
+						},
 
         }
     })
