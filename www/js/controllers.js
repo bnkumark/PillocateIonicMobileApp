@@ -278,7 +278,7 @@ $http.get("http://demo.pillocate.com/webservice/search?city="+selectedCity +"&br
         };
 
         $scope.getOrderDetails = function() {
-            $http.get("http://demo.pillocate.com/webservice/showTrackedOrderDetails?trackingId=" + $scope.data.trackingId)
+            $http.get("http://demo.pillocate.com/webservice/showTrackedOrderDetails?trackingId=QOB4" + $scope.data.trackingId)
                 .success(function(data) {
                     console.log('order details fetched:' + data);
                     if (data != -2) {
