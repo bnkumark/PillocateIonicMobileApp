@@ -28,10 +28,6 @@
     <span class="input-label">Quantity</span>
     <span class="input-label">{{data.quantity}}</span>
   </label>
- <label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Tracking Id</span>
-    <span class="input-label">{{data.trackingId}}</span>
-  </label>
 
  <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Expected Delivery</span>
@@ -51,6 +47,11 @@
     <span class="input-label">Phone</span>
     <span class="input-label">{{data.orderDetails.patient.phoneNumber}}</span>
   </label>
+   <label class="item item-input item-stacked-label item-text-wrap">
+    <span class="input-label">Tracking Id</span>
+    <span class="input-label">{{data.orderDetails.trackingId}}</span>
+  </label>
+
   <div class="item item-input-inset">
       <div >
  <a class="button button-balanced" type="button" ng-click="goHome()">
