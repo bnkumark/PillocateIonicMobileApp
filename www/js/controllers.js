@@ -88,7 +88,7 @@ var app = angular.module('starter.controllers', [])
             console.log('search method');
             if ($scope.data.search != '') {
             //TODO do not hardcode city here
-                $http.get("http://localhost:8100/api/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle+"&city=Mumbai")
+                $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle+"&city=Mumbai")
                     .success(function(data) {
                         console.log('setting auto suggestions ' + data);
                         $scope.data.airlines = data.slice(0, 6);; 
@@ -132,6 +132,7 @@ var app = angular.module('starter.controllers', [])
         var selectedBrand = $SelectedValues.getselectedBrandItem();
 		//		window.localStorage['brand']=selectedBrand;
         var selectedCircle = $SelectedValues.getSelectedCircle();
+        var selectedCity = $SelectedValues.getSelectedCity();
         
         $scope.data = {
         	"searchResults": [],
@@ -144,7 +145,7 @@ var app = angular.module('starter.controllers', [])
         };
         console.log($scope.data.items);
         //TODO dont hardcode city
-$http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle + +"&city=Mumbai"+"&brandId="+"&inventoryId=" + selectedBrand.id+"&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
+$http.get("http://demo.pillocate.com/webservice/search?city="+selectedCity +"&brandId="+"&inventoryId=" + selectedBrand.id+"&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
             .success(function(data) {
                 console.log('searchResultsCtrl success');
                 $scope.data.searchResults= data;
@@ -160,7 +161,7 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
                 $SelectedStore.setselectedBrandItem($SelectedValues.getselectedBrandItem());
             }
             //end
-//http://localhost:8100/api/webservice/addItemToCart?storeId=4&brandId=&inventoryId=23386&brandName=ABANA&quantity=1  storeId:"3" brandName:"Ecosprin 75mg TAB" inventoryId:"22500"
+//http://demo.pillocate.com/webservice/addItemToCart?storeId=4&brandId=&inventoryId=23386&brandName=ABANA&quantity=1  storeId:"3" brandName:"Ecosprin 75mg TAB" inventoryId:"22500"
 //Start
 	$scope.isDisabled=false;
 	$scope.addtocart=function(){
@@ -174,15 +175,7 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
             .success(function(data) {
 //							$SelectedValues.setItems(data);
             	console.log('addItemToCartsuccess'); 
-						})
-            .error(function(data) {
-            	$CheckNetwork.check();
-            });
-		}
-			var item = { name : selectedBrand.label , quantity : $scope.data.quantity };
-			console.log(item);
-      $SelectedValues.setItems(item);
-			}*/
+						})*/
     }])
     //end searchResultsCtrl
     
@@ -196,7 +189,7 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
 		items: [],
 		message2:''
 	};
-		$scope.items=$SelectedValues.getItems();
+	$scope.items=$SelectedValues.getItems();
 	$scope.destroy=function(x,y){
 	var items=$SelectedValues.getItems();
 			for(i=0;i<items.length;i++)
@@ -240,20 +233,22 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
 
         console.log('addressline2 '+order.addressline2);
         //TODO do not hardcode city and state
-            $http.get("http://localhost:8100/api/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=Mumbai"+ "&state=Maharastra" + "&country=India"+ "&attachmentid=&offerCode=" + order.offercode)
+            $http.get("http://demo.pillocate.com/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=Mumbai"+ "&state=Maharastra" + "&country=India"+ "&attachmentid=&offerCode=" + order.offercode)
                 .success(function(data) {
 
                     console.log("data:" + data);
-                    console.log('data.errors:' + data.errors);
-                    console.log('data.trackingId:' + data.trackingId);
-                    console.log('data.patient:' + data.patient);
+                    console.log('data.orderDetailsList[0].errors.errors.length:' + data.orderDetailsList[0].errors.errors.length);
+                    console.log('data.orderDetailsList[0].trackingId:' + data.orderDetailsList[0].trackingId);
+                    console.log('data.patient:addressLine1:' + data.patient.addressLine1);
                     
-                  //  if (data.orderStatusCommand.errors.errors.length == 0) {
+                    if (data.orderDetailsList[0].errors.errors.length == 0) {
                         console.log('no errors in order');
-                        $OrderDetailsService.setorderDetails(data.orderStatusCommand);
+                        $OrderDetailsService.setorderDetails(data);
                         $OrderDetailsService.setScreen('orderCompletion');
                         $state.go('app.ordercompletion');
-                    //} else {}
+                    } else {
+                    alert("Could submit order, please check if all fields filled properly.");
+                    }
                 })
                 .error(function(data) {
                 $CheckNetwork.check();
@@ -262,7 +257,7 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
         };
 
         $scope.applyOffer = function() {
-            $http.get("http://localhost:8100/api/webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
+            $http.get("http://demo.pillocate.com/webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
                 .success(function(data) {
                     $scope.order.offerstatus = data;
                 })
@@ -283,7 +278,7 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
         };
 
         $scope.getOrderDetails = function() {
-            $http.get("http://localhost:8100/api/webservice/showTrackedOrderDetails?trackingId=" + $scope.data.trackingId)
+            $http.get("http://demo.pillocate.com/webservice/showTrackedOrderDetails?trackingId=" + $scope.data.trackingId)
                 .success(function(data) {
                     console.log('order details fetched:' + data);
                     if (data != -2) {
@@ -333,7 +328,7 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
         };
 
         $scope.cancelOrder = function(orderId) {
-            $http.get("http://localhost:8100/api/webservice/cancelOrder?orderId=" + orderId)
+            $http.get("http://demo.pillocate.com/webservice/cancelOrder?orderId=" + orderId)
                 .success(function(data) {
                     $scope.data.cancelSuccess = "Your order has been cancelled!";
                     console.log('order cancelled:' + data);
@@ -355,7 +350,7 @@ $http.get("http://localhost:8100/api/webservice/search?circle=" + selectedCircle
     };
     $scope.submitfeedback = function(feedback) {
         console.log(feedback.name);
-        $http.get("http://localhost:8100/api/webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
+        $http.get("http://demo.pillocate.com/webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
                 console.log('feedback submit success:' + data);
@@ -394,7 +389,7 @@ if(window.localStorage.getItem("login") == true){
 
  $scope.loginNew = function(xxx){
 
-      $http.get("http://localhost:8100/api/webservice/Login?Username="+xxx.user+"&Password="+xxx.pass)
+      $http.get("http://demo.pillocate.com/webservice/Login?Username="+xxx.user+"&Password="+xxx.pass)
             .success(function() {    
             alert("Login was Successful.");
             console.log("Login success");
@@ -424,7 +419,7 @@ $scope.saveUser =function(xxx){
 //end SignupCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start LocationCtrl
-.controller('LocationCtrl', ['$scope','SelectedValues','$http',function($scope,$SelectedValues,$http) {
+.controller('LocationCtrl', ['$scope','SelectedValues','$http','CheckNetwork',function($scope,$SelectedValues,$http,$CheckNetwork) {
     
     $scope.data = {
         "circleOptions": ["Bandra (West)","SantaCruz (West)","Khar (West)"],
@@ -433,27 +428,27 @@ $scope.saveUser =function(xxx){
         selectedCity: 'Mumbai'
     };
 
- /*   $http.get("http://localhost:8100/api/webservice/getCityArray")
+   $http.get("http://demo.pillocate.com/webservice/getCityArray")
             .success(function(cities) {    
             $scope.data.cityOptions =cities;
 
             })
             .error(function() {
-            alert("Failed");
-            });*/
+            $CheckNetwork.check();
+            });
 
 $scope.citySelected =function(){
-   /* console.log($scope.data.selectedCity+"  das");
+   console.log($scope.data.selectedCity+"  das");
     $SelectedValues.setSelectedCity($scope.data.selectedCity);
-        $http.get("http://localhost:8100/api/webservice/getCircleArray?city="+$scope.data.selectedCity)
+        $http.get("http://demo.pillocate.com/webservice/getCircleArray?city="+$scope.data.selectedCity)
             .success(function(circles) {    
-            $scope.data.circleOptions= circles;
-            console.log(circles.Array);
+            $scope.data.circleOptions= circles.circleArray;
+            console.log(circles.circleArray);
 
             })
             .error(function() {
-            alert("Failed");
-            });*/
+            $CheckNetwork.check();
+            });
     };
     $scope.circleSelected= function(){
    $SelectedValues.setSelectedCity($scope.data.selectedCity);
@@ -493,7 +488,7 @@ $scope.imgUpload = function(sourceTypevalue){
       var image = document.getElementById('myImage');
       image.src = "data:image/jpeg;base64," + imageData;
       $scope.source=image.src;
-      $http.get("http://localhost:8100/api/webservice/uploadPrescriptionFile?inputFile="+"data:image/jpeg;base64," + imageData)
+      $http.get("http://demo.pillocate.com/webservice/uploadPrescriptionFile?inputFile="+"data:image/jpeg;base64," + imageData)
             .success(function() {    
             alert("Successfully Uploaded");
             

@@ -7,34 +7,44 @@
 <div class="item item-divider positive" >
   Order Status
   </div>
-  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="1" ng-disabled="true">Placed</ion-checkbox>
-  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="2" ng-disabled="true">Accepted</ion-checkbox>
-  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="3" ng-disabled="true">Dispatched</ion-checkbox>
-  <ion-checkbox ng-model="data.orderDetails.orderStatus" ng-true-value="4" ng-disabled="true">Delivered</ion-checkbox>
+  <ion-checkbox ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="1" ng-disabled="true">Placed</ion-checkbox>
+  <ion-checkbox ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="2" ng-disabled="true">Accepted</ion-checkbox>
+  <ion-checkbox ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="3" ng-disabled="true">Dispatched</ion-checkbox>
+  <ion-checkbox ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="4" ng-disabled="true">Delivered</ion-checkbox>
 <div class="item item-divider positive">
   Order Details
   </div>
+  <div ng-repeat="data in data.orderDetails.orderDetailsList">
   <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Order Name</span>
-    <span class="input-label">{{data.orderDetails.brandName}}</span>
+    <span class="input-label">{{data.brandName}}</span>
   </label>
-
+<label class="item item-input item-stacked-label item-text-wrap">
+    <span class="input-label">Quantity</span>
+    <span class="input-label">{{data.quantity}}</span>
+  </label>
  <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Tracking Id</span>
-    <span class="input-label">{{data.orderDetails.trackingId}}</span>
+    <span class="input-label">{{data.trackingId}}</span>
   </label>
 
  <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Expected Delivery</span>
-    <span class="input-label datatime">{{data.orderDetails.estimatedDeliveryTime | date:'medium'}}</span>
+    <span class="input-label datatime">{{data.estimatedDeliveryTime | date:'medium'}}</span>
   </label>
+  </div>
  <label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Seller</span>
-    <span class="input-label">{{data.orderDetails.storeName}}</span>
+    <span class="input-label">Address line1</span>
+    <span class="input-label">{{data.orderDetails.patient.addressLine1}}</span>
   </label>
+<label class="item item-input item-stacked-label item-text-wrap">
+    <span class="input-label">Address line2</span>
+    <span class="input-label">{{data.orderDetails.patient.addressLine2}}</span>
+  </label>
+
  <label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Seller contact no</span>
-    <span class="input-label">{{data.orderDetails.storePhoneNumber}}</span>
+    <span class="input-label">Phone</span>
+    <span class="input-label">{{data.orderDetails.patient.phoneNumber}}</span>
   </label>
   <div class="item item-input-inset">
       <div >
@@ -43,7 +53,7 @@
 </a>   
 </div>
     <div>
- <a class="button button-assertive" style="margin-left:10px" type="button" ng-click="cancelOrder(data.orderDetails.orderId)">
+ <a class="button button-assertive" style="margin-left:10px" type="button" ng-click="cancelOrder(data.orderDetails.orderDetailsList[0].orderId)">
   Cancel Order
 </a>   
 </div>
