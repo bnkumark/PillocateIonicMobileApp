@@ -1,27 +1,23 @@
-<ion-view view-title="buynow">
-  <ion-content>
-<div ng-controller="BuyNowCtrl">
-<div ng-if="items!=''"> 
-<div class="quantity list" ng-repeat="item in items" >
-<label class="item item-input">
-<span class="input-label" >{{ item.item }}</span>
-<span class="input-label">{{ item.quantity }}</span>
-</label>
-<button ng-click="destroy('{{ item.item }}','{{ item.quantity }}')" class="button button-assertive">
-Cancel</button>
-</div>
-<a ng-href="#/app/home" href="#/app/home"  class="button button-positive">
-Add more</a>
-<a ng-href="#/app/orderdetails" href="#/app/orderdetails" ng-click="placeorder()" class="button button-balanced">
-    Place order
-  </a>
-</div>
-<div ng-if="items==''">
-	No items added to cart<br>
-	<a ng-href="#/app/home" href="#/app/home"  class="button button-positive">
-Add an item</a>
-</div>
-</div>
- </ion-content>
+<ion-view view-title="Cart">
+    <ion-content>
+        <div ng-controller="BuyNowCtrl">
+            <div ng-if="items!=''">
+                <div class="quantity list" ng-repeat="item in items">
+                    <label class="item item-input">
+                        <span class="input-label">{{ item.item }}</span>
+                        <span class="input-label">{{ item.quantity }}</span>
+                        <button ng-click="destroy('{{ item.item }}','{{ item.quantity }}')" class="button button-assertive"> Remove</button>
+                    </label>
+                </div>
+                <a ng-href="#/app/home" href="#/app/home" class="padding-left button button-positive">Add more</a>
+                <a ng-href="#/app/orderdetails" href="#/app/orderdetails" ng-click="placeorder()" class="button button-balanced">Place order</a>
+            </div>
+            <div class="item" ng-if="items==''">
+                <span>No items in the cart</span>
+                <br>
+                <br>
+                <a ng-href="#/app/home" href="#/app/home" class="item button button-positive">Add Item</a>
+            </div>
+        </div>
+    </ion-content>
 </ion-view>
-

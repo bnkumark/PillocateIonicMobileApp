@@ -257,6 +257,15 @@ $http.get("http://localhost:8100/api/webservice/search?city="+selectedCity +"&br
 							console.log("error");
 							});
 		}
+		
+		$http.get("http://localhost:8100/api/webservice/showCartItems")
+            .success(function(data) {
+            	console.log(data);
+							})
+							.error(function(data){
+							console.log("error");
+							});
+
 	}
 }])
 
@@ -301,8 +310,7 @@ $http.get("http://localhost:8100/api/webservice/search?city="+selectedCity +"&br
                     
                     if (data.orderDetailsList[0].errors.errors.length == 0) {
                         console.log('no errors in order');
-                        
-                       
+                                         
                         
                         $OrderDetailsService.setorderDetails(data);
                         $OrderDetailsService.setScreen('orderCompletion');
@@ -396,6 +404,8 @@ $http.get("http://localhost:8100/api/webservice/search?city="+selectedCity +"&br
                 })
                 .error(function(data) {
                 $CheckNetwork.check();
+                alert("There was some problem:"+data);
+                
                 });
 
         };
@@ -489,6 +499,9 @@ $scope.saveUser =function(xxx){
         selectedCity: 'Mumbai'
     };
 
+  $SelectedValues.setSelectedCity($scope.data.selectedCity);
+   $SelectedValues.setSelectedCircle($scope.data.selectedCircle); 
+   
    $http.get("http://localhost:8100/api/webservice/getCityArray")
             .success(function(cities) {    
             $scope.data.cityOptions =cities;
@@ -512,6 +525,7 @@ $scope.citySelected =function(){
             });
     };
     $scope.circleSelected= function(){
+    
    $SelectedValues.setSelectedCity($scope.data.selectedCity);
    $SelectedValues.setSelectedCircle($scope.data.selectedCircle);     
     };
@@ -594,12 +608,14 @@ app.service('SelectedValues', function($q) {
                 return selectedCircle;
             },
             setSelectedCircle: function(x) {
+            console.log("setcircle:"+x);
                 selectedCircle = x;
             },
             getSelectedCity: function() {
                 return selectedCity;
             },
             setSelectedCity: function(x) {
+            console.log("setCity:"+x)
                 selectedCity = x;
             },
             getselectedBrandItem: function() {

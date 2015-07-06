@@ -1,17 +1,23 @@
-<ion-view view-title="Search Results" cache-view="false">
-  <ion-content>
-  <div class="item item-text-wrap">Search Results for {{data.localBrand}}</div>
-<div class="quantity list">
-<label class="item item-input">
-<span class="input-label">Quantity:</span>
-<input type="number" min="1" max="10" ng-model="data.quantity" value="1">
-</label>
-</div>
-<button ng-click="addtocart()" ng-disabled="isDisabled" ng-model="isDisabled" class="button button-positive">
-    +Add to cart
-  </button>
-<a class="button button-stable" ng-href="#/app/buynow" href="#/app/buynow">Checkout</a>
-<div class="list" ><p>{{ data.message }}</p></div>
-<a class="button button-calm" ng-href="#/app/home" href="#/app/home">Go Back</a>
- </ion-content>
+﻿<ion-view view-title="Search Results" cache-view="false">
+    <ion-content>
+        <div class="item item-text-wrap">Search Results for {{data.localBrand}}</div>
+        <div class="quantity list">
+            <label class="item item-input">
+                <span class="input-label">Quantity:</span>
+                <input type="number" min="1" max="10" ng-model="data.quantity" value="1">
+            </label>
+        </div>
+        <div class="padding">
+        <button ng-click="addtocart()" ng-disabled="isDisabled" ng-model="isDisabled" class="button button-positive">
+            +Add to Cart
+        </button>
+        <a class="padding-left button button-stable" ng-href="#/app/buynow" href="#/app/buynow">Checkout</a>
+        </div>
+        <div class="list">
+            <p>{{ data.message }}</p>
+        </div>
+        <div class="padding">
+        <a class="button button-calm" ng-href="#/app/home" href="#/app/home">Add More</a>
+        </div>
+    </ion-content>
 </ion-view>
