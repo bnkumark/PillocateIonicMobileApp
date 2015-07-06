@@ -214,6 +214,9 @@ $http.get("http://localhost:8100/api/webservice/search?city="+selectedCity +"&br
 				}*/
         return false;
   			}	
+  			
+  
+  			
 /*$scope.checkout=function(){
   		/*   $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + $scope.data.searchResults.storeId+ "&brandId="+"&inventoryId="+$scope.data.searchResults.inventoryId + "&brandName=" + $scope.data.searchResults.brandName+"&quantity="+$scope.data.quantity)
             .success(function(data) {
@@ -235,6 +238,11 @@ $http.get("http://localhost:8100/api/webservice/search?city="+selectedCity +"&br
 	};
 	$scope.items="";
 	$scope.items=$SelectedValues.getItems();
+	
+	  $scope.$watch(function () { return $SelectedValues.getItems();         }, function (value) {
+        $scope.items= value;
+    });
+	
 	$scope.destroy=function(x,y){
 	var items=$SelectedValues.getItems();
 			for(i=0;i<items.length;i++)
@@ -267,7 +275,8 @@ $http.get("http://localhost:8100/api/webservice/search?city="+selectedCity +"&br
 							});
 
 	}
-}])
+	
+	}])
 
 .controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
         console.log('OrderDetailsCtrlmethod called');
@@ -311,7 +320,7 @@ $http.get("http://localhost:8100/api/webservice/search?city="+selectedCity +"&br
                     if (data.orderDetailsList[0].errors.errors.length == 0) {
                         console.log('no errors in order');
                                          
-                        
+                        $SelectedValues.emptyItems();
                         $OrderDetailsService.setorderDetails(data);
                         $OrderDetailsService.setScreen('orderCompletion');
                         $state.go('app.ordercompletion');
@@ -320,7 +329,7 @@ $http.get("http://localhost:8100/api/webservice/search?city="+selectedCity +"&br
                     }
                 })
                 .error(function(data) {
-                $CheckNetwork.check();
+                            $CheckNetwork.check();
                 });
 
         };
@@ -591,7 +600,7 @@ app.service('SelectedValues', function($q) {
         var selectedBrandItem = {};
         var selectedCircle = {};
         var selectedCity={};
-				var items=[];
+		var items=[];
         return {
             getSelectedBrand: function(id) {
                 for (i = 0; i < selectedBrand.length; i++) {
@@ -627,16 +636,19 @@ app.service('SelectedValues', function($q) {
 						setItems: function(x) {
                 items.push(x);
             },
-						getItems: function(){
+			getItems: function(){
+			console.log("get items:"+items);
 								return items;
-						},
-						removeItems:function(x){
+			},
+			removeItems:function(x){
 								var index=items.indexOf(x);
 								items.splice(index,1);
-						},
-						emptyItems:function(){
-								items=[];
-						},
+			},
+			emptyItems:function(){
+			console.log("before empty items"+items.length);
+				items=[];
+				console.log("after empty items"+items.length);
+			},
         }
     })
     //end SelectValues service
