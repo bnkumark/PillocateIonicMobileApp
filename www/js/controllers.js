@@ -155,7 +155,7 @@ var app = angular.module('starter.controllers', [])
     
     console.log($scope.data.items);
     
-    $http.get("http://localhost:8100/api/webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + selectedBrand.id + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
+    $http.get("http://localhost:8100/api/webservice/search?city=" + selectedCity + "&brandName=" + "&inventoryId=" + selectedBrand.id + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
         .success(function(data) {
             console.log('searchResultsCtrl success');
             if(data.availabilityFlag == false)
@@ -412,15 +412,22 @@ var app = angular.module('starter.controllers', [])
 
 }])
 //end FeedbackCtrl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 //start Requestmedicine
-.controller('requestmedicineCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', '$state','CheckNetwork', function($scope, $http, $SelectedValues, $state, $CheckNetwork) {
+.controller('requestmedicineCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', '$state','CheckNetwork', function($scope, $http, $SelectedValues,$SelectedStore, $state, $CheckNetwork) {
     //TODO the code below, copy pasted from feedback controller
     $scope.data = {
         "feedbackstatus": ''
     };
+    var selectedBrand = $SelectedValues.getselectedBrandItem();
+    var selectedCircle = $SelectedValues.getSelectedCircle();
+    console.log(selectedCircle);
+    console.log(selectedBrand.label);
+    $scope.medicine=selectedBrand.label;
     $scope.submitfeedback = function(feedback) {
         console.log(feedback.name);
-        $http.get("http://localhost:8100/api/webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
+        $http.get("http://localhost:8100/api/webservice/requestNewBrand?brandId="+selectedBrand.label+"&emailID=" + feedback.email + "&phoneNumber=" + feedback.phone + "&circle=" +selectedCircle )
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
                 console.log('feedback submit success:' + data);
