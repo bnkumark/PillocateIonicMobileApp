@@ -122,109 +122,79 @@ var app = angular.module('starter.controllers', [])
         console.log('brandSelected method');
         $SelectedValues.setselectedBrandItem(item);
         $scope.data.search = ''; //clear the search box
+        if(item.id == null)
+        {
+        console.log('item.id is null');
+            $state.go('app.requestmedicine');
+        }
+        else
+        {
+                console.log('item.id is not null');
+           $state.go('app.searchresults');
+        }
     }
 }])
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start searchResultsCtrl
-.controller('SearchResultsCtrl', ['$scope', '$http', 'SelectedValues', '$ionicPopup', 'SelectedStore','CheckNetwork', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore, $CheckNetwork,$localStorage) {
-        console.log('searchResultsCtrl method');
-        var selectedBrand = $SelectedValues.getselectedBrandItem();
-		//		window.localStorage['brand']=selectedBrand;
-        var selectedCircle = $SelectedValues.getSelectedCircle();
-        var selectedCity = $SelectedValues.getSelectedCity();
-        
-        $scope.data = {
-        	"searchResults": [],
-            "items": [],
-            "localBrand": selectedBrand.label,
-            "storeId" : '',
-            quantity:'1',
-            availabiltyFlag: '',
-						message : ''
-        };
-        console.log($scope.data.items);
-        //TODO dont hardcode city
-$http.get("http://localhost:8100/api/webservice/search?city="+selectedCity +"&brandId="+"&inventoryId=" + selectedBrand.id+"&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
-            .success(function(data) {
-                console.log('searchResultsCtrl success');
-                $scope.data.searchResults= data;
-                //$scope.data.items = data.storesList;
-				//console.log(data.storesList);
-								             })
-            .error(function(data) {
-            $CheckNetwork.check();
-            });
-					        //Start
-        $scope.storeSelected = function(item) {
-                $SelectedStore.selectedStore = item;
-                $SelectedStore.setselectedBrandItem($SelectedValues.getselectedBrandItem());
+.controller('SearchResultsCtrl', ['$scope', '$http', 'SelectedValues', '$ionicPopup', 'SelectedStore', 'CheckNetwork','$state', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore, $CheckNetwork,$state) {
+    console.log('searchResultsCtrl method');
+    var selectedBrand = $SelectedValues.getselectedBrandItem();
+    var selectedCircle = $SelectedValues.getSelectedCircle();
+    var selectedCity = $SelectedValues.getSelectedCity();
+
+    $scope.data = {
+        "searchResults": [],
+        "items": [],
+        "localBrand": selectedBrand.label,
+        "storeId": '',
+        quantity: '1',
+        availabiltyFlag: '',
+        message: ''
+    };
+    
+    console.log($scope.data.items);
+    
+    $http.get("http://localhost:8100/api/webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + selectedBrand.id + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
+        .success(function(data) {
+            console.log('searchResultsCtrl success');
+            if(data.availabilityFlag == false)
+            {
+            console.log("Medicine not avaialble");
+               $state.go('app.requestmedicine');
             }
-            //end
-//http://localhost:8100/api/webservice/addItemToCart?storeId=4&brandId=&inventoryId=23386&brandName=ABANA&quantity=1  storeId:"3" brandName:"Ecosprin 75mg TAB" inventoryId:"22500"
-//Start
-	$scope.isDisabled=false;
-	$scope.addtocart=function(){
-				$scope.isDisabled = true;
-				var item = { item : selectedBrand.label , quantity : $scope.data.quantity , storeid : $scope.data.searchResults.storeId , inventoryid : $scope.data.searchResults.inventoryId } ;
-				$SelectedValues.setItems(item);
-		/*		var allitems = $SelectedValues.getItems();
-				var item = { item : selectedBrand.label , quantity : $scope.data.quantity };
-				var c = 0;
-				if(allitems.length!=0)
-				{
-					for(i=0;i < allitems.length;i++)
-					{
-//						console.log(allitems[i].item);
-//						console.log(selectedBrand.label);
-						if( allitems[i].item != selectedBrand.label)
-						{
-							console.log(2);	
-						}
-						else if(allitems[i].item == selectedBrand.label)
-						{
-							console.log(3);
-							c++;
-							allitems[i].quantity = item.quantity;
-						}
-					}
-					console.log("count="+c);
-					if(c==0)
-					{
-//						$SelectedValues.setItems(item);
-						allitems.push(item);
-				//		console.log(allitems);
-						$SelectedValues.emptyItems();
-						for(i=0;i < allitems.length;i++)
-						{
-							console.log(allitems[i]);
-							$SelectedValues.setItems(allitems[i]);
-						}
-					}
-				}
-				else
-				{
-		//			console.log(1);
-					$SelectedValues.setItems(item);
-				}
-				var data=$SelectedValues.getItems();
-				for(i=0;i<data.length;i++)
-				{
-			//		console.log(data[i].item+','+data[i].quantity);	
-				}*/
+            else
+            {
+            $scope.data.searchResults = data;
+            }
+
+        })
+        .error(function(data) {
+            $CheckNetwork.check();
+        });
+        
+    //Start
+    $scope.storeSelected = function(item) {
+            $SelectedStore.selectedStore = item;
+            $SelectedStore.setselectedBrandItem($SelectedValues.getselectedBrandItem());
+        }
+        //end
+       
+    $scope.isDisabled = false;
+    $scope.addtocart = function() {
+        $scope.isDisabled = true;
+        var item = {
+            item: selectedBrand.label,
+            quantity: $scope.data.quantity,
+            storeid: $scope.data.searchResults.storeId,
+            inventoryid: $scope.data.searchResults.inventoryId
+        };
+        $SelectedValues.setItems(item);
         return false;
-  			}	
-  			
-  
-  			
-/*$scope.checkout=function(){
-  		/*   $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + $scope.data.searchResults.storeId+ "&brandId="+"&inventoryId="+$scope.data.searchResults.inventoryId + "&brandName=" + $scope.data.searchResults.brandName+"&quantity="+$scope.data.quantity)
-            .success(function(data) {
-//							$SelectedValues.setItems(data);
-            	console.log('addItemToCartsuccess'); 
-						})*/
-    }])
-    //end searchResultsCtrl
+    }
+
+}])
+//end searchResultsCtrl
     
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -442,6 +412,27 @@ $http.get("http://localhost:8100/api/webservice/search?city="+selectedCity +"&br
 
 }])
 //end FeedbackCtrl
+//start Requestmedicine
+.controller('requestmedicineCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', '$state','CheckNetwork', function($scope, $http, $SelectedValues, $state, $CheckNetwork) {
+    //TODO the code below, copy pasted from feedback controller
+    $scope.data = {
+        "feedbackstatus": ''
+    };
+    $scope.submitfeedback = function(feedback) {
+        console.log(feedback.name);
+        $http.get("http://localhost:8100/api/webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
+            .success(function(data) {
+                $scope.data.feedbackstatus = data;
+                console.log('feedback submit success:' + data);
+            })
+            .error(function(data) {
+            $CheckNetwork.check();
+            });
+    }
+
+}])
+//end Requestmedicine
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start LoginCtrl
 app.controller('LoginCtrl', ['$log','$scope','$state','$http' , function($log,$scope,$state,$http) {

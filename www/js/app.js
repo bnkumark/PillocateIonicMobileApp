@@ -58,6 +58,15 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
       }
     }
   })
+ .state('app.requestmedicine', {
+    url: "/requestmedicine",
+    views: {
+      'menuContent': {
+        templateUrl: "templates/requestmedicine.html",
+        controller: 'requestmedicineCtrl'
+      }
+    }
+  })
 
 .state('app.login', {
     url: "/login",

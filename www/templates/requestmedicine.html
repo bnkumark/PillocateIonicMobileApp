@@ -1,0 +1,24 @@
+<ion-view view-title="Request">
+  <ion-content>
+    <form ng-submit="submitfeedback(feedback)">
+    <span class="assertive">Medicine not available. Please enter your contact details below, and we will get back to you as soon as they are available</span>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Name</span>
+    <input type="text" placeholder="Full Name" ng-model="feedback.name" required>
+  </label>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Email Id (for us to respond)</span>
+    <input type="email" placeholder="Email id" ng-model="feedback.email" required>
+  </label>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Message</span>
+    <input type="text" placeholder="Type your message here" ng-model="feedback.message" required>
+  </label>
+<div class="item">
+ <button class="item button button-positive" type="submit">
+  Submit
+</button>
+</div>
+</form>
+  </ion-content>
+</ion-view>
