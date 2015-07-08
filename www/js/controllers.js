@@ -36,7 +36,11 @@ var app = angular.module('starter.controllers', [])
 })
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 .controller('HomeCtrl', ['$scope', '$http', '$state', 'SelectedValues', '$ionicHistory', '$ionicScrollDelegate', '$ionicNavBarDelegate', '$timeout','CheckNetwork', function($scope, $http, $state, $SelectedValues, $ionicHistory, $ionicScrollDelegate, $ionicNavBarDelegate, $timeout,$CheckNetwork) {
-
+    var circleValue = window.localStorage.getItem("circle");
+    console.log("Local circle storage state:"+circleValue)
+    if(circleValue != "true"){
+        $state.go('app.location');
+    }
     $ionicHistory.clearHistory();
 
     var airlines;
@@ -427,10 +431,12 @@ var app = angular.module('starter.controllers', [])
     $scope.medicine=selectedBrand.label;
     $scope.submitfeedback = function(feedback) {
         console.log(feedback.name);
-        $http.get("http://localhost:8100/api/webservice/requestNewBrand?brandId="+selectedBrand.label+"&emailID=" + feedback.email + "&phoneNumber=" + feedback.phone + "&circle=" +selectedCircle )
+        $http.get("http://localhost:8100/api/webservice/requestNewBrand?brandName="+selectedBrand.label+"&emailID=" + feedback.email + "&phoneNumber=" + feedback.phone + "&circle=" +selectedCircle )
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
                 console.log('feedback submit success:' + data);
+                $SelectedValues.setSelectedStatusmessage(data);
+                $state.go("app.statusmessage");
             })
             .error(function(data) {
             $CheckNetwork.check();
@@ -496,12 +502,22 @@ $scope.saveUser =function(xxx){
 }])
 //end SignupCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//start StatusmessageCtrl
+.controller('StatusmessageCtrl', ['$scope','SelectedValues',  function($scope,$SelectedValues) {
+var statusmessage = $SelectedValues.getSelectedStatusmessage();
+console.log(statusmessage);
+$scope.mssg = statusmessage;
+
+}])
+//end StatusmessageCtrl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start LocationCtrl
 .controller('LocationCtrl', ['$scope','SelectedValues','$http','CheckNetwork',function($scope,$SelectedValues,$http,$CheckNetwork) {
-    
+    var circleData = window.localStorage.getItem("circleData");
+    alert(circleData);
     $scope.data = {
         "circleOptions": ["Bandra (West)","SantaCruz (West)","Khar (West)"],
-        selectedCircle: 'Bandra (West)',
+        selectedCircle: circleData,
         'cityOptions': ['Mumbai'],
         selectedCity: 'Mumbai'
     };
@@ -534,7 +550,8 @@ $scope.citySelected =function(){
     $scope.circleSelected= function(){
     
    $SelectedValues.setSelectedCity($scope.data.selectedCity);
-   $SelectedValues.setSelectedCircle($scope.data.selectedCircle);     
+   $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
+    window.localStorage.setItem("circle","true");
     };
 }])
 //end LocationCtrl
@@ -617,6 +634,15 @@ app.service('SelectedValues', function($q) {
             setSelectedCircle: function(x) {
             console.log("setcircle:"+x);
                 selectedCircle = x;
+                window.localStorage.setItem("circleData",x);
+                
+            },
+            getSelectedStatusmessage: function() {
+                return selectedStatusmessage;
+            },
+            setSelectedStatusmessage: function(x) {
+            console.log("setStatusmessage"+x);
+            selectedStatusmessage = x;
             },
             getSelectedCity: function() {
                 return selectedCity;
