@@ -37,10 +37,13 @@ var app = angular.module('starter.controllers', [])
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 .controller('HomeCtrl', ['$scope', '$http', '$state', 'SelectedValues', '$ionicHistory', '$ionicScrollDelegate', '$ionicNavBarDelegate', '$timeout','CheckNetwork', function($scope, $http, $state, $SelectedValues, $ionicHistory, $ionicScrollDelegate, $ionicNavBarDelegate, $timeout,$CheckNetwork) {
     var circleValue = window.localStorage.getItem("circle");
-    console.log("Local circle storage state:"+circleValue)
-    if(circleValue != "true"){
+    var cityValue = window.localStorage.getItem("city");
+    console.log("Local circle storage state:"+circleValue+cityValue);
+
+    if(circleValue != "true" || cityValue != "true"){
+        alert("Please select City and Circle to proceed!.");
         $state.go('app.location');
-    }
+    };
     $ionicHistory.clearHistory();
 
     var airlines;
@@ -85,6 +88,18 @@ var app = angular.module('starter.controllers', [])
 
     //Start of  $scope.search
     $scope.search = function() {
+
+    var circleValue = window.localStorage.getItem("circle");
+    var cityValue = window.localStorage.getItem("city");
+    console.log("Local circle storage state:"+circleValue+cityValue);
+
+    if(circleValue != "true" || cityValue != "true"){
+        alert("Please select City and Circle to proceed!.");
+        $state.go('app.location');
+    };
+
+
+
      console.log('Char entered' + Date());
      $timeout.cancel( timer );
      timer = $timeout(
@@ -532,12 +547,12 @@ $scope.mssg = statusmessage;
 //start LocationCtrl
 .controller('LocationCtrl', ['$scope','SelectedValues','$http','CheckNetwork',function($scope,$SelectedValues,$http,$CheckNetwork) {
     var circleData = window.localStorage.getItem("circleData");
-    alert(circleData);
+    var cityData = window.localStorage.getItem("cityData");
     $scope.data = {
-        "circleOptions": ["Bandra (West)","SantaCruz (West)","Khar (West)"],
+        "circleOptions": ['Select City First!'],
         selectedCircle: circleData,
-        'cityOptions': ['Mumbai'],
-        selectedCity: 'Mumbai'
+        'cityOptions': [],
+        selectedCity: cityData
     };
 
   $SelectedValues.setSelectedCity($scope.data.selectedCity);
@@ -554,11 +569,12 @@ $scope.mssg = statusmessage;
 
 $scope.citySelected =function(){
    console.log($scope.data.selectedCity+"  das");
+    window.localStorage.setItem("city","true");
     $SelectedValues.setSelectedCity($scope.data.selectedCity);
         $http.get("http://localhost:8100/api/webservice/getCircleArray?city="+$scope.data.selectedCity)
             .success(function(circles) {    
-            $scope.data.circleOptions= circles.circleArray;
-            console.log(circles.circleArray);
+            $scope.data.circleOptions= circles;
+            console.log(circles);
 
             })
             .error(function() {
@@ -668,6 +684,7 @@ app.service('SelectedValues', function($q) {
             setSelectedCity: function(x) {
             console.log("setCity:"+x)
                 selectedCity = x;
+                window.localStorage.setItem("cityData",x);
             },
             getselectedBrandItem: function() {
                 return selectedBrandItem;
