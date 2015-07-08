@@ -4,24 +4,14 @@
 <div class="list">
 <div>
    <label class="item positive" ng-if="data.cancelSuccess != ''">{{data.cancelSuccess}}</label>
-<div class="item item-divider positive" >
-  Order Status
-  </div>
-  <ion-item ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="1" ng-disabled="true">1. Placed (Yet to be accepted)</ion-item>
-  <ion-item ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="2" ng-disabled="true">2. Accepted</ion-item>
-  <ion-item ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="3" ng-disabled="true">3. Dispatched</ion-item>
-  <ion-item ng-model="data.orderDetailsList[0].orderStatus" ng-true-value="4" ng-disabled="true">4. Delivered</ion-item>
-<div class="item item-divider positive">
-  Order Details
-  </div>
   <div ng-repeat="data in data.orderDetails.orderDetailsList">
-  <label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Order Name</span>
-    <span class="input-label">{{data.brandName}}</span>
-  </label>
+  <div class="item item-divider positive item-text-wrap">
+  Order Details for {{data.brandName}}
+  </div>
+
 <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Status</span>
-    <span class="input-label">{{data.orderStatus}}</span>
+    <span class="input-label">{{getStatusText(data.orderStatus)}}</span>
   </label>
 
 <label class="item item-input item-stacked-label item-text-wrap">
@@ -34,6 +24,11 @@
     <span class="input-label datatime">{{data.estimatedDeliveryTime | date:'medium'}}</span>
   </label>
   </div>
+  
+  <div class="item item-divider positive">
+  Delivery Details
+  </div>
+
  <label class="item item-input item-stacked-label item-text-wrap">
     <span class="input-label">Address line1</span>
     <span class="input-label">{{data.orderDetails.patient.addressLine1}}</span>
