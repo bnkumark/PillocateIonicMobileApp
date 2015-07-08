@@ -159,7 +159,7 @@ var app = angular.module('starter.controllers', [])
     
     console.log($scope.data.items);
     
-    $http.get("http://localhost:8100/api/webservice/search?city=" + selectedCity + "&brandName=" + "&inventoryId=" + selectedBrand.id + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
+    $http.get("http://localhost:8100/api/webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + selectedBrand.id + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
         .success(function(data) {
             console.log('searchResultsCtrl success');
             if(data.availabilityFlag == false)
@@ -379,6 +379,24 @@ var app = angular.module('starter.controllers', [])
             $state.go('app.home');
         };
 
+ $scope.getStatusText = function(data)
+        {
+        console.log("getstatustext called with:"+data);
+         if(data == "1")
+         return "Placed (Yet to be accepted)";
+
+      if(data == "2")
+         return "Accepted";
+
+      if(data == "3")
+         return "Dispatched";
+
+      if(data == "4")
+         return "Delivered";
+         
+         return '';
+        };
+        
         $scope.cancelOrder = function(orderId) {
             $http.get("http://localhost:8100/api/webservice/cancelOrder?orderId=" + orderId)
                 .success(function(data) {
