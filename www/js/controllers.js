@@ -452,16 +452,15 @@ var app = angular.module('starter.controllers', [])
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
                 console.log('feedback submit success:' + data);
+								if(feedback.name!=""  && feedback.email!="" && feedback.message!="")						{
+										feedback.name="";
+										feedback.email="";
+										feedback.message="";
+								}
             })
             .error(function(data) {
             $CheckNetwork.check();
             });
-			if(feedback.name!=""  && feedback.email!="" && feedback.message!="")
-			{
-				feedback.name="";
-				feedback.email="";
-				feedback.message="";
-			}
 		}
 }])
 //end FeedbackCtrl

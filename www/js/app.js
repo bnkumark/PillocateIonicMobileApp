@@ -86,14 +86,15 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
       }
     }
   })
- .state('app.statusmessage', {
-    url: '/statusmessage',
+ 	.state('app.statusmessage', {
+   	url: '/statusmessage',
+		cache: 'false',
     views: {
       'menuContent': {
-        templateUrl: 'templates/statusmessage.html',
-        controller: 'StatusmessageCtrl'
-      }
-    }
+       	templateUrl: 'templates/statusmessage.html',
+       	controller: 'StatusmessageCtrl'
+     	}
+   	}
   })
       .state('app.uploadpage', {
     url: '/uploadpage',
