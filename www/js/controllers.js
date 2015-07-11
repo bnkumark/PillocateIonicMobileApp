@@ -565,7 +565,7 @@ $scope.mssg = statusmessage;
         "circleOptions": ['Select City First!'],
         selectedCircle: circleData,
         'cityOptions': [],
-        selectedCity: cityData
+        selectedCity: cityData,
     };
 
     $SelectedValues.setSelectedCity($scope.data.selectedCity);
