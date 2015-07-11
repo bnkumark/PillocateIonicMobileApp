@@ -77,9 +77,8 @@
         <span class="input-label">Offer code</span>
       <input type="text" placeholder="Enter offer code" ng-model="order.offercode">
     </label>
-    <button class="button button-small" ng-click="applyOffer()">
-      Apply
-    </button>
+    <input type="button" class="button button-small" ng-click="applyOffer()" value="Apply" >
+    </input>
   </div>
       <span class="item item-text-wrap calm">{{order.offerstatus}}</span>
 <div class="item item-text-wrap"> Please note, the pharmacist may ask for a valid prescription at the time of delivery.</div>
@@ -87,9 +86,8 @@
 </div>
 
 <div class="item">
- <button class="item button button-positive" type="submit">
-  Submit
-</button>
+ <input class="item button button-positive" value="Submit" type="submit">
+</input>
 </div>
 </form>
 <!--<div class="list">
