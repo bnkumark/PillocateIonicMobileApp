@@ -456,8 +456,13 @@ var app = angular.module('starter.controllers', [])
             .error(function(data) {
             $CheckNetwork.check();
             });
-    }
-
+			if(feedback.name!=""  && feedback.email!="" && feedback.message!="")
+			{
+				feedback.name="";
+				feedback.email="";
+				feedback.message="";
+			}
+		}
 }])
 //end FeedbackCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
