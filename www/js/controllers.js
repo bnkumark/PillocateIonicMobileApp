@@ -207,10 +207,40 @@ var app = angular.module('starter.controllers', [])
             storeid: $scope.data.searchResults.storeId,
             inventoryid: $scope.data.searchResults.inventoryId
         };
-        $SelectedValues.setItems(item);
-        return false;
-    }
-
+        var allitems = $SelectedValues.getItems();
+				var item = { item : selectedBrand.label , quantity : $scope.data.quantity };
+				var c = 0;
+				var count=0;
+				if(allitems.length!=0)
+				{
+					for(i=0;i < allitems.length;i++)
+					{
+						if( allitems[i].item != selectedBrand.label)
+						{
+							count++;
+						}
+						else if(allitems[i].item == selectedBrand.label)
+						{
+							c++;
+							allitems[i].quantity = item.quantity;
+							$SelectedValues.emptyItems();
+							for(i=0;i < allitems.length;i++)
+							{
+								$SelectedValues.setItems(allitems[i]);
+							}
+						}
+					}
+					if( count == allitems.length )
+					{
+						$SelectedValues.setItems(item);	
+					}
+				}
+				else
+				{
+					$SelectedValues.setItems(item);
+				}
+				return false
+			}
 }])
 //end searchResultsCtrl
     
@@ -253,7 +283,50 @@ var app = angular.module('starter.controllers', [])
 							console.log("error while clearing the cart");
 							});
 
-
+				var allitems = $SelectedValues.getItems();
+				var item = { item : selectedBrand.label , quantity : $scope.data.quantity };
+				var c = 0;
+				if(allitems.length!=0)
+				{
+					for(i=0;i < allitems.length;i++)
+					{
+//						console.log(allitems[i].item);
+//						console.log(selectedBrand.label);
+						if( allitems[i].item != selectedBrand.label)
+						{
+							console.log(2);	
+						}
+						else if(allitems[i].item == selectedBrand.label)
+						{
+							console.log(3);
+							c++;
+							allitems[i].quantity = item.quantity;
+						}
+					}
+					console.log("count="+c);
+					if(c==0)
+					{
+//						$SelectedValues.setItems(item);
+						allitems.push(item);
+				//		console.log(allitems);+	
+					$SelectedValues.emptyItems();
+						for(i=0;i < allitems.length;i++)
+						{
+							console.log(allitems[i]);
+							$SelectedValues.setItems(allitems[i]);
+						}
+					}
+}
+				else
+				{
+		//			console.log(1);
+					$SelectedValues.setItems(item);
+				}
+				var data=$SelectedValues.getItems();
+				for(i=0;i<data.length;i++)
+				{
+			//		console.log(data[i].item+','+data[i].quantity);	
+				}
 		for(i=0;i<items.length;i++)	
 		{
 			 $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + items[i].storeid+ "&brandId="+"&inventoryId="+items[i].inventoryid + "&brandName=" + items[i].item +"&quantity="+items[i].quantity)
