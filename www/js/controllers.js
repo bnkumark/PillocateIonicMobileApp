@@ -209,17 +209,44 @@ if (selectedCity == '') {
        
     $scope.isDisabled = false;
     $scope.addtocart = function() {
-        $scope.isDisabled = true;
-        var item = {
-            item: selectedBrand.label,
-            quantity: $scope.data.quantity,
-            storeid: $scope.data.searchResults.storeId,
-            inventoryid: $scope.data.searchResults.inventoryId
-        };
-        $SelectedValues.setItems(item);
-        return false;
-    }
-
+		$scope.isDisabled = true;
+		var item = {
+				item: selectedBrand.label,
+				quantity: $scope.data.quantity,
+				storeid: $scope.data.searchResults.storeId,
+				inventoryid: $scope.data.searchResults.inventoryId
+		};
+		var allitems = $SelectedValues.getItems();
+		var count=0;
+		if(allitems.length!=0)
+		{
+			for(i=0;i < allitems.length;i++)
+			{
+				if( allitems[i].item != selectedBrand.label)
+				{
+					count++;
+				}
+				else if(allitems[i].item == selectedBrand.label)
+				{
+					allitems[i].quantity = item.quantity;
+					$SelectedValues.emptyItems();
+					for(i=0;i < allitems.length;i++)
+					{
+						$SelectedValues.setItems(allitems[i]);
+					}
+				}
+				if( count == allitems.length )
+				{
+					$SelectedValues.setItems(item);	
+				}
+			}
+		}
+		else
+		{
+			$SelectedValues.setItems(item);
+		}
+		return false;
+	}
 }])
 //end searchResultsCtrl
     
@@ -473,6 +500,11 @@ if (selectedCity == '') {
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
                 console.log('feedback submit success:' + data);
+								if(feedback.name!=""  && feedback.email!="" && feedback.message!="")						{
+										feedback.name="";
+										feedback.email="";
+										feedback.message="";
+								}
             })
             .error(function(data) {
             $CheckNetwork.check();
