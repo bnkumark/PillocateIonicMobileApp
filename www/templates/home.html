@@ -8,34 +8,16 @@
   <ion-content>
   <P class="item item-text-wrap" style="text-align:center;color:#0F75BC;text-transform:uppercase;border-width:0px">Online portal to <br/>Find medicines near you</P>
    <div class="list">
- <!--<div class="list" padding="false" >
-  <label class="item item-input item-select" style="margin-bottom:-25px">
-    <div  class="input-label">
-      Circle
-    </div>
-    <select ng-model="data.selectedCircle" ng-options="option for option in data.circleOptions">
-	</select>
-  </label>
-</div>
 
-<div class="list" padding="false">
-  <label class="item item-input item-select"  padding="false" style="margin-bottom:-32px">
-    <div  class="input-label">
-      City
-    </div>
-    <select ng-model="data.selectedCity" ng-options="option for option in data.cityOptions">
-    </select>
-  </label>
-</div>
---><div id="searchbox" class="list item-input-inset" padding="false" style="background-color:white;margin-bottom:-20px">
+<div id="searchbox" class="list item-input-inset" padding="false" style="background-color:white;margin-bottom:-20px">
   <label class="item item-input-wrapper" style="background-color:white;border-left:none;margin-left:-20px;margin-right:-20px;">
     <i class="icon ion-search placeholder-icon" style="margin-left:20px"></i>
     <input  type="search" style="background-color:white;border-color:blue" placeholder="Enter medicine brand" ng-focus="scrollToTop()" ng-change="search()" ng-blur="clearAutoSuggestions()" ng-model="data.search">
   </label>
       </div>
  <ion-list>
-      <ion-item ng-repeat="airline in data.airlines"  ng-click="brandSelected(airline)">
-       {{airline.label}}
+      <ion-item ng-repeat="brandItem in data.autoSuggetions"  ng-click="brandSelected(brandItem)">
+       {{brandItem.label}}
       </ion-item>
     </ion-list>
 </div>
