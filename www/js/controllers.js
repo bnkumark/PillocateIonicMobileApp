@@ -35,36 +35,35 @@ var app = angular.module('starter.controllers', [])
     };
 })
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-.controller('HomeCtrl', ['$scope', '$http', '$state', 'SelectedValues', '$ionicHistory', '$ionicScrollDelegate', '$ionicNavBarDelegate', '$timeout','CheckNetwork', function($scope, $http, $state, $SelectedValues, $ionicHistory, $ionicScrollDelegate, $ionicNavBarDelegate, $timeout,$CheckNetwork) {
+.controller('HomeCtrl', ['$scope', '$http', '$state', 'SelectedValues', '$ionicHistory', '$ionicScrollDelegate', '$ionicNavBarDelegate', '$timeout', 'CheckNetwork', function($scope, $http, $state, $SelectedValues, $ionicHistory, $ionicScrollDelegate, $ionicNavBarDelegate, $timeout, $CheckNetwork) {
+   
     var circleValue = window.localStorage.getItem("circle");
     var cityValue = window.localStorage.getItem("city");
-    console.log("Local circle storage state:"+circleValue+cityValue);
-
-    if(circleValue != "true" || cityValue != "true"){
+    console.log("Local circle storage state:" + circleValue + cityValue);
+    if (circleValue != "true") {
         $state.go('app.location');
+
     };
+    if(cityValue != 'true')
+    {
+    $state.go('app.location');
+    };
+		$SelectedValues.retrieveCircleFromStorage();
+		$SelectedValues.retrieveCityFromStorage();    
+
     $ionicHistory.clearHistory();
 
-    var airlines;
-    var searchTerm;
     var searchGotFocus = false;
     var timer;
 
     $scope.data = {
-        "airlines": [],
+        "autoSuggetions": [],
         "search": '',
         "circleOptions": [],
-        selectedCircle: 'Bandra (West)',
+        selectedCircle: '',
         'cityOptions': [],
-        selectedCity: 'Mumbai'
+        selectedCity: ''
     };
-    //TODO get this from web service
-    $scope.data.circleOptions = ["Bandra (West)","SantaCruz(West)","Khar(West)"];
-    $scope.data.selectedCircle = 'Bandra (West)';
-    $scope.data.cityOptions = ["Mumbai"];
-    $scope.data.selectedCity = 'Mumbai';
-
-    console.log('HomeCtrl method');
 
     $scope.scrollToTop = function() {
         console.log('scrollToTop called');
@@ -76,62 +75,61 @@ var app = angular.module('starter.controllers', [])
     };
 
     $scope.clearAutoSuggestions = function() {
-
-        if ($scope.data.airlines.length != 0) {
-
-            $scope.data.airlines = [];
+        if ($scope.data.autoSuggetions.length != 0) {
+            $scope.data.autoSuggetions = [];
             searchGotFocus = false;
             console.log('clearing the auto suggestions');
         };
     };
-
+ 
     //Start of  $scope.search
     $scope.search = function() {
 
-    var circleValue = window.localStorage.getItem("circle");
-    var cityValue = window.localStorage.getItem("city");
-    console.log("Local circle storage state:"+circleValue+cityValue);
+          var selectedCircle = $SelectedValues.getSelectedCircle();
+          var selectedCity = $SelectedValues.getSelectedCity();
+    
+            console.log("selected circle:"+selectedCircle +"selected City:"+selectedCity );            
+            
+			//Check for location, when the user starts typing medicine name.
+            if (selectedCircle == '' || selectedCity == '') {
+                alert("Please select City and Circle to proceed!.");
+                $state.go('app.location');
+            };
 
-    if(circleValue != "true" || cityValue != "true"){
-        alert("Please select City and Circle to proceed!.");
-        $state.go('app.location');
-    };
 
-
-
-     console.log('Char entered' + Date());
-     $timeout.cancel( timer );
-     timer = $timeout(
-          function() {
-            console.log('search method');
-            if ($scope.data.search != '') {
-            //TODO do not hardcode city here
-                $http.get("http://localhost:8100/api/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle+"&city=Mumbai")
-                    .success(function(data) {
-                        console.log('setting auto suggestions ' + data);
-                        $scope.data.airlines = data.slice(0, 6);; 
-                        $SelectedValues.setSelectedBrand(data);
-                        $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
-                        searchGotFocus = true;
-                    })
-                    .error(function(data) {
-                    console.log('getting auto suggestions failed');
-                     $CheckNetwork.check();
-                    })
-            } else {
-                $scope.data.airlines = [];
-            }          },
-        1000
-        );
-         //Console will log 'Timer rejected!' if it is cancelled.
-       timer.then(
-          function() {
-            console.log( "Timer resolved!"+Date());
-          },
-          function() {
-            console.log( "Timer rejected!"+Date());
-          }
-       );   
+            $timeout.cancel(timer);
+            timer = $timeout(
+                function() {
+                    console.log('search method');
+                    if ($scope.data.search != '') {
+                        //TODO do not hardcode city here
+                        $http.get("http://localhost:8100/api/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + selectedCircle + "&city="+selectedCity)
+                            .success(function(data) {
+                                console.log('setting auto suggestions ' + data);
+                                $scope.data.autoSuggetions = data.slice(0, 6);;
+                                $SelectedValues.setSelectedBrand(data);
+                                $SelectedValues.setSelectedCircle(selectedCircle);
+                                searchGotFocus = true;
+                            })
+                            .error(function(data) {
+                                console.log('getting auto suggestions failed');
+                                $CheckNetwork.check();
+                            })
+                    } else {
+                        $scope.data.autoSuggetions = [];
+                    }
+                },
+                1000
+            );
+            //Console will log 'Timer rejected!' if it is cancelled.
+            timer.then(
+                function() {
+                    console.log("Timer resolved!" + Date());
+                },
+                function() {
+                    console.log("Timer rejected!" + Date());
+                }
+            );
         }
         //end of  $scope.search
 
@@ -140,15 +138,12 @@ var app = angular.module('starter.controllers', [])
         console.log('brandSelected method');
         $SelectedValues.setselectedBrandItem(item);
         $scope.data.search = ''; //clear the search box
-        if(item.id == null)
-        {
-        console.log('item.id is null');
+        if (item.id == null) {
+            console.log('item.id is null');
             $state.go('app.requestmedicine');
-        }
-        else
-        {
-                console.log('item.id is not null');
-           $state.go('app.searchresults');
+        } else {
+            console.log('item.id is not null');
+            $state.go('app.searchresults');
         }
     }
 }])
@@ -683,6 +678,14 @@ app.service('SelectedValues', function($q) {
         var selectedCity={};
 		var items=[];
         return {
+        retrieveCircleFromStorage: function() {
+        selectedCircle = window.localStorage.getItem("circleData");
+        console.log("circle data retreived from storage:"+selectedCircle);
+        },
+retrieveCityFromStorage: function() {
+        selectedCity = window.localStorage.getItem("cityData");
+        console.log("city data retreived from storage:"+selectedCity);
+        },
             getSelectedBrand: function(id) {
                 for (i = 0; i < selectedBrand.length; i++) {
                     if (selectedBrand[i].id == id) {
