@@ -41,15 +41,24 @@ var app = angular.module('starter.controllers', [])
     var cityValue = window.localStorage.getItem("city");
     console.log("Local circle storage state:" + circleValue + cityValue);
     if (circleValue != "true") {
+    console.log("going to location page");
         $state.go('app.location');
-
-    };
+    }
+    else
+    {
+		$SelectedValues.retrieveCircleFromStorage();    
+    }
     if(cityValue != 'true')
     {
+        console.log("going to location page");
     $state.go('app.location');
-    };
-		$SelectedValues.retrieveCircleFromStorage();
-		$SelectedValues.retrieveCityFromStorage();    
+    }
+    else
+    {
+    	$SelectedValues.retrieveCityFromStorage();    
+    }
+
+	
 
     $ionicHistory.clearHistory();
 
@@ -92,7 +101,12 @@ var app = angular.module('starter.controllers', [])
             
 			//Check for location, when the user starts typing medicine name.
             if (selectedCircle == '' || selectedCity == '') {
-                alert("Please select City and Circle to proceed!.");
+                alert("Please select your circle to proceed!.");
+                $state.go('app.location');
+            };
+
+if (selectedCity == '') {
+                alert("Please select your city to proceed!.");
                 $state.go('app.location');
             };
 
@@ -563,8 +577,17 @@ $scope.mssg = statusmessage;
         selectedCity: cityData,
     };
 
+if($scope.data.selectedCity != null)
+{
+    console.log("setting city:"+$scope.data.selectedCity);
     $SelectedValues.setSelectedCity($scope.data.selectedCity);
+    }
+    
+    if($scope.data.selectedCircle != null)
+    {
+    console.log("setting circle:"+$scope.data.selectedCircle);
     $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
+    }
 
     $http.get("http://localhost:8100/api/webservice/getCityArray")
         .success(function(cities) {
@@ -575,7 +598,7 @@ $scope.mssg = statusmessage;
             $CheckNetwork.check();
         });
         
-        if(cityData.length > 0)
+        if(cityData !=null && cityData.length > 0)
         {
 console.log("when the city selected is not empty");
 //TODO this is repeat of below code
@@ -674,8 +697,8 @@ $scope.imgUpload = function(sourceTypevalue){
 app.service('SelectedValues', function($q) {
         var selectedBrand = {};
         var selectedBrandItem = {};
-        var selectedCircle = {};
-        var selectedCity={};
+        var selectedCircle = '';
+        var selectedCity='';
 		var items=[];
         return {
         retrieveCircleFromStorage: function() {
