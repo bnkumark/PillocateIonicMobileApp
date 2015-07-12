@@ -289,21 +289,20 @@ if (selectedCity == '') {
 							console.log("error while clearing the cart");
 							});
 		var count =0 ;
-
 		for(i=0;i<items.length;i++)	
 		{
 			 $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + items[i].storeid+ "&brandId="+"&inventoryId="+items[i].inventoryid + "&brandName=" + items[i].item +"&quantity="+items[i].quantity)
             .success(function(data) {
-            count = count +1;
-            	console.log(data);
+           	 	console.log(data);
 							})
 							.error(function(data){
+							count++;	
 							alert("Sorry, there was an error"+ data);
 							console.log("error");
 							});
 		}
 		
-		if(count > 0)
+		if(count == 0)
 		{
 		console.log("none of the items added to cart on server");
 		$state.go('app.orderdetails');
