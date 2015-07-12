@@ -226,7 +226,7 @@ if (selectedCity == '') {
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start BuyNowCtrl
-.controller('BuyNowCtrl',['$scope','$http','SelectedValues','SelectedStore',function($scope,$http,$SelectedValues,$SelectedStore,$localStorage){
+.controller('BuyNowCtrl',['$scope','$http','SelectedValues','SelectedStore','$state',function($scope,$http,$SelectedValues,$SelectedStore,$state){
 	$scope.data={
 		quantity:'1',
 		message: '',
@@ -261,17 +261,29 @@ if (selectedCity == '') {
 							.error(function(data){
 							console.log("error while clearing the cart");
 							});
-
+		var count =0 ;
 
 		for(i=0;i<items.length;i++)	
 		{
 			 $http.get("http://localhost:8100/api/webservice/addItemToCart?storeId=" + items[i].storeid+ "&brandId="+"&inventoryId="+items[i].inventoryid + "&brandName=" + items[i].item +"&quantity="+items[i].quantity)
             .success(function(data) {
+            count = count +1;
             	console.log(data);
 							})
 							.error(function(data){
+							alert("Sorry, there was an error"+ data);
 							console.log("error");
 							});
+		}
+		
+		if(count > 0)
+		{
+		console.log("none of the items added to cart on server");
+		$state.go('app.orderdetails');
+		}
+		else
+		{
+		alert("Could not place order. all the orders giving error!");
 		}
 		
 		$http.get("http://localhost:8100/api/webservice/showCartItems")
