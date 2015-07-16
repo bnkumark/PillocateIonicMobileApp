@@ -210,16 +210,27 @@ if (selectedCity == '') {
     $scope.isDisabled = false;
     
     $scope.addtocart = function() {
-        $scope.isDisabled = true;
         var item = {
             item: selectedBrand.label,
             quantity: $scope.data.quantity,
             storeid: $scope.data.searchResults.storeId,
             inventoryid: $scope.data.searchResults.inventoryId
         };
-        $SelectedValues.setItems(item);
-        $scope.data.message = "Item added to cart";
-        return false;
+				$scope.count=true;
+				if( isNaN(item.quantity) || item.quantity == 0 )
+				{
+					$scope.count=true;
+					$scope.data.message = "Item quantity is not defined";
+					return false;
+				}
+				else
+				{
+					$scope.count=true;
+					$scope.isDisabled = true;
+        	$SelectedValues.setItems(item);
+        	$scope.data.message = "Item added to cart";
+        	return false;
+				}
     }
 
 }])
@@ -244,62 +255,6 @@ if (selectedCity == '') {
     }, function(value) {
         $scope.items = value;
     });
-<<<<<<< HEAD
-	
-	$scope.destroy=function(x,y){
-	var items=$SelectedValues.getItems();
-			for(i=0;i<items.length;i++)
-			{
-				if(items[i].item==x && items[i].quantity==y)
-				{
-					$SelectedValues.removeItems(items[i]);
-				}					
-			}
-	}
-	$scope.placeorder=function(){
-		var items=$SelectedValues.getItems();
-			//Clear the cart at server before adding items
-					 $http.get("http://demo.pillocate.com/webservice/clearShoppingCart")
-            .success(function(data) {
-            	console.log("cart cleared"+data);
-							})
-							.error(function(data){
-							console.log("error while clearing the cart");
-							});
-		var count =0 ;
-		for(i=0;i<items.length;i++)	
-		{
-			 $http.get("http://demo.pillocate.com/webservice/addItemToCart?storeId=" + items[i].storeid+ "&brandId="+"&inventoryId="+items[i].inventoryid + "&brandName=" + items[i].item +"&quantity="+items[i].quantity)
-            .success(function(data) {
-           	 	console.log(data);
-							})
-							.error(function(data){
-							count++;	
-					//		alert("Sorry, there was an error"+ data);
-							console.log("error");
-							});
-		}
-		
-		if(count == 0)
-		{
-		console.log("none of the items added to cart on server");
-		$state.go('app.orderdetails');
-		}
-		else
-		{
-		alert("Could not place order. all the orders giving error!");
-		}
-		
-		$http.get("http://demo.pillocate.com/webservice/showCartItems")
-            .success(function(data) {
-            	console.log(data);
-							})
-							.error(function(data){
-							console.log("error");
-							});
-=======
->>>>>>> b420fd59f1fe08217df8bba10b45028e5cb98de8
-
     $scope.destroy = function(x, y) {
         var items = $SelectedValues.getItems();
         for (i = 0; i < items.length; i++) {
