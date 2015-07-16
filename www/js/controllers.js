@@ -119,7 +119,7 @@ if (selectedCity == '') {
                         //TODO do not hardcode city here
                         $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + selectedCircle + "&city="+selectedCity)
                             .success(function(data) {
-                                console.log('setting auto suggestions ' + data);
+                                //console.log('setting auto suggestions ' + data);
                                 $scope.data.autoSuggetions = data.slice(0, 6);;
                                 $SelectedValues.setSelectedBrand(data);
                                 $SelectedValues.setSelectedCircle(selectedCircle);
@@ -208,64 +208,43 @@ if (selectedCity == '') {
         //end
        
     $scope.isDisabled = false;
+    
     $scope.addtocart = function() {
-		$scope.isDisabled = true;
-		var item = {
-				item: selectedBrand.label,
-				quantity: $scope.data.quantity,
-				storeid: $scope.data.searchResults.storeId,
-				inventoryid: $scope.data.searchResults.inventoryId
-		};
-		var allitems = $SelectedValues.getItems();
-		var count=0;
-		if(allitems.length!=0)
-		{
-			for(i=0;i < allitems.length;i++)
-			{
-				if( allitems[i].item != selectedBrand.label)
-				{
-					count++;
-				}
-				else if(allitems[i].item == selectedBrand.label)
-				{
-					allitems[i].quantity = item.quantity;
-					$SelectedValues.emptyItems();
-					for(i=0;i < allitems.length;i++)
-					{
-						$SelectedValues.setItems(allitems[i]);
-					}
-				}
-				if( count == allitems.length )
-				{
-					$SelectedValues.setItems(item);	
-				}
-			}
-		}
-		else
-		{
-			$SelectedValues.setItems(item);
-		}
-		return false;
-	}
+        $scope.isDisabled = true;
+        var item = {
+            item: selectedBrand.label,
+            quantity: $scope.data.quantity,
+            storeid: $scope.data.searchResults.storeId,
+            inventoryid: $scope.data.searchResults.inventoryId
+        };
+        $SelectedValues.setItems(item);
+        $scope.data.message = "Item added to cart";
+        return false;
+    }
+
 }])
 //end searchResultsCtrl
     
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start BuyNowCtrl
-.controller('BuyNowCtrl',['$scope','$http','SelectedValues','SelectedStore','$state',function($scope,$http,$SelectedValues,$SelectedStore,$state){
-	$scope.data={
-		quantity:'1',
-		message: '',
-		items: [],
-		message2:''
-	};
-	$scope.items="";
-	$scope.items=$SelectedValues.getItems();
-	
-	  $scope.$watch(function () { return $SelectedValues.getItems();         }, function (value) {
-        $scope.items= value;
+.controller('BuyNowCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', '$state', function($scope, $http, $SelectedValues, $SelectedStore, $state) {
+    $scope.data = {
+        quantity: '1',
+        message: '',
+        items: [],
+        message2: '',
+        loopWait: true
+    };
+    $scope.items = "";
+    $scope.items = $SelectedValues.getItems();
+
+    $scope.$watch(function() {
+        return $SelectedValues.getItems();
+    }, function(value) {
+        $scope.items = value;
     });
+<<<<<<< HEAD
 	
 	$scope.destroy=function(x,y){
 	var items=$SelectedValues.getItems();
@@ -318,11 +297,45 @@ if (selectedCity == '') {
 							.error(function(data){
 							console.log("error");
 							});
+=======
+>>>>>>> b420fd59f1fe08217df8bba10b45028e5cb98de8
 
-	}
-	
-	}])
+    $scope.destroy = function(x, y) {
+        var items = $SelectedValues.getItems();
+        for (i = 0; i < items.length; i++) {
+            if (items[i].item == x && items[i].quantity == y) {
+                $SelectedValues.removeItems(items[i]);
+            }
+        }
+    }
+    $scope.placeorder = function() {
+        var items = $SelectedValues.getItems();
 
+        var cartItemList = "[";
+
+        for (i = 0; i < items.length; i++) {
+            cartItemList = cartItemList + "{\"brandName\"\: \"" + items[i].item + "\", \"inventoryId\":\"" + items[i].inventoryid + "\", \"brandId\":\"\", \"storeId\":\"" + items[i].storeid + "\", \"quantity\":" + items[i].quantity + "},";
+            console.log("making addTiItemCart" + items[i]);
+        }
+      
+        cartItemList = cartItemList.substring(0, cartItemList.length - 1);
+        cartItemList = cartItemList + "]'";
+        console.log('cartItemList: ' + cartItemList);
+
+        $http.get("http://localhost:8100/api/webservice/addItemsToCart?cartItemList=" + cartItemList)
+            .success(function(data) {
+                $state.go('app.orderdetails');
+                console.log(data);
+            })
+            .error(function(data) {
+                alert("Sorry, there was an error placing" + items[i].item);
+                console.log("error");
+
+            });     
+    }
+}])
+//end
+//start OrderDetailsCtrl
 .controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
         console.log('OrderDetailsCtrlmethod called');
         $scope.data = {
@@ -498,11 +511,6 @@ if (selectedCity == '') {
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
                 console.log('feedback submit success:' + data);
-								if(feedback.name!=""  && feedback.email!="" && feedback.message!="")						{
-										feedback.name="";
-										feedback.email="";
-										feedback.message="";
-								}
             })
             .error(function(data) {
             $CheckNetwork.check();
@@ -666,8 +674,8 @@ console.log("when the city selected is not empty");
         $SelectedValues.setSelectedCity($scope.data.selectedCity);
         $http.get("http://demo.pillocate.com/webservice/getCircleArray?city=" + $scope.data.selectedCity)
             .success(function(circles) {
-                $scope.data.circleOptions = circles;
-                console.log(circles);
+                $scope.data.circleOptions = circles.circleArray;
+                console.log(circles.circleArray);
 
             })
             .error(function() {
