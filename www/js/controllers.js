@@ -617,8 +617,8 @@ console.log("when the city selected is not empty");
         $SelectedValues.setSelectedCity($scope.data.selectedCity);
         $http.get("http://localhost:8100/api/webservice/getCircleArray?city=" + $scope.data.selectedCity)
             .success(function(circles) {
-                $scope.data.circleOptions = circles;
-                console.log(circles);
+                $scope.data.circleOptions = circles.circleArray;
+                console.log(circles.circleArray);
 
             })
             .error(function() {
