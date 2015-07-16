@@ -208,6 +208,7 @@ if (selectedCity == '') {
         //end
        
     $scope.isDisabled = false;
+    
     $scope.addtocart = function() {
         $scope.isDisabled = true;
         var item = {
@@ -217,6 +218,7 @@ if (selectedCity == '') {
             inventoryid: $scope.data.searchResults.inventoryId
         };
         $SelectedValues.setItems(item);
+        $scope.data.message = "Item added to cart";
         return false;
     }
 

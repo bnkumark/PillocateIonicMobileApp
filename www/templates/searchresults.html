@@ -8,16 +8,18 @@
             </label>
         </div>
         <div class="padding">
-        <button ng-click="addtocart()" ng-disabled="isDisabled" ng-model="isDisabled" class="button button-positive">
+        <button ng-click="addtocart()" ng-disabled="isDisabled" ng-model="isDisabled" class="item button button-positive">
             +Add to Cart
         </button>
-        <a class="padding-left button button-stable" ng-href="#/app/buynow" href="#/app/buynow">Checkout</a>
+        <a class="item padding-left button button-stable" ng-href="#/app/buynow" href="#/app/buynow">Checkout</a>
         </div>
-        <div class="list">
-            <p>{{ data.message }}</p>
-        </div>
+        
         <div class="padding">
-        <a class="button button-calm" ng-href="#/app/home" href="#/app/home">Add More</a>
+        <a class="item button button-calm" ng-href="#/app/home" href="#/app/home">Add More</a>
+        </div>
+        
+        <div ng-show="isDisabled" class="item positive">
+            {{ data.message }}
         </div>
     </ion-content>
 </ion-view>
