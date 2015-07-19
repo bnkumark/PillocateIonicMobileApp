@@ -210,7 +210,12 @@ if (selectedCity == '') {
     $scope.isDisabled = false;
     
     $scope.addtocart = function() {
-        var item = {
+        addtocartlocal();
+    }
+    
+    function addtocartlocal()
+    {
+    var item = {
             item: selectedBrand.label,
             quantity: $scope.data.quantity,
             storeid: $scope.data.searchResults.storeId,
