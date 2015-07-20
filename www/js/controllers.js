@@ -478,6 +478,10 @@ if (selectedCity == '') {
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
                 console.log('feedback submit success:' + data);
+             	feedback.name="";
+			    feedback.email="";
+			    feedback.message="";
+								
             })
             .error(function(data) {
             $CheckNetwork.check();
