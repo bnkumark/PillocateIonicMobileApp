@@ -1,21 +1,22 @@
 ﻿<ion-view view-title="Feedback">
   <ion-content>
     <form ng-submit="submitfeedback(feedback)">
+    <div class=" item">Have a complaint, suggestion or query? Write to us</div>
     <span class="item positive" ng-if="data.feedbackstatus!=''">{{data.feedbackstatus}}</span>
   <label class="item item-input item-stacked-label">
     <span class="input-label">Name</span>
-    <input type="text" placeholder="Full Name" ng-model="feedback.name" required>
+    <input type="text" placeholder="Full Name" ng-model="feedback.name">
   </label>
   <label class="item item-input item-stacked-label">
     <span class="input-label">Email Id (for us to respond)</span>
-    <input type="email" placeholder="Email id" ng-model="feedback.email" required>
+    <input type="email" placeholder="Email id" ng-model="feedback.email">
   </label>
   <label class="item item-input item-stacked-label">
     <span class="input-label">Message</span>
     <input type="text" placeholder="Type your message here" ng-model="feedback.message" required>
   </label>
 <div class="item">
- <button class="item button button-positive" type="submit">
+ <button class="button button-positive" type="submit">
   Submit
 </button>
 </div>
