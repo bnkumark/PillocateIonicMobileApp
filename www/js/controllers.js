@@ -260,14 +260,21 @@ if (selectedCity == '') {
     }, function(value) {
         $scope.items = value;
     });
-    $scope.destroy = function(x, y) {
+    
+    $scope.destroy = function(item) {
         var items = $SelectedValues.getItems();
         for (i = 0; i < items.length; i++) {
-            if (items[i].item == x && items[i].quantity == y) {
+            if (items[i].inventoryid == item.inventoryid) {
                 $SelectedValues.removeItems(items[i]);
             }
         }
     }
+    
+    $scope.quantityChanged = function(item){
+    console.log("calling updateItem with:"+item.inventoryid+":"+item.quantity);
+    $SelectedValues.updateItem(item.inventoryid,item.quantity);
+    }
+    
     $scope.placeorder = function() {
         var items = $SelectedValues.getItems();
 
@@ -711,14 +718,17 @@ app.service('SelectedValues', function($q) {
         var selectedCity='';
 		var items=[];
         return {
-        retrieveCircleFromStorage: function() {
-        selectedCircle = window.localStorage.getItem("circleData");
-        console.log("circle data retreived from storage:"+selectedCircle);
-        },
-retrieveCityFromStorage: function() {
-        selectedCity = window.localStorage.getItem("cityData");
-        console.log("city data retreived from storage:"+selectedCity);
-        },
+        
+        	retrieveCircleFromStorage: function() {
+        	selectedCircle = window.localStorage.getItem("circleData");
+       		console.log("circle data retreived from storage:"+selectedCircle);
+        	},
+		
+			retrieveCityFromStorage: function() {
+        	selectedCity = window.localStorage.getItem("cityData");
+        	console.log("city data retreived from storage:"+selectedCity);
+        	},
+        	
             getSelectedBrand: function(id) {
                 for (i = 0; i < selectedBrand.length; i++) {
                     if (selectedBrand[i].id == id) {
@@ -763,19 +773,32 @@ retrieveCityFromStorage: function() {
 						setItems: function(x) {
                 items.push(x);
             },
+            
 			getItems: function(){
 			console.log("get items:"+items);
 								return items;
 			},
+			
 			removeItems:function(x){
 								var index=items.indexOf(x);
 								items.splice(index,1);
 			},
+			
 			emptyItems:function(){
 			console.log("before empty items"+items.length);
 				items=[];
 				console.log("after empty items"+items.length);
 			},
+			
+			updateItem:function(inventoryid,quantity){
+					
+			  for (i = 0; i < items.length; i++) {
+            if (items[i].inventoryid == inventoryid) {
+                items[i].quantity=quantity;
+            }
+        }
+
+			}
         }
     })
     //end SelectValues service

@@ -1,13 +1,22 @@
 ﻿<ion-view view-title="Cart">
     <ion-content>
         <div ng-controller="BuyNowCtrl">
-            <div ng-if="items!=''">               
+            <div ng-if="items!=''">
                 <div class="quantity list" ng-repeat="item in items">
-                    <label class="item item-input">
+                    <label class=" item-input item-stacked-label">
                         <span class="input-label">{{ item.item }}</span>
-                        <span class="input-label">{{ item.quantity }}</span>
-                        <button ng-click="destroy('{{ item.item }}','{{ item.quantity }}')" class="icon ion-close-circled button button-assertive"> </button>
                     </label>
+                    <label class=" item-input">
+                        <span class="input-label">Quantity</span>
+                        <input type="number" min="1" ng-model="item.quantity" value="item.quantity" ng-change="quantityChanged(item)">
+                    </label>
+                    <label class=" item-input">
+                        <button ng-click="destroy(item)" class="icon ion-close-circled button button-assertive"> </button>
+                    </label>
+
+                    <label class=" item-input item-divider">
+                    </label>
+
                 </div>
 
                 <div class="item">
@@ -17,7 +26,7 @@
                     <a ng-click="placeorder()" class="item button button-balanced">Place order</a>
                 </div>
             </div>
-            
+
             <div class="item" ng-if="items==''">
                 <span>No items in the cart</span>
                 <br>
