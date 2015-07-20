@@ -3,36 +3,32 @@
         <div ng-controller="BuyNowCtrl">
             <div ng-if="items!=''">
                 <div class="quantity list" ng-repeat="item in items">
-                    <label class=" item-input item-stacked-label">
-                        <span class="input-label">{{ item.item }}</span>
-                    </label>
-                    <label class=" item-input">
-                        <span class="input-label">Quantity</span>
-                        <input type="number" min="1" ng-model="item.quantity" value="item.quantity" ng-change="quantityChanged(item)">
-                    </label>
-                    <label class=" item-input">
-                        <button ng-click="destroy(item)" class="icon ion-close-circled button button-assertive"> </button>
-                    </label>
 
-                    <label class=" item-input item-divider">
-                    </label>
+                    <label class="item-text-wrap item-input">{{ item.item }}</label>
+                    <div class="item-input-inset">
+                        <label class="item-input-wrapper">
+                            <input type="number" min="1" ng-model="item.quantity" value="item.quantity" ng-change="quantityChanged(item)">
+                        </label>
+                        <button ng-click="destroy(item)" class="icon ion-close-circled button button-assertive button-small"> </button>
+                    </div>
+				</div>
+                    <div class="item-input-stacked">
+                        <ion-radio ng-model="data.prescriptionChoice" ng-value="'A'">Show prescription on delivery</ion-radio>
+                        <ion-radio ng-model="data.prescriptionChoice" ng-value="'B'">Upload prescription now </ion-radio>
 
-                </div>
 
-                <div class="item">
-                    <a ng-href="#/app/home" href="#/app/home" class="item padding-left button button-positive">Add more</a>
+                        <br>
+                        <button ng-href="#/app/home" href="#/app/home" class="button button-positive">Add more</button>
+
+                        <button ng-click="placeorder()" class="button button-balanced">Place order</button>
+                    </div>
+               </div>
+                <div class="item" ng-if="items==''">
+                    <span>No items in the cart</span>
                     <br>
                     <br>
-                    <a ng-click="placeorder()" class="item button button-balanced">Place order</a>
+                    <a ng-href="#/app/home" href="#/app/home" class="item button button-positive">Add Items</a>
                 </div>
             </div>
-
-            <div class="item" ng-if="items==''">
-                <span>No items in the cart</span>
-                <br>
-                <br>
-                <a ng-href="#/app/home" href="#/app/home" class="item button button-positive">Add Item</a>
-            </div>
-        </div>
     </ion-content>
 </ion-view>

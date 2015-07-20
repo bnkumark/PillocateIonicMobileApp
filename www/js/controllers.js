@@ -175,7 +175,7 @@ if (selectedCity == '') {
         "items": [],
         "localBrand": selectedBrand.label,
         "storeId": '',
-        quantity: '1',
+        quantity: 1,
         availabiltyFlag: '',
         message: ''
     };
@@ -210,8 +210,24 @@ if (selectedCity == '') {
     $scope.isDisabled = false;
     
     $scope.addtocart = function() {
+    if($SelectedValues.isItemPresentInCart($scope.data.searchResults.inventoryId) == false)
+	{
+
         addtocartlocal();
+        }
+        else
+        {
+        alert("Item already there in cart!");
+        }
     }
+    
+	$scope.checkout = function() {
+	if($SelectedValues.isItemPresentInCart($scope.data.searchResults.inventoryId) == false)
+	{
+	 addtocartlocal();
+	 }
+	 $state.go('app.buynow');
+	}
     
     function addtocartlocal()
     {
@@ -250,9 +266,10 @@ if (selectedCity == '') {
         message: '',
         items: [],
         message2: '',
-        loopWait: true
+        loopWait: true,
+        prescriptionChoice : 'A'
     };
-    $scope.items = "";
+   
     $scope.items = $SelectedValues.getItems();
 
     $scope.$watch(function() {
@@ -291,7 +308,14 @@ if (selectedCity == '') {
 
         $http.get("http://localhost:8100/api/webservice/addItemsToCart?cartItemList=" + cartItemList)
             .success(function(data) {
+            	if($scope.data.prescriptionChoice == 'A')
+            	{
                 $state.go('app.orderdetails');
+                }
+                else
+                {
+                 $state.go('app.uploadpage');
+                }
                 console.log(data);
             })
             .error(function(data) {
@@ -331,10 +355,12 @@ if (selectedCity == '') {
         
 		order.addressline2 =  $CheckNetwork.UndefinedToEmpty(order.addressline2);
 		order.offercode =  $CheckNetwork.UndefinedToEmpty(order.offercode);     
+		
+		var attachmentId = $SelectedValues.getAttachmentId();
 
         console.log('addressline2 '+order.addressline2);
         //TODO do not hardcode city and state
-            $http.get("http://localhost:8100/api/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=Mumbai"+ "&state=Maharastra" + "&country=India"+ "&attachmentid=&offerCode=" + order.offercode)
+            $http.get("http://localhost:8100/api/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=Mumbai"+ "&state=Maharastra" + "&country=India"+ "&attachmentid="+attachmentId+"&offerCode=" + order.offercode)
                 .success(function(data) {
 
                     console.log("data:" + data);
@@ -661,24 +687,14 @@ console.log("when the city selected is not empty");
     };
 }])//end LocationCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-/*/start FooterCtrl
-.controller('FooterCtrl', ['$scope','$state',  function($scope,$state) {
-alert("this is FooterCtrl");
-$scope.locationSelect =function(){
-    console.log("Go1 Worked!");
-    $state.go('app.location');
-};
-}])
-//end FooterCtrl*/
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start UploadpageCtrl
-.controller('UploadpageCtrl', ['$scope','$cordovaCamera','$http',function($scope,$cordovaCamera,$http) {
+.controller('UploadpageCtrl', ['$scope','$cordovaCamera','$http','CheckNetwork', 'SelectedValues',function($scope,$cordovaCamera,$http, $CheckNetwork, $SelectedValues) {
 $scope.source = {};
 $scope.imgUpload = function(sourceTypevalue){
   document.addEventListener("deviceready", function () {
     var options = {
       quality: 50,
-      destinationType: Camera.DestinationType.DATA_URL,
+      destinationType: Camera.DestinationType.FILE_URI,
       sourceType: sourceTypevalue,
       allowEdit: true,
       encodingType: Camera.EncodingType.JPEG,
@@ -688,17 +704,19 @@ $scope.imgUpload = function(sourceTypevalue){
       saveToPhotoAlbum: false
     };
 
-    $cordovaCamera.getPicture(options).then(function(imageData) {
+    $cordovaCamera.getPicture(options).then(function(imageURI) {
       var image = document.getElementById('myImage');
-      image.src = "data:image/jpeg;base64," + imageData;
+      image.src = imageURI;
+      alert("imageURI: "+ imageURI);
       $scope.source=image.src;
-      $http.get("http://localhost:8100/api/webservice/uploadPrescriptionFile?inputFile="+"data:image/jpeg;base64," + imageData)
-            .success(function() {    
-            alert("Successfully Uploaded");
-            
+      $http.get("http://localhost:8100/api/webservice/uploadPrescriptionFile?inputFilePath="+ imageURI)
+            .success(function(id) {    
+            alert("Successfully Uploaded:"+id);
+            $SelectedValues.setAttachmentId(id);
             })
-            .error(function(imageData1) {
-            alert("Fail.due to "+imageData1);
+            .error(function(error) {
+            alert("Fail.due to "+error);
+            $CheckNetwork.check();
             });
     }, function(err) {
       // error
@@ -721,6 +739,7 @@ app.service('SelectedValues', function($q) {
         var selectedCircle = '';
         var selectedCity='';
 		var items=[];
+		var attachmentId='';
         return {
         
         	retrieveCircleFromStorage: function() {
@@ -753,6 +772,16 @@ app.service('SelectedValues', function($q) {
                 window.localStorage.setItem("circleData",x);
                 
             },
+            
+			getAttachmentId: function() {
+                return attachmentId;
+            },
+            
+            setAttachmentId: function(x) {
+            console.log("set attachmentId:"+x);
+                attachmentId= x;              
+            },
+            
             getSelectedStatusmessage: function() {
                 return selectedStatusmessage;
             },
@@ -794,16 +823,25 @@ app.service('SelectedValues', function($q) {
 				console.log("after empty items"+items.length);
 			},
 			
-			updateItem:function(inventoryid,quantity){
-					
-			  for (i = 0; i < items.length; i++) {
-            if (items[i].inventoryid == inventoryid) {
-                items[i].quantity=quantity;
-            }
-        }
+			updateItem: function(inventoryid, quantity) {
+			    for (i = 0; i < items.length; i++) {
+        			if (items[i].inventoryid == inventoryid) {
+            		items[i].quantity = quantity;
+        			}
 
+    			}
+			},
+			
+			isItemPresentInCart: function(inventoryid) {
+			    for (i = 0; i < items.length; i++) {
+        			if (items[i].inventoryid == inventoryid) {
+            		return true;
+        			}
+    			}
+    			return false;
 			}
-        }
+       
+		 }
     })
     //end SelectValues service
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
