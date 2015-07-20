@@ -1,17 +1,23 @@
-<ion-view view-title="Cart">
+﻿<ion-view view-title="Cart">
     <ion-content>
         <div ng-controller="BuyNowCtrl">
-            <div ng-if="items!=''">
+            <div ng-if="items!=''">               
                 <div class="quantity list" ng-repeat="item in items">
                     <label class="item item-input">
                         <span class="input-label">{{ item.item }}</span>
                         <span class="input-label">{{ item.quantity }}</span>
-                        <button ng-click="destroy('{{ item.item }}','{{ item.quantity }}')" class="button button-assertive"> Remove</button>
+                        <button ng-click="destroy('{{ item.item }}','{{ item.quantity }}')" class="icon ion-close-circled button button-assertive"> </button>
                     </label>
                 </div>
-                <a ng-href="#/app/home" href="#/app/home" class="padding-left button button-positive">Add more</a>
-                <a ng-click="placeorder()" class="button button-balanced">Place order</a>
+
+                <div class="item">
+                    <a ng-href="#/app/home" href="#/app/home" class="item padding-left button button-positive">Add more</a>
+                    <br>
+                    <br>
+                    <a ng-click="placeorder()" class="item button button-balanced">Place order</a>
+                </div>
             </div>
+            
             <div class="item" ng-if="items==''">
                 <span>No items in the cart</span>
                 <br>
