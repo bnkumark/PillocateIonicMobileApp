@@ -120,9 +120,16 @@ var app = angular.module('starter.controllers', [])
                         $http.get("http://localhost:8100/api/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + selectedCircle + "&city="+selectedCity)
                             .success(function(data) {
                                 //console.log('setting auto suggestions ' + data);
-                                $scope.data.autoSuggetions = data.slice(0, 6);;
-                                $SelectedValues.setSelectedBrand(data);
-                                $SelectedValues.setSelectedCircle(selectedCircle);
+                                if(data.length > 0)
+                                {
+                               	 $scope.data.autoSuggetions = data.slice(0, 6);;
+                               	 $SelectedValues.setSelectedBrand(data);
+                               	 //$SelectedValues.setSelectedCircle(selectedCircle);
+                                }
+                                else
+                                {
+                                	$scope.data.autoSuggetions = [{label: $scope.data.search, id : null}]
+                                }
                                 searchGotFocus = true;
                             })
                             .error(function(data) {
@@ -543,6 +550,22 @@ var app = angular.module('starter.controllers', [])
 
 }])
 //end FeedbackCtrl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//start FooterCtrl
+.controller('FooterCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', '$state','CheckNetwork', function($scope, $http, $SelectedValues, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork) {
+    console.log("footer ctrl");
+    $scope.cartItems= $SelectedValues.getItems().length;
+    
+     $scope.$watch(function() {
+        return $SelectedValues.getItems().length;
+    }, function(value) {
+        $scope.cartItems = value;
+    });
+
+  
+}])
+//end FooterCtrl
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start Requestmedicine
