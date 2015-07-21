@@ -327,77 +327,96 @@ if (selectedCity == '') {
 }])
 //end
 //start OrderDetailsCtrl
-.controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
-        console.log('OrderDetailsCtrlmethod called');
-        $scope.data = {
-            "store": $SelectedStore.selectedStore,
-            "brandName": $SelectedStore.getselectedBrandItem().label,
-            "circle": $SelectedValues.getSelectedCircle()
-        };
-        $scope.order = {
-            "quantity": 1,
-            "offerstatus": ''
-        };
-        //TODO hardcoding this for now
-        $scope.data.store.country = 'India';
+.controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
+    console.log('OrderDetailsCtrlmethod called');
+    $scope.data = {
+        "store": $SelectedStore.selectedStore,
+        "brandName": $SelectedStore.getselectedBrandItem().label,
+        "circle": $SelectedValues.getSelectedCircle()
+    };
+    $scope.order = {
+        "quantity": 1,
+        "offerstatus": ''
+    };
+    //TODO hardcoding this for now
+    $scope.data.store.country = 'India';
 
-        var selectedBrand = $SelectedStore.getselectedBrandItem();
-        var selectedStore = $scope.data.store;
-        console.log('selected brand value in OrderDetailsCtrl:' + selectedBrand.label);
-        console.log('store value in OrderDetailsCtrl:' + $scope.data.store.storename);
+    var selectedBrand = $SelectedStore.getselectedBrandItem();
+    var selectedStore = $scope.data.store;
+    console.log('selected brand value in OrderDetailsCtrl:' + selectedBrand.label);
+    console.log('store value in OrderDetailsCtrl:' + $scope.data.store.storename);
 
-        $scope.submitorder = function(order) {
-        if(selectedBrand.name == null)
-        {
-        selectedBrand.name = '';
-        console.log('selectedBrand.name is null');
+    $scope.submitorder = function(order) {
+    
+        if (selectedBrand.name == null) {
+            selectedBrand.name = '';
+            console.log('selectedBrand.name is null');
         }
+
+        order.addressline2 = $CheckNetwork.UndefinedToEmpty(order.addressline2);
+        order.offercode = $CheckNetwork.UndefinedToEmpty(order.offercode);
+
+        var attachmentId = $SelectedValues.getAttachmentId();
+
+        console.log('addressline2 ' + order.addressline2);
         
-		order.addressline2 =  $CheckNetwork.UndefinedToEmpty(order.addressline2);
-		order.offercode =  $CheckNetwork.UndefinedToEmpty(order.offercode);     
-		
-		var attachmentId = $SelectedValues.getAttachmentId();
-
-        console.log('addressline2 '+order.addressline2);
-        //TODO do not hardcode city and state
-            $http.get("http://localhost:8100/api/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=Mumbai"+ "&state=Maharastra" + "&country=India"+ "&attachmentid="+attachmentId+"&offerCode=" + order.offercode)
-                .success(function(data) {
-
-                    console.log("data:" + data);
-                    console.log('data.orderDetailsList[0].errors.errors.length:' + data.orderDetailsList[0].errors.errors.length);
-                    console.log('data.orderDetailsList[0].trackingId:' + data.orderDetailsList[0].trackingId);
-                    console.log('data.patient:addressLine1:' + data.patient.addressLine1);
-                    
-                    if (data.orderDetailsList[0].errors.errors.length == 0) {
-                        console.log('no errors in order');
-                                         
-                        $SelectedValues.emptyItems();
-                        $OrderDetailsService.setorderDetails(data);
-                        $OrderDetailsService.setScreen('orderCompletion');
-                        $state.go('app.ordercompletion');
-                    } else {
-                    alert("Could submit order, please check if all fields filled properly.");
-                    }
-                })
-                .error(function(data) {
-                            $CheckNetwork.check();
-                            alert("some error occured:"+data);
-                });
-
-        };
-
-        $scope.applyOffer = function() {
-            $http.get("http://localhost:8100/api/webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
-                .success(function(data) {
-                    $scope.order.offerstatus = data;
-                })
-                .error(function(data) {
-                  $CheckNetwork.check();
-                    $scope.order.offerstatus = data;
-                });
+        if(order.email == '' || order.email === undefined)
+        {
+        alert("Email can not be empty!");
         }
-    }])
-    //end OrderDetailsCtrl
+        else if(order.phone == '' || order.phone === undefined)
+        {
+        alert("Phone can not be empty!");
+        }
+        else if(order.addressline1 == '' || order.addressline1 === undefined)
+        {
+        alert("Address line 1 can not be empty!");
+        }
+		else if(order.isTermsChecked == false)
+        {
+        alert("Please accept the Terms and Conditions!");
+        }
+        else
+        {
+        //TODO do not hardcode city and state
+        $http.get("http://localhost:8100/api/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=Mumbai" + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
+            .success(function(data) {
+
+                console.log("data:" + data);
+                console.log('data.orderDetailsList[0].errors.errors.length:' + data.orderDetailsList[0].errors.errors.length);
+                console.log('data.orderDetailsList[0].trackingId:' + data.orderDetailsList[0].trackingId);
+                console.log('data.patient:addressLine1:' + data.patient.addressLine1);
+
+                if (data.orderDetailsList[0].errors.errors.length == 0) {
+                    console.log('no errors in order');
+
+                    $SelectedValues.emptyItems();
+                    $OrderDetailsService.setorderDetails(data);
+                    $OrderDetailsService.setScreen('orderCompletion');
+                    $state.go('app.ordercompletion');
+                } else {
+                    alert("Could submit order, please check if all fields filled properly.");
+                }
+            })
+            .error(function(data) {
+                $CheckNetwork.check();
+                alert("some error occured:" + data);
+            });
+         }
+
+    };
+
+    $scope.applyOffer = function() {
+        $http.get("http://localhost:8100/api/webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
+            .success(function(data) {
+                $scope.order.offerstatus = data;
+            })
+            .error(function(data) {
+                $CheckNetwork.check();
+                $scope.order.offerstatus = data;
+            });
+    }
+}])    //end OrderDetailsCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start TrackOrderCtrl
 .controller('TrackOrderCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
@@ -499,7 +518,18 @@ if (selectedCity == '') {
         "feedbackstatus": ''
     };
     $scope.submitfeedback = function(feedback) {
-        console.log(feedback.name);
+        console.log("feedback name:"+feedback.name);
+        
+        if(feedback.email == '' || feedback.email === undefined)
+        {
+        alert("email can not be empty:");
+        }
+        else if(feedback.message == '' || feedback.message === undefined)
+        {
+         alert("message can not be empty:");
+        }
+		else
+		{
         $http.get("http://localhost:8100/api/webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
@@ -512,6 +542,7 @@ if (selectedCity == '') {
             .error(function(data) {
             $CheckNetwork.check();
             });
+            }
     }
 
 }])
@@ -520,23 +551,27 @@ if (selectedCity == '') {
 
 //start Requestmedicine
 .controller('requestmedicineCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', '$state','CheckNetwork', function($scope, $http, $SelectedValues,$SelectedStore, $state, $CheckNetwork) {
-    //TODO the code below, copy pasted from feedback controller
-    $scope.data = {
-        "feedbackstatus": ''
+
+  $scope.data = {
+        message:'',
+        medicine: $SelectedValues.getselectedBrandItem().label
     };
-    var selectedBrand = $SelectedValues.getselectedBrandItem();
+  
     var selectedCircle = $SelectedValues.getSelectedCircle();
     console.log(selectedCircle);
-    console.log(selectedBrand.label);
-    $scope.medicine=selectedBrand.label;
+ 
+    console.log('$scope.data.medicine :'+$scope.data.medicine );
+   
     $scope.submitfeedback = function(feedback) {
         console.log(feedback.name);
-        $http.get("http://localhost:8100/api/webservice/requestNewBrand?brandName="+selectedBrand.label+"&emailID=" + feedback.email + "&phoneNumber=" + feedback.phone + "&circle=" +selectedCircle )
+        $http.get("http://localhost:8100/api/webservice/requestNewBrand?brandName="+$scope.data.medicine+"&emailID=" + feedback.email + "&phoneNumber=" + feedback.phone + "&circle=" +selectedCircle )
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
-                console.log('feedback submit success:' + data);
-                $SelectedValues.setSelectedStatusmessage(data);
-                $state.go("app.statusmessage");
+                console.log('feedback submit success:' + data);      
+				$scope.data.message = data;
+				 $scope.data.medicine = '';
+				 feedback.email ='';
+				 feedback.phone = '';
             })
             .error(function(data) {
             $CheckNetwork.check();
@@ -602,91 +637,78 @@ $scope.saveUser =function(xxx){
 }])
 //end SignupCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//start StatusmessageCtrl
-.controller('StatusmessageCtrl', ['$scope','SelectedValues',  function($scope,$SelectedValues) {
-var statusmessage = $SelectedValues.getSelectedStatusmessage();
-console.log(statusmessage);
-$scope.mssg = statusmessage;
-
-}])
-//end StatusmessageCtrl
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start LocationCtrl
 .controller('LocationCtrl', ['$scope', 'SelectedValues', '$http', 'CheckNetwork', function($scope, $SelectedValues, $http, $CheckNetwork) {
-   
- var circleData = window.localStorage.getItem("circleData");
-    var cityData = window.localStorage.getItem("cityData");
-    
-    $scope.data = {
-        "circleOptions": ['Select City First!'],
-        selectedCircle: circleData,
-        'cityOptions': [],
-        selectedCity: cityData,
-    };
-
-if($scope.data.selectedCity != null)
-{
-    console.log("setting city:"+$scope.data.selectedCity);
-    $SelectedValues.setSelectedCity($scope.data.selectedCity);
-    }
-    
-    if($scope.data.selectedCircle != null)
-    {
-    console.log("setting circle:"+$scope.data.selectedCircle);
-    $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
-    }
-
-    $http.get("http://localhost:8100/api/webservice/getCityArray")
-        .success(function(cities) {
-            $scope.data.cityOptions = cities;
-
-        })
-        .error(function() {
-            $CheckNetwork.check();
-        });
-        
-        if(cityData !=null && cityData.length > 0)
-        {
-console.log("when the city selected is not empty");
-//TODO this is repeat of below code
-     console.log($scope.data.selectedCity + "  das");
-        window.localStorage.setItem("city", "true");
-        $SelectedValues.setSelectedCity($scope.data.selectedCity);
-        $http.get("http://localhost:8100/api/webservice/getCircleArray?city=" + $scope.data.selectedCity)
-            .success(function(circles) {
-                $scope.data.circleOptions = circles.circleArray;
-                console.log(circles);
-
-            })
-            .error(function() {
-                $CheckNetwork.check();
-            });
-
+console.log('------------------------------ 1.window.localStorage.getItem(---------------------------------------------');
+        var circleData = window.localStorage.getItem("circleData");
+        var cityData = window.localStorage.getItem("cityData");
+console.log('------------------------------ 2.$scope.data = {---------------------------------------------');
+        $scope.data = {
+            circleOptions: ['Select City First!'],
+            selectedCircle: circleData,
+            cityOptions: [],
+            selectedCity: cityData,
+        };
+console.log('------------------------------ 3.if ($scope.data.selectedCity != null) {---------------------------------------------');
+        if ($scope.data.selectedCity != null) {
+            console.log("scope.data.selectedCity:" + $scope.data.selectedCity);
+            $SelectedValues.setSelectedCity($scope.data.selectedCity);
         }
-        
-
-    $scope.citySelected = function() {
-        console.log($scope.data.selectedCity + "  das");
-        window.localStorage.setItem("city", "true");
-        $SelectedValues.setSelectedCity($scope.data.selectedCity);
-        $http.get("http://localhost:8100/api/webservice/getCircleArray?city=" + $scope.data.selectedCity)
-            .success(function(circles) {
-                $scope.data.circleOptions = circles.circleArray;
-                console.log(circles.circleArray);
-
+console.log('----------------------------  4.if ($scope.data.selectedCircle != null) {-----------------------------------------------');
+        if ($scope.data.selectedCircle != null) {
+            console.log("$scope.data.selectedCircle:" + $scope.data.selectedCircle);
+            $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
+        }
+console.log('------------------------------5.http://localhost:8100/api/webservice/getCityArray---------------------------------------------');
+        $http.get("http://localhost:8100/api/webservice/getCityArray")
+            .success(function(cities) {
+                $scope.data.cityOptions = cities;
+                $scope.data.selectedCity = cityData;
             })
             .error(function() {
                 $CheckNetwork.check();
             });
-    };
+console.log('--------------------------------6.cityData != null && cityData.length-------------------------------------------');
+        if (cityData != null && cityData.length > 0) {
+            console.log("If city selected is not empty, then get circles list!");
+            //TODO this is repeat of below code
+            console.log("$scope.data.selectedCity" + $scope.data.selectedCity);
+            window.localStorage.setItem("city", "true");
+            $SelectedValues.setSelectedCity($scope.data.selectedCity);
+            $http.get("http://localhost:8100/api/webservice/getCircleArray?city=" + $scope.data.selectedCity)
+                .success(function(circles) {
+                    $scope.data.circleOptions = circles.circleArray;
+                    console.log(circles);
+                })
+                .error(function() {
+                    $CheckNetwork.check();
+                });
+        }
+console.log('-----------------------------7.$scope.citySelected = function()----------------------------------------------');
+        $scope.citySelected = function() {
+        	console.log("City selected event fired!");
+            console.log("$scope.data.selectedCity" + $scope.data.selectedCity);
+            window.localStorage.setItem("city", "true");
+            $SelectedValues.setSelectedCity($scope.data.selectedCity);
+            $http.get("http://localhost:8100/api/webservice/getCircleArray?city=" + $scope.data.selectedCity)
+                .success(function(circles) {
+                    $scope.data.circleOptions = circles.circleArray;
+                    console.log(circles.circleArray);
 
-    $scope.circleSelected = function() {
-        $SelectedValues.setSelectedCity($scope.data.selectedCity);
-        $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
-        window.localStorage.setItem("circle", "true");
-    };
-}])//end LocationCtrl
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+                })
+                .error(function() {
+                    $CheckNetwork.check();
+                });
+        };
+console.log('------------------------------ 8.$scope.circleSelected = function()---------------------------------------------');
+        $scope.circleSelected = function() {
+            console.log("Circle selected event fired!");
+            $SelectedValues.setSelectedCity($scope.data.selectedCity);
+            $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
+            window.localStorage.setItem("circle", "true");
+        };
+    }]) //end LocationCtrl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //start UploadpageCtrl
 .controller('UploadpageCtrl', ['$scope','$cordovaCamera','$http','CheckNetwork', 'SelectedValues',function($scope,$cordovaCamera,$http, $CheckNetwork, $SelectedValues) {
 $scope.source = {};
@@ -782,13 +804,6 @@ app.service('SelectedValues', function($q) {
                 attachmentId= x;              
             },
             
-            getSelectedStatusmessage: function() {
-                return selectedStatusmessage;
-            },
-            setSelectedStatusmessage: function(x) {
-            console.log("setStatusmessage"+x);
-            selectedStatusmessage = x;
-            },
             getSelectedCity: function() {
                 return selectedCity;
             },

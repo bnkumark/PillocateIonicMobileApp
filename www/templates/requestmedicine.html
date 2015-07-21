@@ -1,25 +1,33 @@
-<ion-view view-title="Request">
-<ion-content>
-<form ng-submit="submitfeedback(feedback)">
-<!--div>Search results for "{{medicine}}"</div-->
+<ion-view view-title="Request" cache-view="false">
+<ion-content >
+<form ng-if="data.message==''">
+
   <span class="assertive item item-text-wrap">Medicine not available. Please enter your contact details below, and we will get back to you as soon as they are available</span>
+  
   <label class="item item-input item-stacked-label">
-  <span class="input-label">Medicine Name:  <input type="text" value="{{medicine}}"></span>
+  <span class="input-label">Medicine Name:  <input type="text" ng-model="data.medicine" value="data.medicine"></span>
   </label>
+ 
   <label class="item item-input item-stacked-label">
   <span class="input-label">Email-Id: (for us to respond)</span>
   <input type="email" placeholder="Email id" ng-model="feedback.email" required>
   </label>
+ 
   <label class="item ">(OR)</label>
+  
   <label class="item item-input item-stacked-label">
-  <span class="input-label">Phone"</span>
+  <span class="input-label">Phone</span>
   <input type="text" placeholder="+91" ng-model="feedback.phone" required>
   </label>
-  <div class="item">
-  <button class="item button button-positive" type="submit">
+ 
+ <div class="item">
+  <button class="item button button-positive" ng-click="submitfeedback(feedback)">
   Submit
   </button>
-  </div>
+  </div> 
 </form>
+<span class="item  item-text-wrap positive" ng-if="data.message!=''" >
+  {{data.message}}
+  </span>
 </ion-content>
 </ion-view>

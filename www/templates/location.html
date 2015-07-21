@@ -13,8 +13,17 @@
     </select>
   </label>
 </div>
-
-<div class="list" >
+<!--<label class="item item-input item-select">
+          <div class="input-label">
+            {{data.selectedCity}}
+          </div>
+<select name='options' ng-model="data.selectedCity">
+            <option  ng-repeat="option for option in data.cityOptions"
+                    ng-value="option">{{ option }}</option>
+          </select>
+            </label>
+-->
+<div class="list" ng-if="data.selectedCity!=''">
   <label class="item item-input item-select" style="margin-bottom:-25px">
     <div  class="input-label">
       Circle
