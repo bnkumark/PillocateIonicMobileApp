@@ -105,7 +105,7 @@ var app = angular.module('starter.controllers', [])
                 $state.go('app.location');
             };
 
-if (selectedCity == '') {
+			if (selectedCity == '') {
                 alert("Please select your city to proceed!.");
                 $state.go('app.location');
             };
@@ -497,7 +497,7 @@ if (selectedCity == '') {
         $scope.cancelOrder = function(orderId) {
             $http.get("http://localhost:8100/api/webservice/cancelOrder?orderId=" + orderId)
                 .success(function(data) {
-                    $scope.data.cancelSuccess = "Your order has been cancelled!";
+                    $scope.data.cancelSuccess = data;
                     console.log('order cancelled:' + data);
                 })
                 .error(function(data) {
@@ -520,13 +520,9 @@ if (selectedCity == '') {
     $scope.submitfeedback = function(feedback) {
         console.log("feedback name:"+feedback.name);
         
-        if(feedback.email == '' || feedback.email === undefined)
+        if(feedback.message == '' || feedback.message === undefined)
         {
-        alert("email can not be empty:");
-        }
-        else if(feedback.message == '' || feedback.message === undefined)
-        {
-         alert("message can not be empty:");
+         alert("message can not be empty!");
         }
 		else
 		{
