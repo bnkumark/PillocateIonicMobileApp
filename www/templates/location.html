@@ -5,33 +5,48 @@
 <ion-content>
 <div class="list" padding="false">
 <div class="item item-text-wrap positive" style="text-align:center;">Select your City and Circle</div>
-  <label class="item item-input item-select"  padding="false" style="margin-bottom:-32px">
+ <!-- <label class="item item-input item-select"  padding="false" style="margin-bottom:-32px">
     <div  class="input-label">
       City
     </div>
     <select ng-model="data.selectedCity" ng-change="citySelected()" ng-options="option for option in data.cityOptions">
+      <option value="">-- choose City --</option>
     </select>
   </label>
 </div>
-<!--<label class="item item-input item-select">
+-->
+<label class="item item-input item-select">
           <div class="input-label">
-            {{data.selectedCity}}
+           City
           </div>
 <select name='options' ng-model="data.selectedCity">
-            <option  ng-repeat="option for option in data.cityOptions"
-                    ng-value="option">{{ option }}</option>
+            <option  ng-repeat="option in data.cityOptions"
+                    ng-value="option" ng-selected="data.selectedCity == option">{{ option }}</option>
           </select>
             </label>
--->
-<div class="list" ng-if="data.selectedCity!=''">
+
+<!--<div class="list" ng-if="data.selectedCity!=''">
   <label class="item item-input item-select" style="margin-bottom:-25px">
     <div  class="input-label">
       Circle
     </div>
     <select ng-model="data.selectedCircle" ng-change="circleSelected()"ng-options="option for option in data.circleOptions">
+          <option value="">-- choose Circle --</option>
 	</select>
   </label>
 </div>
+-->
+<label class="item item-input item-select">
+          <div class="input-label">
+           Circle
+          </div>
+<select name='options' ng-model="data.selectedCircle">
+            <option  ng-repeat="option in data.circleOptions"
+                    ng-value="option" ng-selected="data.selectedCircle == option">{{ option }}</option>
+          </select>
+            </label>
+
+
 <div class="item">
    <a class="button button-calm" ng-href="#/app/home" href="#/app/home">Start Ordering</a>
 </div>

@@ -1,18 +1,13 @@
-﻿<ion-view view-title="Upload your prescription here" >
+﻿<ion-view view-title="Upload your prescription here" cache-view="false">
 <ion-header-bar>
 <h1 class="title" >Upload your prescription here</h1>
 </ion-header-bar>
-<ion-content>
-<div class="item">
-<button ng-click="imgUpload(1)" class="item ion-camera button button-positive"> Use Camera</button>
+<ion-content class="padding">
+<button ng-click="imgUpload(1)" class="item ion-camera button button-calm"> Use Camera</button>
 <button ng-click="imgUpload(0)" class="item ion-image button button-calm"> Use Gallery</button>
-</div>
+<br/>
+<br/>
 <img id="myImage" class="item full-image"ng-src="{{source}}">
-<!-- <form action="http://demo.pillocate.com/webservice/uploadPrescriptionFile"
-                     method="post" enctype="multipart/form-data">
-            <p><input type="file" name="inputFile"></p>
-            <p><button type="submit">Submit</button></p>
-        </form>
--->
-</ion-content>
-</ion-view>
+<br/>
+<button ng-click="goToOrderDetails()" class="item button button-positive">Next</button>
+</ion-content></ion-view>

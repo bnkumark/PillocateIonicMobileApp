@@ -274,9 +274,9 @@
         items: [],
         message2: '',
         loopWait: true,
-        prescriptionChoice : 'A'
+        prescriptionChoice: 'A'
     };
-   
+
     $scope.items = $SelectedValues.getItems();
 
     $scope.$watch(function() {
@@ -284,7 +284,7 @@
     }, function(value) {
         $scope.items = value;
     });
-    
+
     $scope.destroy = function(item) {
         var items = $SelectedValues.getItems();
         for (i = 0; i < items.length; i++) {
@@ -293,46 +293,44 @@
             }
         }
     }
-    
-    $scope.quantityChanged = function(item){
-    console.log("calling updateItem with:"+item.inventoryid+":"+item.quantity);
-    $SelectedValues.updateItem(item.inventoryid,item.quantity);
+
+    $scope.quantityChanged = function(item) {
+        console.log("calling updateItem with:" + item.inventoryid + ":" + item.quantity);
+        $SelectedValues.updateItem(item.inventoryid, item.quantity);
     }
-    
+
     $scope.placeorder = function() {
-        var items = $SelectedValues.getItems();
 
+        /*var items = $SelectedValues.getItems();
         var cartItemList = "[";
-
         for (i = 0; i < items.length; i++) {
             cartItemList = cartItemList + "{\"brandName\"\: \"" + items[i].item + "\", \"inventoryId\":\"" + items[i].inventoryid + "\", \"brandId\":\"\", \"storeId\":\"" + items[i].storeid + "\", \"quantity\":" + items[i].quantity + "},";
             console.log("making addTiItemCart" + items[i]);
         }
-      
         cartItemList = cartItemList.substring(0, cartItemList.length - 1);
         cartItemList = cartItemList + "]'";
         console.log('cartItemList: ' + cartItemList);
 
         $http.get("http://demo.pillocate.com/webservice/addItemsToCart?cartItemList=" + cartItemList)
             .success(function(data) {
-            	if($scope.data.prescriptionChoice == 'A')
-            	{
-                $state.go('app.orderdetails');
-                }
-                else
-                {
-                 $state.go('app.uploadpage');
-                }
+               
                 console.log(data);
             })
             .error(function(data) {
-                alert("Sorry, there was an error placing" + items[i].item);
+                alert("Sorry, there was in adding items to server" + data);
                 console.log("error");
-
-            });     
+            });
+*/            
+            
+            if ($scope.data.prescriptionChoice == 'A') {
+                    $state.go('app.orderdetails');
+                } else {
+                    $state.go('app.uploadpage');
+                } 
+            
+            
     }
-}])
-//end
+}])//end
 //start OrderDetailsCtrl
 .controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
     console.log('OrderDetailsCtrlmethod called');
@@ -385,24 +383,28 @@
         }
         else
         {
-        //TODO do not hardcode city and state
-        $http.get("http://demo.pillocate.com/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=Mumbai" + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
+	        $SelectedValues.addCartToServer();
+        
+        //TODO do not hardcode contry and state
+        $http.get("http://demo.pillocate.com/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city="+$SelectedValues.getSelectedCity() + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
             .success(function(data) {
 
                 console.log("data:" + data);
-                console.log('data.orderDetailsList[0].errors.errors.length:' + data.orderDetailsList[0].errors.errors.length);
-                console.log('data.orderDetailsList[0].trackingId:' + data.orderDetailsList[0].trackingId);
-                console.log('data.patient:addressLine1:' + data.patient.addressLine1);
-
-                if (data.orderDetailsList[0].errors.errors.length == 0) {
+                console.log('data.orderDetailsList[0].trackingId:' + data.trackingId);
+                if(data == 'No items in the cart')
+                {
+                 alert("some error occured try again:"+data);
+                }
+				else{
+                if (data.trackingId != '') {
                     console.log('no errors in order');
-
                     $SelectedValues.emptyItems();
                     $OrderDetailsService.setorderDetails(data);
-                    $OrderDetailsService.setScreen('orderCompletion');
                     $state.go('app.ordercompletion');
                 } else {
-                    alert("Could submit order, please check if all fields filled properly.");
+                    alert("Could not submit order, please check if all fields filled properly."+data.orderDetailsList[0].errors.errors);
+                }
+                $scope.order= null;
                 }
             })
             .error(function(data) {
@@ -439,7 +441,7 @@
                     console.log('order details fetched:' + data);
                     if (data != -2) {
                         $OrderDetailsService.setorderDetails(data);
-                        $OrderDetailsService.setScreen('orderCompletion');
+                        //$OrderDetailsService.setScreen('orderCompletion');
                         $state.go('app.ordercompletion');
                         $scope.data.status = "";
                     } else {
@@ -468,16 +470,19 @@
             console.log('normally loading the order complete');
             $OrderDetailsService.setReload(false);
         }
-        console.log('OrdercompletionCtrl called with:' + $OrderDetailsService.getScreen());
+/*        console.log('OrdercompletionCtrl called with:' + $OrderDetailsService.getScreen());
         var screen = $OrderDetailsService.getScreen();
-        $scope.data = {
+*/     
+/*            "showTracking": (screen != 'orderCompletion'),*/
+            //"showOrderDetails": (screen == 'orderCompletion'),
+  
+		 $scope.data = {
             "trackingId": '',
             "orderDetails": $OrderDetailsService.getorderDetails(),
-            "showTracking": (screen != 'orderCompletion'),
-            "showOrderDetails": (screen == 'orderCompletion'),
-            "cancelSuccess": ''
+            "cancelSuccess": '',
+             "orderSuccess":''
         };
-        console.log('showTracking:' + $scope.data.showTracking + ' showOrderDetails:' + $scope.data.showOrderDetails);
+       // console.log(' showOrderDetails:' + $scope.data.showOrderDetails);
 
         $scope.goHome = function() {
             $state.go('app.home');
@@ -501,10 +506,18 @@
          return '';
         };
         
-        $scope.cancelOrder = function(orderId) {
-            $http.get("http://demo.pillocate.com/webservice/cancelOrder?orderId=" + orderId)
+        $scope.cancelOrder = function(trackingId) {
+            $http.get("http://demo.pillocate.com/webservice/cancelOrder?trackingId=" + trackingId)
                 .success(function(data) {
-                    $scope.data.cancelSuccess = data;
+                if(data == 'Success')
+                {
+                 $scope.data.cancelSuccess = 'Your Order has been cancelled successfully!';
+                }
+                else
+                {
+                    $scope.data.cancelSuccess = data;                    
+                }
+                 $scope.data.orderSuccess='';
                     console.log('order cancelled:' + data);
                 })
                 .error(function(data) {
@@ -552,7 +565,7 @@
 //end FeedbackCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start FooterCtrl
-.controller('FooterCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', '$state','CheckNetwork', function($scope, $http, $SelectedValues, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork) {
+.controller('FooterCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', '$state','CheckNetwork', function($scope, $http, $SelectedValues, $SelectedStore, $state, $CheckNetwork) {
     console.log("footer ctrl");
     $scope.cartItems;
     
@@ -739,6 +752,7 @@ console.log('------------------------------ 8.$scope.circleSelected = function()
 //start UploadpageCtrl
 .controller('UploadpageCtrl', ['$scope','$cordovaCamera','$http','$state','CheckNetwork', 'SelectedValues',function($scope,$cordovaCamera,$http,$state, $CheckNetwork, $SelectedValues) {
 $scope.source = {};
+$scope.canGoToNext = false;
 $scope.imgUpload = function(sourceTypevalue){
   document.addEventListener("deviceready", function () {
     var options = {
@@ -753,40 +767,29 @@ $scope.imgUpload = function(sourceTypevalue){
       saveToPhotoAlbum: false
     };
 
- /*function readFileAsBinaryString(file) {
-        var reader = new FileReader();
-        reader.onloadend = function(evt) {
-            var imgData = evt.target.result;
-            return imgData;
-        };
-        reader.onerror = function(evt) {
-            // error handlinghttps://community.idolondemand.com/t5/tkb/​articleeditorpage/tkb-id/tkb_idol/message-uid/200
-        };
-        reader.readAsBinaryString(file);
+  $scope.goToOrderDetails = function(){
+   if( $scope.canGoToNext == true)
+   {
+    $state.go('app.orderdetails');
     }
-*/    
+    else
+    {
+    alert("Upload the prescription first!");
+    }
+  };
+      
     $cordovaCamera.getPicture(options).then(function(imageURI) {
-      var image = document.getElementById('myImage');
+/*      var image = document.getElementById('myImage');
       image.src = imageURI;
-      alert("imageURI: "+ imageURI);
-      $scope.source=image.src;
+*/      $scope.source=imageURI;
       
       var fnSuccess = function(r) {
-        alert("Code = " + r.responseCode);
-    alert("Response = " + r.response);
-    alert("Sent = " + r.bytesSent);
-
-    var parsedResponse = JSON.parse(r.response);
+      var parsedResponse = JSON.parse(r.response);
     
-      console.log("upload success:"+r);
-      alert("upload success:"+r);
-      alert("upload success..attachementId:"+parsedResponse.attachmentId);
-      for(var key in r.response) {
-    var value = r.response[key];
-       alert("key:value:"+key+":"+value);
-}
+      console.log("upload success:"+r.response);
+      
       $SelectedValues.setAttachmentId(parsedResponse.attachmentId);
-      $state.go('app.orderdetails');
+      $scope.canGoToNext = true;
 	  }
 
  var fnError = function(r) {
@@ -796,28 +799,14 @@ $scope.imgUpload = function(sourceTypevalue){
      
     var formURL = 'http://demo.pillocate.com/webservice/uploadPrescriptionFile';
     var encodedURI = encodeURI(formURL);
-    var file = imageURI;
-    var fileURI = file;
-    //var imgData = readFileAsBinaryString(imageURI);
+    var fileURI = imageURI;
     var options = new FileUploadOptions();
     options.fileKey = "inputFile";
     options.fileName = fileURI.substr(fileURI.lastIndexOf('/') + 1);
     //options.mimeType = "text/plain";
- /*   options.params = { 'apikey': yourApikey, 'file': imgData, 'mode': 'scene_photo' };*/
     var ft = new FileTransfer();
     ft.upload(fileURI, encodedURI, fnSuccess, fnError, options);
              
-            
-      
-      /*$http.get("http://demo.pillocate.com/webservice/uploadPrescriptionFile?inputFilePath="+ imageURI)
-            .success(function(id) {    
-            alert("Successfully Uploaded:"+id);
-            $SelectedValues.setAttachmentId(id);
-            })
-            .error(function(error) {
-            alert("Fail.due to "+error);
-            $CheckNetwork.check();
-            });*/
     }, function(err) {
       // error
       alert("Sorry!No picture was selected");
@@ -834,7 +823,7 @@ $scope.imgUpload = function(sourceTypevalue){
 
 //start SelectValues service
 //TODO: Probably we can move this to a seperate JS file
-app.service('SelectedValues', function($q) {
+app.service('SelectedValues', function($q,$http) {
         var selectedBrand = {};
         var selectedBrandItem = {};
         var selectedCircle = '';
@@ -933,7 +922,32 @@ app.service('SelectedValues', function($q) {
         			}
     			}
     			return false;
-			}
+			},
+			
+			addCartToServer: function() {
+			   var cartItemList = "[";
+        for (i = 0; i < items.length; i++) {
+            cartItemList = cartItemList + "{\"brandName\"\: \"" + items[i].item + "\", \"inventoryId\":\"" + items[i].inventoryid + "\", \"brandId\":\"\", \"storeId\":\"" + items[i].storeid + "\", \"quantity\":" + items[i].quantity + "},";
+            console.log("making addTiItemCart" + items[i]);
+        }
+        cartItemList = cartItemList.substring(0, cartItemList.length - 1);
+        cartItemList = cartItemList + "]'";
+        console.log('cartItemList: ' + cartItemList);
+
+        $http.get("http://demo.pillocate.com/webservice/addItemsToCart?cartItemList=" + cartItemList)
+            .success(function(data) {
+               
+                console.log(data);
+            })
+            .error(function(data) {
+                alert("Sorry, there was in adding items to server" + data);
+                console.log("error");
+            });
+            			}
+      
+       
+       
+       
        
 		 }
     })
@@ -1001,13 +1015,13 @@ app.service('OrderDetailsService', function($q) {
             setorderDetails: function(x) {
                 orderDetails = x;
             },
-            getScreen: function() {
+          /*  getScreen: function() {
                 return screen;
             },
             setScreen: function(x) {
                 screen = x;
             },
-            getReload: function() {
+*/            getReload: function() {
                 return reloading;
             },
             setReload: function(x) {
