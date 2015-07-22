@@ -1,4 +1,4 @@
-var app = angular.module('starter.controllers', [])
+﻿var app = angular.module('starter.controllers', [])
 
 //TODO: each controller can be moved to a seperate file?
 
@@ -117,7 +117,7 @@ var app = angular.module('starter.controllers', [])
                     console.log('search method');
                     if ($scope.data.search != '') {
                         //TODO do not hardcode city here
-                        $http.get("http://localhost:8100/api/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + selectedCircle + "&city="+selectedCity)
+                        $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + selectedCircle + "&city="+selectedCity)
                             .success(function(data) {
                                 //console.log('setting auto suggestions ' + data);
                                 if(data.length > 0)
@@ -189,7 +189,7 @@ var app = angular.module('starter.controllers', [])
     
     console.log($scope.data.items);
     
-    $http.get("http://localhost:8100/api/webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + selectedBrand.id + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
+    $http.get("http://demo.pillocate.com/webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + selectedBrand.id + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
         .success(function(data) {
             console.log('searchResultsCtrl success');
             if(data.availabilityFlag == false)
@@ -313,7 +313,7 @@ var app = angular.module('starter.controllers', [])
         cartItemList = cartItemList + "]'";
         console.log('cartItemList: ' + cartItemList);
 
-        $http.get("http://localhost:8100/api/webservice/addItemsToCart?cartItemList=" + cartItemList)
+        $http.get("http://demo.pillocate.com/webservice/addItemsToCart?cartItemList=" + cartItemList)
             .success(function(data) {
             	if($scope.data.prescriptionChoice == 'A')
             	{
@@ -386,7 +386,7 @@ var app = angular.module('starter.controllers', [])
         else
         {
         //TODO do not hardcode city and state
-        $http.get("http://localhost:8100/api/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=Mumbai" + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
+        $http.get("http://demo.pillocate.com/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=Mumbai" + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
             .success(function(data) {
 
                 console.log("data:" + data);
@@ -414,7 +414,7 @@ var app = angular.module('starter.controllers', [])
     };
 
     $scope.applyOffer = function() {
-        $http.get("http://localhost:8100/api/webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
+        $http.get("http://demo.pillocate.com/webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
             .success(function(data) {
                 $scope.order.offerstatus = data;
             })
@@ -434,7 +434,7 @@ var app = angular.module('starter.controllers', [])
         };
 
         $scope.getOrderDetails = function() {
-            $http.get("http://localhost:8100/api/webservice/showOrderCollectionDetails?trackingId=" + $scope.data.trackingId)
+            $http.get("http://demo.pillocate.com/webservice/showOrderCollectionDetails?trackingId=" + $scope.data.trackingId)
                 .success(function(data) {
                     console.log('order details fetched:' + data);
                     if (data != -2) {
@@ -502,7 +502,7 @@ var app = angular.module('starter.controllers', [])
         };
         
         $scope.cancelOrder = function(orderId) {
-            $http.get("http://localhost:8100/api/webservice/cancelOrder?orderId=" + orderId)
+            $http.get("http://demo.pillocate.com/webservice/cancelOrder?orderId=" + orderId)
                 .success(function(data) {
                     $scope.data.cancelSuccess = data;
                     console.log('order cancelled:' + data);
@@ -533,7 +533,7 @@ var app = angular.module('starter.controllers', [])
         }
 		else
 		{
-        $http.get("http://localhost:8100/api/webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
+        $http.get("http://demo.pillocate.com/webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
                 console.log('feedback submit success:' + data);
@@ -554,12 +554,20 @@ var app = angular.module('starter.controllers', [])
 //start FooterCtrl
 .controller('FooterCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', '$state','CheckNetwork', function($scope, $http, $SelectedValues, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork) {
     console.log("footer ctrl");
-    $scope.cartItems; 
+    $scope.cartItems;
+    
+$scope.circle = $SelectedValues.getSelectedCircle(); 
       
      $scope.$watch(function() {
         return $SelectedValues.getItems().length;
     }, function(value) {
         $scope.cartItems = value;
+    });
+
+  $scope.$watch(function() {
+        return $SelectedValues.getSelectedCircle();
+    }, function(value) {
+        $scope.circle = value;
     });
 
   
@@ -583,7 +591,7 @@ var app = angular.module('starter.controllers', [])
    
     $scope.submitfeedback = function(feedback) {
         console.log(feedback.name);
-        $http.get("http://localhost:8100/api/webservice/requestNewBrand?brandName="+$scope.data.medicine+"&emailID=" + feedback.email + "&phoneNumber=" + feedback.phone + "&circle=" +selectedCircle )
+        $http.get("http://demo.pillocate.com/webservice/requestNewBrand?brandName="+$scope.data.medicine+"&emailID=" + feedback.email + "&phoneNumber=" + feedback.phone + "&circle=" +selectedCircle )
             .success(function(data) {
                 $scope.data.feedbackstatus = data;
                 console.log('feedback submit success:' + data);      
@@ -627,7 +635,7 @@ if(window.localStorage.getItem("login") == true){
 
  $scope.loginNew = function(xxx){
 
-      $http.get("http://localhost:8100/api/webservice/Login?Username="+xxx.user+"&Password="+xxx.pass)
+      $http.get("http://demo.pillocate.com/webservice/Login?Username="+xxx.user+"&Password="+xxx.pass)
             .success(function() {    
             alert("Login was Successful.");
             console.log("Login success");
@@ -678,8 +686,8 @@ console.log('----------------------------  4.if ($scope.data.selectedCircle != n
             console.log("$scope.data.selectedCircle:" + $scope.data.selectedCircle);
             $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
         }
-console.log('------------------------------5.http://localhost:8100/api/webservice/getCityArray---------------------------------------------');
-        $http.get("http://localhost:8100/api/webservice/getCityArray")
+console.log('------------------------------5.http://demo.pillocate.com/webservice/getCityArray---------------------------------------------');
+        $http.get("http://demo.pillocate.com/webservice/getCityArray")
             .success(function(cities) {
                 $scope.data.cityOptions = cities;
                 $scope.data.selectedCity = cityData;
@@ -694,7 +702,7 @@ console.log('--------------------------------6.cityData != null && cityData.leng
             console.log("$scope.data.selectedCity" + $scope.data.selectedCity);
             window.localStorage.setItem("city", "true");
             $SelectedValues.setSelectedCity($scope.data.selectedCity);
-            $http.get("http://localhost:8100/api/webservice/getCircleArray?city=" + $scope.data.selectedCity)
+            $http.get("http://demo.pillocate.com/webservice/getCircleArray?city=" + $scope.data.selectedCity)
                 .success(function(circles) {
                     $scope.data.circleOptions = circles.circleArray;
                     console.log(circles);
@@ -709,7 +717,7 @@ console.log('-----------------------------7.$scope.citySelected = function()----
             console.log("$scope.data.selectedCity" + $scope.data.selectedCity);
             window.localStorage.setItem("city", "true");
             $SelectedValues.setSelectedCity($scope.data.selectedCity);
-            $http.get("http://localhost:8100/api/webservice/getCircleArray?city=" + $scope.data.selectedCity)
+            $http.get("http://demo.pillocate.com/webservice/getCircleArray?city=" + $scope.data.selectedCity)
                 .success(function(circles) {
                     $scope.data.circleOptions = circles.circleArray;
                     console.log(circles.circleArray);
@@ -729,7 +737,7 @@ console.log('------------------------------ 8.$scope.circleSelected = function()
     }]) //end LocationCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //start UploadpageCtrl
-.controller('UploadpageCtrl', ['$scope','$cordovaCamera','$http','CheckNetwork', 'SelectedValues',function($scope,$cordovaCamera,$http, $CheckNetwork, $SelectedValues) {
+.controller('UploadpageCtrl', ['$scope','$cordovaCamera','$http','$state','CheckNetwork', 'SelectedValues',function($scope,$cordovaCamera,$http,$state, $CheckNetwork, $SelectedValues) {
 $scope.source = {};
 $scope.imgUpload = function(sourceTypevalue){
   document.addEventListener("deviceready", function () {
@@ -745,12 +753,63 @@ $scope.imgUpload = function(sourceTypevalue){
       saveToPhotoAlbum: false
     };
 
+ /*function readFileAsBinaryString(file) {
+        var reader = new FileReader();
+        reader.onloadend = function(evt) {
+            var imgData = evt.target.result;
+            return imgData;
+        };
+        reader.onerror = function(evt) {
+            // error handlinghttps://community.idolondemand.com/t5/tkb/​articleeditorpage/tkb-id/tkb_idol/message-uid/200
+        };
+        reader.readAsBinaryString(file);
+    }
+*/    
     $cordovaCamera.getPicture(options).then(function(imageURI) {
       var image = document.getElementById('myImage');
       image.src = imageURI;
       alert("imageURI: "+ imageURI);
       $scope.source=image.src;
-      $http.get("http://localhost:8100/api/webservice/uploadPrescriptionFile?inputFilePath="+ imageURI)
+      
+      var fnSuccess = function(r) {
+        alert("Code = " + r.responseCode);
+    alert("Response = " + r.response);
+    alert("Sent = " + r.bytesSent);
+
+    var parsedResponse = JSON.parse(r.response);
+    
+      console.log("upload success:"+r);
+      alert("upload success:"+r);
+      alert("upload success..attachementId:"+parsedResponse.attachmentId);
+      for(var key in r.response) {
+    var value = r.response[key];
+       alert("key:value:"+key+":"+value);
+}
+      $SelectedValues.setAttachmentId(parsedResponse.attachmentId);
+      $state.go('app.orderdetails');
+	  }
+
+ var fnError = function(r) {
+    console.log("upload failed:"+r);
+          alert("upload failed:"+r);
+}
+     
+    var formURL = 'http://demo.pillocate.com/webservice/uploadPrescriptionFile';
+    var encodedURI = encodeURI(formURL);
+    var file = imageURI;
+    var fileURI = file;
+    //var imgData = readFileAsBinaryString(imageURI);
+    var options = new FileUploadOptions();
+    options.fileKey = "inputFile";
+    options.fileName = fileURI.substr(fileURI.lastIndexOf('/') + 1);
+    //options.mimeType = "text/plain";
+ /*   options.params = { 'apikey': yourApikey, 'file': imgData, 'mode': 'scene_photo' };*/
+    var ft = new FileTransfer();
+    ft.upload(fileURI, encodedURI, fnSuccess, fnError, options);
+             
+            
+      
+      /*$http.get("http://demo.pillocate.com/webservice/uploadPrescriptionFile?inputFilePath="+ imageURI)
             .success(function(id) {    
             alert("Successfully Uploaded:"+id);
             $SelectedValues.setAttachmentId(id);
@@ -758,13 +817,14 @@ $scope.imgUpload = function(sourceTypevalue){
             .error(function(error) {
             alert("Fail.due to "+error);
             $CheckNetwork.check();
-            });
+            });*/
     }, function(err) {
       // error
       alert("Sorry!No picture was selected");
     });
 
   }, false);
+
 };
 }]);
 //end UploadpageCtrl
