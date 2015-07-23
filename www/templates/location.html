@@ -1,10 +1,10 @@
-﻿<ion-view view-title="Location" cache-view="false">
+﻿<ion-view view-title="Location">
 <ion-header-bar>
 <h1 class="title" >Change your location</h1>
 </ion-header-bar>
 <ion-content>
-<div class="list" padding="false">
-<div class="item item-text-wrap positive" style="text-align:center;">Select your City and Circle</div>
+<!--<div class="list" padding="false">-->
+<div class="item item-text-wrap positive" style="text-align:center;">Select your City, Circle and click 'Set Location'</div>
  <!-- <label class="item item-input item-select"  padding="false" style="margin-bottom:-32px">
     <div  class="input-label">
       City
@@ -19,7 +19,7 @@
           <div class="input-label">
            City
           </div>
-<select name='options' ng-model="data.selectedCity">
+<select name='options' ng-model="data.selectedCity"  ng-change="citySelected()">
             <option  ng-repeat="option in data.cityOptions"
                     ng-value="option" ng-selected="data.selectedCity == option">{{ option }}</option>
           </select>
@@ -36,7 +36,7 @@
   </label>
 </div>
 -->
-<label class="item item-input item-select">
+<label class="item item-input item-select" ng-if="data.selectedCity!=''">
           <div class="input-label">
            Circle
           </div>
@@ -46,9 +46,13 @@
           </select>
             </label>
 
-
 <div class="item">
+   <button class="button button-calm" ng-click="setLocation()">Set Location</button>
+</div>
+
+<!--<div class="item">
    <a class="button button-calm" ng-href="#/app/home" href="#/app/home">Start Ordering</a>
 </div>
+-->
 </ion-content>
 </ion-view>

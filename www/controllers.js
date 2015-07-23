@@ -100,15 +100,20 @@
             console.log("selected circle:"+selectedCircle +"selected City:"+selectedCity );            
             
 			//Check for location, when the user starts typing medicine name.
-            if (selectedCircle == '' || selectedCity == '') {
-                alert("Please select your circle to proceed!.");
+            if (selectedCircle == '' && selectedCity == '') {
+                alert("Please select your City & Circle to proceed!.");
                 $state.go('app.location');
-            };
-
-			if (selectedCity == '') {
+            }
+            else if (selectedCity == '') {
                 alert("Please select your city to proceed!.");
                 $state.go('app.location');
-            };
+            }
+            else if (selectedCircle == '') {
+                alert("Please select your Circle to proceed!.");
+                $state.go('app.location');
+            }
+            else
+            {
 
 
             $timeout.cancel(timer);
@@ -151,6 +156,7 @@
                     console.log("Timer rejected!" + Date());
                 }
             );
+            }
         }
         //end of  $scope.search
 
@@ -364,29 +370,41 @@
         var attachmentId = $SelectedValues.getAttachmentId();
 
         console.log('addressline2 ' + order.addressline2);
+    /* 
+      if(!submitform.phone.$valid)
+        {
+        console.log("submitform.phone.$valid:"+submitform.phone.$valid+"submitform.phone.$error:"+submitform.phone.$error)
+        alert("Phone can not be empty!"+submitform.phone.$error);
         
-        if(order.email == '' || order.email === undefined)
+        }
+*/
+
+        /*if(order.email == '' || order.email === undefined)
         {
         alert("Email can not be empty!");
         }
-        else if(order.phone == '' || order.phone === undefined)
+        else if(!submitform.phone.$valid)
         {
-        alert("Phone can not be empty!");
+        console.log("submitform.phone.$valid"+submitform.phone.$valid+"submitform.phone.$error"+submitform.phone.$error)
+        alert("Phone can not be empty!"+submitform.phone.$error);
+        
         }
         else if(order.addressline1 == '' || order.addressline1 === undefined)
         {
         alert("Address line 1 can not be empty!");
         }
-		else if(order.isTermsChecked == false)
+		else*/
+		 if(order.isTermsChecked == false)
         {
         alert("Please accept the Terms and Conditions!");
         }
         else
         {
-	        $SelectedValues.addCartToServer();
+	       // $SelectedValues.addCartToServer();
+         var cartItemsSTring = $SelectedValues.addItemsToServerString();
         
         //TODO do not hardcode contry and state
-        $http.get("http://demo.pillocate.com/webservice/saveOrder?circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city="+$SelectedValues.getSelectedCity() + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
+        $http.get("http://demo.pillocate.com/webservice/addItemsToCartAndPlaceOrder?cartItemList="+cartItemsSTring +"&circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city="+$SelectedValues.getSelectedCity() + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
             .success(function(data) {
 
                 console.log("data:" + data);
@@ -400,6 +418,7 @@
                     console.log('no errors in order');
                     $SelectedValues.emptyItems();
                     $OrderDetailsService.setorderDetails(data);
+                    $OrderDetailsService.setOrderMessage('Your order has been placed!');
                     $state.go('app.ordercompletion');
                 } else {
                     alert("Could not submit order, please check if all fields filled properly."+data.orderDetailsList[0].errors.errors);
@@ -441,6 +460,7 @@
                     console.log('order details fetched:' + data);
                     if (data != -2) {
                         $OrderDetailsService.setorderDetails(data);
+                          $OrderDetailsService.setOrderMessage('Your order details!');
                         //$OrderDetailsService.setScreen('orderCompletion');
                         $state.go('app.ordercompletion');
                         $scope.data.status = "";
@@ -480,7 +500,7 @@
             "trackingId": '',
             "orderDetails": $OrderDetailsService.getorderDetails(),
             "cancelSuccess": '',
-             "orderSuccess":''
+             "orderSuccess": $OrderDetailsService.getOrderMessage()
         };
        // console.log(' showOrderDetails:' + $scope.data.showOrderDetails);
 
@@ -515,7 +535,8 @@
                 }
                 else
                 {
-                    $scope.data.cancelSuccess = data;                    
+                    $scope.data.cancelSuccess = data;        
+                    $scope.data.orderSuccess = '';            
                 }
                  $scope.data.orderSuccess='';
                     console.log('order cancelled:' + data);
@@ -678,30 +699,31 @@ $scope.saveUser =function(xxx){
 //end SignupCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start LocationCtrl
-.controller('LocationCtrl', ['$scope', 'SelectedValues', '$http', 'CheckNetwork', function($scope, $SelectedValues, $http, $CheckNetwork) {
+.controller('LocationCtrl', ['$scope', 'SelectedValues', '$http', 'CheckNetwork','$state', function($scope, $SelectedValues, $http, $CheckNetwork,$state) {
 console.log('------------------------------ 1.window.localStorage.getItem(---------------------------------------------');
         var circleData = window.localStorage.getItem("circleData");
         var cityData = window.localStorage.getItem("cityData");
 console.log('------------------------------ 2.$scope.data = {---------------------------------------------');
         $scope.data = {
-            circleOptions: ['Select City First!'],
+            circleOptions: [],
             selectedCircle: circleData,
             cityOptions: [],
             selectedCity: cityData,
         };
 console.log('------------------------------ 3.if ($scope.data.selectedCity != null) {---------------------------------------------');
-        if ($scope.data.selectedCity != null) {
+        /*if ($scope.data.selectedCity != null) {
             console.log("scope.data.selectedCity:" + $scope.data.selectedCity);
             $SelectedValues.setSelectedCity($scope.data.selectedCity);
         }
-console.log('----------------------------  4.if ($scope.data.selectedCircle != null) {-----------------------------------------------');
-        if ($scope.data.selectedCircle != null) {
+*/console.log('----------------------------  4.if ($scope.data.selectedCircle != null) {-----------------------------------------------');
+  /*      if ($scope.data.selectedCircle != null) {
             console.log("$scope.data.selectedCircle:" + $scope.data.selectedCircle);
-            $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
+            //$SelectedValues.setSelectedCircle($scope.data.selectedCircle);
         }
-console.log('------------------------------5.http://demo.pillocate.com/webservice/getCityArray---------------------------------------------');
+*/console.log('------------------------------5.http://demo.pillocate.com/webservice/getCityArray---------------------------------------------');
         $http.get("http://demo.pillocate.com/webservice/getCityArray")
             .success(function(cities) {
+            console.log("getting city array:"+cities)
                 $scope.data.cityOptions = cities;
                 $scope.data.selectedCity = cityData;
             })
@@ -713,7 +735,7 @@ console.log('--------------------------------6.cityData != null && cityData.leng
             console.log("If city selected is not empty, then get circles list!");
             //TODO this is repeat of below code
             console.log("$scope.data.selectedCity" + $scope.data.selectedCity);
-            window.localStorage.setItem("city", "true");
+            //window.localStorage.setItem("city", "true");
             $SelectedValues.setSelectedCity($scope.data.selectedCity);
             $http.get("http://demo.pillocate.com/webservice/getCircleArray?city=" + $scope.data.selectedCity)
                 .success(function(circles) {
@@ -728,8 +750,8 @@ console.log('-----------------------------7.$scope.citySelected = function()----
         $scope.citySelected = function() {
         	console.log("City selected event fired!");
             console.log("$scope.data.selectedCity" + $scope.data.selectedCity);
-            window.localStorage.setItem("city", "true");
-            $SelectedValues.setSelectedCity($scope.data.selectedCity);
+            //window.localStorage.setItem("city", "true");
+            //$SelectedValues.setSelectedCity($scope.data.selectedCity);
             $http.get("http://demo.pillocate.com/webservice/getCircleArray?city=" + $scope.data.selectedCity)
                 .success(function(circles) {
                     $scope.data.circleOptions = circles.circleArray;
@@ -743,9 +765,44 @@ console.log('-----------------------------7.$scope.citySelected = function()----
 console.log('------------------------------ 8.$scope.circleSelected = function()---------------------------------------------');
         $scope.circleSelected = function() {
             console.log("Circle selected event fired!");
+            //$SelectedValues.setSelectedCity($scope.data.selectedCity);
+            //$SelectedValues.setSelectedCircle($scope.data.selectedCircle);
+            //window.localStorage.setItem("circle", "true");
+        };
+        
+        $scope.setLocation = function()
+        {
+           if($scope.data.selectedCity == '' || $scope.data.selectedCity === undefined || $scope.data.selectedCity == null)
+           {
+             alert("select city");
+           }
+           else if($scope.data.selectedCircle == '' || $scope.data.selectedCircle === undefined || $scope.data.selectedCircle == null)
+           {
+           alert("select circle");
+           }
+           else
+           {
+           var items = $SelectedValues.getItems();
+           var input = true;
+           if(items.length > 0)
+           {
+             input=confirm("Setting location will clear cart items!");
+           }
+           
+           if(input == true)
+           {
+            console.log("$scope.data.selectedCity" + $scope.data.selectedCity);
+
+ console.log("$scope.data.setSelectedCircle" + $scope.data.selectedCircle);
+
             $SelectedValues.setSelectedCity($scope.data.selectedCity);
             $SelectedValues.setSelectedCircle($scope.data.selectedCircle);
             window.localStorage.setItem("circle", "true");
+            window.localStorage.setItem("city", "true");
+            $SelectedValues.emptyItems();
+            $state.go('app.home');
+           }
+           }
         };
     }]) //end LocationCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -943,9 +1000,22 @@ app.service('SelectedValues', function($q,$http) {
                 alert("Sorry, there was in adding items to server" + data);
                 console.log("error");
             });
-            			}
+            			},
       
-       
+       		
+       		addItemsToServerString: function()
+       		{
+       		 var cartItemList = "[";
+        for (i = 0; i < items.length; i++) {
+            cartItemList = cartItemList + "{\"brandName\"\: \"" + items[i].item + "\", \"inventoryId\":\"" + items[i].inventoryid + "\", \"brandId\":\"\", \"storeId\":\"" + items[i].storeid + "\", \"quantity\":" + items[i].quantity + "},";
+            console.log("making addTiItemCart" + items[i]);
+        }
+        cartItemList = cartItemList.substring(0, cartItemList.length - 1);
+        cartItemList = cartItemList + "]'";
+        console.log('cartItemList: ' + cartItemList);
+
+ return cartItemList;
+       		}
        
        
        
@@ -1008,6 +1078,7 @@ app.service('OrderDetailsService', function($q) {
         var orderDetails = {};
         var screen = {};
         var reloading = {};
+        var message = '';
         return {
             getorderDetails: function() {
                 return orderDetails;
@@ -1027,6 +1098,14 @@ app.service('OrderDetailsService', function($q) {
             setReload: function(x) {
                 reloading = x;
             },
+            setOrderMessage : function(x)
+            {
+            message = x;
+            },
+            getOrderMessage : function()
+            {
+            return message;
+            }
 
         }
     })

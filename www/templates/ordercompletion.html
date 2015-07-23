@@ -4,6 +4,7 @@
 <div class="list">
 <div>
    <label class="item positive" ng-if="data.cancelSuccess != ''">{{data.cancelSuccess}}</label>
+    <label class="item positive" ng-if="data.orderSuccess != ''">{{data.orderSuccess}}</label>
   <div ng-repeat="data in data.orderDetails.orderDetailsList">
   <div class="item item-divider positive item-text-wrap">
   Order Details for {{data.brandName}}
@@ -57,12 +58,13 @@
  <a class="button button-assertive" style="margin-left:10px" type="button" ng-disabled="data.cancelSuccess != ''" ng-click="cancelOrder(data.orderDetails.trackingId)">
   Cancel Order
 </a>   
+
 </div>
 </div>
 
   </div>
 
   </div>
-
+<br/><br/><br/><br/><br/><br/>
  </ion-content>
 </ion-view>
