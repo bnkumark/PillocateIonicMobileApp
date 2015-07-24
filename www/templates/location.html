@@ -19,7 +19,7 @@
           <div class="input-label">
            City
           </div>
-<select name='options' ng-model="data.selectedCity"  ng-change="citySelected()">
+<select id="citySelect" name='options' ng-model="data.selectedCity"  ng-change="citySelected()">
             <option  ng-repeat="option in data.cityOptions"
                     ng-value="option" ng-selected="data.selectedCity == option">{{ option }}</option>
           </select>
@@ -46,8 +46,8 @@
           </select>
             </label>
 
-<div class="item">
-   <button class="button button-calm" ng-click="setLocation()">Set Location</button>
+<div class="item-input-inset padding">
+   <button class="item-input-wrapper button button-positive" ng-click="setLocation()">Set Location</button>
 </div>
 
 <!--<div class="item">

@@ -400,6 +400,12 @@
         }
         else
         {
+        
+           var confirmed=confirm("Confirm the order? Order will be placed. You may get a confirmation call.");
+           
+           if(confirmed == true)
+           { 
+
 	       // $SelectedValues.addCartToServer();
          var cartItemsSTring = $SelectedValues.addItemsToServerString();
         
@@ -430,11 +436,14 @@
                 $CheckNetwork.check();
                 alert("some error occured:" + data);
             });
+            
+            }
          }
 
     };
 
     $scope.applyOffer = function() {
+
         $http.get("http://demo.pillocate.com/webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
             .success(function(data) {
                 $scope.order.offerstatus = data;
@@ -443,6 +452,7 @@
                 $CheckNetwork.check();
                 $scope.order.offerstatus = data;
             });
+            
     }
 }])    //end OrderDetailsCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
@@ -500,7 +510,8 @@
             "trackingId": '',
             "orderDetails": $OrderDetailsService.getorderDetails(),
             "cancelSuccess": '',
-             "orderSuccess": $OrderDetailsService.getOrderMessage()
+             "orderSuccess": $OrderDetailsService.getOrderMessage(),
+             "enableCancel" : false
         };
        // console.log(' showOrderDetails:' + $scope.data.showOrderDetails);
 
@@ -511,6 +522,11 @@
  $scope.getStatusText = function(data)
         {
         console.log("getstatustext called with:"+data);
+        if(data == "0")
+        {
+        $scope.data.disableCancel = true;
+        return "Order Cancelled";
+        }
          if(data == "1")
          return "Placed (Yet to be accepted)";
 
@@ -527,10 +543,21 @@
         };
         
         $scope.cancelOrder = function(trackingId) {
+        
+            var confirmed=confirm("Confirm cancel. Cancellation CANNOT be undone!");
+           
+           if(confirmed == true)
+           { 
+
             $http.get("http://demo.pillocate.com/webservice/cancelOrder?trackingId=" + trackingId)
                 .success(function(data) {
                 if(data == 'Success')
                 {
+                  for(i=0;i<$scope.data.orderDetails.orderDetailsList.length;i++)
+                  {
+                $scope.data.orderDetails.orderDetailsList[i].orderStatus = "0";
+                }
+                    $scope.data.disableCancel = true;
                  $scope.data.cancelSuccess = 'Your Order has been cancelled successfully!';
                 }
                 else
@@ -546,6 +573,7 @@
                 alert("There was some problem:"+data);
                 
                 });
+                }
 
         };
 
@@ -700,37 +728,38 @@ $scope.saveUser =function(xxx){
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start LocationCtrl
 .controller('LocationCtrl', ['$scope', 'SelectedValues', '$http', 'CheckNetwork','$state', function($scope, $SelectedValues, $http, $CheckNetwork,$state) {
-console.log('------------------------------ 1.window.localStorage.getItem(---------------------------------------------');
+
         var circleData = window.localStorage.getItem("circleData");
         var cityData = window.localStorage.getItem("cityData");
-console.log('------------------------------ 2.$scope.data = {---------------------------------------------');
+
         $scope.data = {
             circleOptions: [],
-            selectedCircle: circleData,
+            selectedCircle: circleData ,
             cityOptions: [],
-            selectedCity: cityData,
+            selectedCity: cityData ,
         };
-console.log('------------------------------ 3.if ($scope.data.selectedCity != null) {---------------------------------------------');
+
         /*if ($scope.data.selectedCity != null) {
             console.log("scope.data.selectedCity:" + $scope.data.selectedCity);
             $SelectedValues.setSelectedCity($scope.data.selectedCity);
         }
-*/console.log('----------------------------  4.if ($scope.data.selectedCircle != null) {-----------------------------------------------');
-  /*      if ($scope.data.selectedCircle != null) {
+
+ 		/*      if ($scope.data.selectedCircle != null) {
             console.log("$scope.data.selectedCircle:" + $scope.data.selectedCircle);
             //$SelectedValues.setSelectedCircle($scope.data.selectedCircle);
-        }
-*/console.log('------------------------------5.http://demo.pillocate.com/webservice/getCityArray---------------------------------------------');
+        }*/
+        
         $http.get("http://demo.pillocate.com/webservice/getCityArray")
             .success(function(cities) {
+         
             console.log("getting city array:"+cities)
                 $scope.data.cityOptions = cities;
-                $scope.data.selectedCity = cityData;
+                $scope.data.selectedCity = cityData;                
             })
             .error(function() {
                 $CheckNetwork.check();
             });
-console.log('--------------------------------6.cityData != null && cityData.length-------------------------------------------');
+
         if (cityData != null && cityData.length > 0) {
             console.log("If city selected is not empty, then get circles list!");
             //TODO this is repeat of below code
@@ -746,28 +775,27 @@ console.log('--------------------------------6.cityData != null && cityData.leng
                     $CheckNetwork.check();
                 });
         }
-console.log('-----------------------------7.$scope.citySelected = function()----------------------------------------------');
-        $scope.citySelected = function() {
-        	console.log("City selected event fired!");
-            console.log("$scope.data.selectedCity" + $scope.data.selectedCity);
-            //window.localStorage.setItem("city", "true");
-            //$SelectedValues.setSelectedCity($scope.data.selectedCity);
-            $http.get("http://demo.pillocate.com/webservice/getCircleArray?city=" + $scope.data.selectedCity)
+
+	   function getCircles(city)
+	   {
+	       $http.get("http://demo.pillocate.com/webservice/getCircleArray?city=" + city)
                 .success(function(circles) {
                     $scope.data.circleOptions = circles.circleArray;
-                    console.log(circles.circleArray);
-
+                    console.log(circles.circleArray);                                 
                 })
                 .error(function() {
                     $CheckNetwork.check();
                 });
+	   };
+
+        $scope.citySelected = function() {
+        	console.log("City selected event fired!");
+            console.log("$scope.data.selectedCity" + $scope.data.selectedCity);
+            getCircles($scope.data.selectedCity);
         };
-console.log('------------------------------ 8.$scope.circleSelected = function()---------------------------------------------');
+
         $scope.circleSelected = function() {
             console.log("Circle selected event fired!");
-            //$SelectedValues.setSelectedCity($scope.data.selectedCity);
-            //$SelectedValues.setSelectedCircle($scope.data.selectedCircle);
-            //window.localStorage.setItem("circle", "true");
         };
         
         $scope.setLocation = function()
@@ -807,73 +835,69 @@ console.log('------------------------------ 8.$scope.circleSelected = function()
     }]) //end LocationCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //start UploadpageCtrl
-.controller('UploadpageCtrl', ['$scope','$cordovaCamera','$http','$state','CheckNetwork', 'SelectedValues',function($scope,$cordovaCamera,$http,$state, $CheckNetwork, $SelectedValues) {
-$scope.source = {};
-$scope.canGoToNext = false;
-$scope.imgUpload = function(sourceTypevalue){
-  document.addEventListener("deviceready", function () {
-    var options = {
-      quality: 50,
-      destinationType: Camera.DestinationType.FILE_URI,
-      sourceType: sourceTypevalue,
-      allowEdit: true,
-      encodingType: Camera.EncodingType.JPEG,
-      targetWidth: 100,
-      targetHeight: 100,
-      popoverOptions: CameraPopoverOptions,
-      saveToPhotoAlbum: false
-    };
-
-  $scope.goToOrderDetails = function(){
-   if( $scope.canGoToNext == true)
-   {
-    $state.go('app.orderdetails');
-    }
-    else
-    {
-    alert("Upload the prescription first!");
-    }
-  };
-      
-    $cordovaCamera.getPicture(options).then(function(imageURI) {
-/*      var image = document.getElementById('myImage');
-      image.src = imageURI;
-*/      $scope.source=imageURI;
-      
-      var fnSuccess = function(r) {
-      var parsedResponse = JSON.parse(r.response);
+.controller('UploadpageCtrl', ['$scope', '$cordovaCamera', '$http', '$state', 'CheckNetwork', 'SelectedValues', function($scope, $cordovaCamera, $http, $state, $CheckNetwork, $SelectedValues) {
+   
+	$scope.source = null;
+    $scope.canGoToNext = false;
     
-      console.log("upload success:"+r.response);
-      
-      $SelectedValues.setAttachmentId(parsedResponse.attachmentId);
-      $scope.canGoToNext = true;
-	  }
+    $scope.goToOrderDetails = function() {
+                if ($scope.canGoToNext == true) {
+                    $state.go('app.orderdetails');
+                } else {
+                    alert("Upload the prescription first!");
+                }
+            };
+    
+    $scope.imgUpload = function(sourceTypevalue) {
+        document.addEventListener("deviceready", function() {
+            var options = {
+                quality: 100,
+                destinationType: Camera.DestinationType.FILE_URI,
+                sourceType: sourceTypevalue,
+                allowEdit: true,
+                encodingType: Camera.EncodingType.JPEG,
+                targetWidth: 100,
+                targetHeight: 100,
+                popoverOptions: CameraPopoverOptions,
+                saveToPhotoAlbum: false
+            };            
 
- var fnError = function(r) {
-    console.log("upload failed:"+r);
-          alert("upload failed:"+r);
-}
-     
-    var formURL = 'http://demo.pillocate.com/webservice/uploadPrescriptionFile';
-    var encodedURI = encodeURI(formURL);
-    var fileURI = imageURI;
-    var options = new FileUploadOptions();
-    options.fileKey = "inputFile";
-    options.fileName = fileURI.substr(fileURI.lastIndexOf('/') + 1);
-    //options.mimeType = "text/plain";
-    var ft = new FileTransfer();
-    ft.upload(fileURI, encodedURI, fnSuccess, fnError, options);
-             
-    }, function(err) {
-      // error
-      alert("Sorry!No picture was selected");
-    });
+            $cordovaCamera.getPicture(options).then(function(imageURI) {
+                $scope.source = imageURI;
 
-  }, false);
+                var fnSuccess = function(r) {
+                    var parsedResponse = JSON.parse(r.response);
 
-};
-}]);
-//end UploadpageCtrl
+                    console.log("upload success:" + r.response);
+
+                    $SelectedValues.setAttachmentId(parsedResponse.attachmentId);
+                    $scope.canGoToNext = true;
+                }
+
+                var fnError = function(r) {
+                    console.log("upload failed:" + r);
+                    alert("upload failed:" + r);
+                }
+
+                var formURL = 'http://demo.pillocate.com/webservice/uploadPrescriptionFile';
+                var encodedURI = encodeURI(formURL);
+                var fileURI = imageURI;
+                var options = new FileUploadOptions();
+                options.fileKey = "inputFile";
+                options.fileName = fileURI.substr(fileURI.lastIndexOf('/') + 1);
+                //options.mimeType = "text/plain";
+                var ft = new FileTransfer();
+                ft.upload(fileURI, encodedURI, fnSuccess, fnError, options);
+
+            }, function(err) {
+                // error
+                alert("Sorry!No picture was selected");
+            });
+
+        }, false);
+
+    };
+}]);//end UploadpageCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//

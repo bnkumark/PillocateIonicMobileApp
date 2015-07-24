@@ -1,78 +1,88 @@
 ﻿<ion-view view-title="Enter order details">
-  <ion-content>
-  <form name="submitform" novalidate class="css-form" ng-submit="submitorder(order)">
-<div class="list">
-   <div class="item item-divider positive">
-   Delivery details
-  </div>
-  <label class="item item-input item-stacked-label">
-   <div class="assertive">(Fields marked * are mandatory)</div>
-    <span class="input-label">*Name</span>
-    <input type="text" name="name" placeholder="Full name" ng-model="order.name" required>
-        <code class="assertive" ng-if="submitform.name.$touched&&submitform.name.$error.required">name is required</code>
-  </label>
-  <label class="item item-input item-stacked-label">
-    <span class="input-label">*Address</span>
-    <input type="text" name="address1" placeholder="Your address line 1" ng-model="order.addressline1" ng-minlength="3" required>
-   <code class="assertive" ng-if="submitform.address1.$touched&&submitform.address1.$error.minlength">address line 1 should be min of 3 digits</code>
-    <code class="assertive" ng-if="submitform.address1.$touched&&submitform.address1.$error.required">address line 1 is required</code>
-  </label>
-   <label class="item item-input item-stacked-label">
-       <input type="text" name="address2" placeholder="Your address line 2" ng-model="order.addressline2" ng-minlength="3">
-          <code class="assertive" ng-if="submitform.address2.$touched&&submitform.address2.$error.minlength">address line 2 should be min of 3 digits</code>
-  </label>
-  <label class="item item-input item-stacked-label">
-    <span class="input-label">Circle</span>
-    <span class="input-label">{{data.circle}}</span>
-    <div class="assertive">(Delivery restricted to this area)</div>
-  </label>
- <label class="item item-input item-stacked-label">
-    <span class="input-label">*Phone</span>
-    <input type="tel" name="phone" placeholder="phone" ng-model="order.phone" ng-minlength="10" ng-maxlength="10" required>
-    <code class="assertive" ng-if="submitform.phone.$touched&&submitform.phone.$error.minlength">phone number should be min of 10 digits</code>
-     <code class="assertive" ng-if="submitform.phone.$touched&&submitform.phone.$error.maxlength">phone number should not exceed 10 digits</code>
-    <code class="assertive" ng-if="submitform.phone.$touched&&submitform.phone.$error.required">phone number is required</code>
+    <ion-content>
+ <form name="submitform" novalidate class="css-form" ng-submit="submitorder(order)">
+            <div class="list">
+                <div class="item item-divider positive">
+                    Delivery details
+                </div>
+                <label class="item item-input item-stacked-label">
+                    <div class="assertive">(Fields marked * are mandatory)</div>
+                    <span class="input-label">*Name</span>
+                    <input type="text" name="name" placeholder="Full name" ng-model="order.name" required>
+                    <code class="assertive" ng-if="submitform.name.$touched&&submitform.name.$error.required">name is required</code>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">*Address</span>
+                    <input type="text" name="address1" placeholder="Your address line 1" ng-model="order.addressline1" ng-minlength="3" required>
+                    <code class="assertive" ng-if="submitform.address1.$touched&&submitform.address1.$error.minlength">Minimum 3 characters</code>
+                    <code class="assertive" ng-if="submitform.address1.$touched&&submitform.address1.$error.required">address line 1 is required</code>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <input type="text" name="address2" placeholder="Your address line 2" ng-model="order.addressline2" ng-minlength="3">
+                    <code class="assertive" ng-if="submitform.address2.$touched&&submitform.address2.$error.minlength">Minimum 3 characters</code>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">Circle</span>
+                    <span class="input-label">{{data.circle}}</span>
+                    <div class="assertive">(Delivery restricted to this area)</div>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">*Phone</span>
+                    <input type="tel" name="phone" placeholder="phone" ng-model="order.phone" ng-minlength="10" ng-maxlength="10" required>
+                    <code class="assertive" ng-if="submitform.phone.$touched&&submitform.phone.$error.minlength">Minimum 10 digits</code>
+                    <code class="assertive" ng-if="submitform.phone.$touched&&submitform.phone.$error.maxlength">Maximum 10 digits</code>
+                    <code class="assertive" ng-if="submitform.phone.$touched&&submitform.phone.$error.required">phone number is required</code>
 
-  </label>
-   <label class="item item-input item-stacked-label">
-    <span class="input-label">*Email Id</span>
-    <input type="email" name="email" placeholder="email id" ng-model="order.email" required>
-        <code class="assertive" ng-if="submitform.email.$touched&&submitform.email.$error.email">Invalid email format</code>
-    <code class="assertive" ng-if="submitform.email.$touched&&submitform.email.$error.required">email is required</code>
-    <div class="item-text-wrap">(Tracking information will be sent to this Email address)</div>   
-    </label>
+                </label>
+                <label class="item item-input item-stacked-label">
+                    <span class="input-label">*Email Id</span>
+                    <input type="email" name="email" placeholder="email id" ng-model="order.email" required>
+                    <code class="assertive" ng-if="submitform.email.$touched&&submitform.email.$error.email">Invalid email format</code>
+                    <code class="assertive" ng-if="submitform.email.$touched&&submitform.email.$error.required">email is required</code>
+                    <div class="item-text-wrap">(Tracking information will be sent to this Email address)</div>
+                </label>
 
- <label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Payment Method</span>
-    <span class="input-label">Cash on delivery</span>
-  </label>
+                <label class="item item-input item-stacked-label item-text-wrap">
+                    <span class="input-label">Payment Method</span>
+                    <span class="input-label">Cash on delivery</span>
+                </label>
 
- <div class="item item-input-inset">
-    <label class="item-input-wrapper">
-        <span class="input-label">Offer code</span>
-      <input type="text" placeholder="Enter offer code" ng-model="order.offercode">
-    </label>
-    <input type="button" class="button button-small" ng-click="applyOffer()" value="Apply">
-	</div>
-      <span class="item item-text-wrap calm">{{order.offerstatus}}</span>
-<div class="item item-text-wrap assertive"> Please note, the pharmacist may ask for a valid prescription at the time of delivery.</div>
-<div class="item"><a href="#" onclick="window.open('http://www.pillocate.com/termsConditions', '_system', 'location=yes'); return false;">Terms &amp; Conditions</a><br><br><ion-checkbox class="item-checkbox grey remember" type="checkbox" ng-model="order.isTermsChecked" required> I accept</ion-checkbox></ion-checkbox></div>
-</div>
+                <div class="item item-input-inset">
+                    <label class="item-input-wrapper">
+                        <span class="input-label">Offer code</span>
+                        <input type="text" placeholder="Enter offer code" ng-model="order.offercode">
+                    </label>
+                    <input type="button" class="button button-small" ng-click="applyOffer()" value="Apply">
 
-   <div class="item">
-	<input class="item button button-positive" ng-disabled="!submitform.$valid" value="Submit" type="submit">
-	<span ng-show="!submitform.$valid"><br><code class="assertive item-text-wrap">Enter all fields correctly to enable Submit!</code></span>
-</div>
-<br/><br/><br/><br/><br/><br/>
-</form>
- </ion-content>
+                </div>
+                <code ng-if="order.offerstatus!=''" class="item item-text-wrap calm">{{order.offerstatus}}</code>
+
+                <div class="item item-text-wrap assertive"> Please note, the pharmacist may ask for a valid prescription at the time of delivery.</div>
+                <div class="item"><a href="#" onclick="window.open('http://www.pillocate.com/termsConditions', '_system', 'location=yes'); return false;">Terms &amp; Conditions</a>
+                    <br>
+                    <br>
+                    <ion-checkbox class="item-checkbox grey remember" type="checkbox" ng-model="order.isTermsChecked" required> I accept</ion-checkbox>                    
+                </div>
+                  <div class="item item-input-inset">
+                <input class="item-input-wrapper button button-positive" ng-disabled="!submitform.$valid" value="Submit" type="submit">
+            </div>
+             <code class="assertive item item-text-wrap" ng-show="!submitform.$valid">Enter all fields correctly to enable Submit!</code>
+            </div>          
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+        </form>   
+         </ion-content>
 </ion-view>
 <style type="text/css">
-  .css-form input.ng-invalid.ng-touched {
-    background-color: #FA787E;
-  }
-
-  .css-form input.ng-valid.ng-touched {
-    background-color: #78FA89;
-  }
+    .css-form input.ng-invalid.ng-touched {
+/*        background-color: #FA787E;*/
+    }
+    
+    .css-form input.ng-valid.ng-touched {
+       /* background-color: #78FA89;*/
+    }
 </style>

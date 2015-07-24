@@ -13,7 +13,9 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
   if(window.Connection) {
    if(navigator.connection.type == Connection.NONE) {
   alert("No active internet connection!! Please check and try again");
+    if(navigator.connection.type == Connection.NONE) {
    ionic.Platform.exitApp();
+   }
   }
 /*  $ionicPopup.confirm({
                         title: "Internet Disconnected",

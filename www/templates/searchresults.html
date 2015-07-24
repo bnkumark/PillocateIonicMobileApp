@@ -1,5 +1,6 @@
 ﻿<ion-view view-title="Search Results" cache-view="false">
     <ion-content>
+       <div ng-show="count" class="item positive">{{ data.message }}</div>
         <div class="item item-text-wrap">Search Results for {{data.localBrand}}</div>
         <div class="quantity list">
             <label class="item item-input">
@@ -7,19 +8,16 @@
                 <input type="number" min="1" ng-model="data.quantity" value="1">
             </label>
         </div>
-        <div class="padding">
-        <button ng-click="addtocart()" ng-disabled="isDisabled" ng-model="isDisabled" class="item button button-positive">
-            +Add to Cart
-        </button>
-        <button class="item padding-left button button-stable" ng-click="checkout()">Checkout</button>
+     
+        <div class="item-input-inset">
+            <button ng-click="addtocart()" ng-disabled="isDisabled" ng-model="isDisabled" class="item-input-wrapper button button-positive">
+                +Add to Cart
+            </button>
+            <button class="item-input-wrapper  padding-left button button-balanced" ng-click="checkout()">Checkout</button>
         </div>
-        
-        <div class="padding">
-        <a class="item button button-calm" ng-href="#/app/home" href="#/app/home">Add More</a>
-        </div>
-        
-        <div ng-show="count" class="item positive">
-            {{ data.message }}
+
+        <div  ng-show="count" class="item-input-inset">
+            <a class="item-input-wrapper button button-calm" ng-href="#/app/home" href="#/app/home">Add More</a>
         </div>
     </ion-content>
 </ion-view>

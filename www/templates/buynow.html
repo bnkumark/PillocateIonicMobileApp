@@ -16,19 +16,21 @@
                         <ion-radio ng-model="data.prescriptionChoice" ng-value="'A'">Show prescription on delivery</ion-radio>
                         <ion-radio ng-model="data.prescriptionChoice" ng-value="'B'">Upload prescription now </ion-radio>
 
-
                         <br>
-                        <a ng-href="#/app/home" href="#/app/home" class="button button-positive">Add more</a>
+                         <div class="item-input-inset">
+                        <a ng-href="#/app/home" href="#/app/home" class="item-input-wrapper button button-positive">Add more</a>
 
-                        <button ng-click="placeorder()" class="button button-balanced">Place order</button>
+                        <button ng-click="placeorder()" class="item-input-wrapper button button-balanced">Place order</button>
+                        </div>
                     </div>
                </div>
                 <div class="item" ng-if="items==''">
-                    <span>No items in the cart</span>
-                    <br>
-                    <br>
-                    <a ng-href="#/app/home" href="#/app/home" class="item button button-positive">Add Items</a>
+                    <div class="padding">No items in the cart</div>
+                       <div class="item-input-inset">
+                    <a ng-href="#/app/home" href="#/app/home" class="item-input-wrapper button button-positive">Add Items</a>
+                      </div>
                 </div>
             </div>
+            <br/><br/><br/><br/><br/><br/> <!--for scrolliing effect-->
     </ion-content>
 </ion-view>

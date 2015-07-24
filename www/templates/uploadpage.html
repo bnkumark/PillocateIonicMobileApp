@@ -2,12 +2,15 @@
 <ion-header-bar>
 <h1 class="title" >Upload your prescription here</h1>
 </ion-header-bar>
-<ion-content class="padding">
-<button ng-click="imgUpload(1)" class="item ion-camera button button-calm"> Use Camera</button>
-<button ng-click="imgUpload(0)" class="item ion-image button button-calm"> Use Gallery</button>
-<br/>
-<br/>
-<img id="myImage" class="item full-image"ng-src="{{source}}">
-<br/>
-<button ng-click="goToOrderDetails()" class="item button button-positive">Next</button>
+<ion-content >
+ <div class="item-input-inset">
+<button ng-click="imgUpload(1)" class="item-input-wrapper ion-camera button button-calm"> Use Camera</button>
+<button ng-click="imgUpload(0)" class="item-input-wrapper ion-image button button-royal"> Use Gallery</button>
+</div>
+<div class="padding"><img id="myImage" class="item full-image" ng-show="source" ng-src="{{source}}"></div>
+
+   <div class="item-input-inset">
+<button ng-disabled="!source" ng-click="goToOrderDetails()" class="item-input-wrapper item button button-positive">Next</button>
+</div>
+<br/><br/><br/><br/><br/><br/> <!--for scrollining-->
 </ion-content></ion-view>

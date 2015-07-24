@@ -1,70 +1,74 @@
 ﻿<ion-view view-title="Order Status" hide-back-button="true" cache-view="false">
-  <ion-content>
+    <ion-content>
 
-<div class="list">
-<div>
-   <label class="item positive" ng-if="data.cancelSuccess != ''">{{data.cancelSuccess}}</label>
-    <label class="item positive" ng-if="data.orderSuccess != ''">{{data.orderSuccess}}</label>
-  <div ng-repeat="data in data.orderDetails.orderDetailsList">
-  <div class="item item-divider positive item-text-wrap">
-  Order Details for {{data.brandName}}
-  </div>
+        <div class="list">
+            <div>
+                <label class="item positive" ng-if="data.cancelSuccess != ''">{{data.cancelSuccess}}</label>
+                <label class="item positive" ng-if="data.orderSuccess != ''">{{data.orderSuccess}}</label>
+                <div ng-repeat="data in data.orderDetails.orderDetailsList">
+                    <div class="item item-divider positive item-text-wrap">
+                        Order Details for {{data.brandName}}
+                    </div>
 
-<label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Status</span>
-    <span class="input-label">{{getStatusText(data.orderStatus)}}</span>
-  </label>
+                    <label class="item item-input item-stacked-label item-text-wrap">
+                        <span class="input-label">Status</span>
+                        <span class="input-label">{{getStatusText(data.orderStatus)}}</span>
+                    </label>
 
-<label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Quantity</span>
-    <span class="input-label">{{data.quantity}}</span>
-  </label>
+                    <label class="item item-input item-stacked-label item-text-wrap">
+                        <span class="input-label">Quantity</span>
+                        <span class="input-label">{{data.quantity}}</span>
+                    </label>
 
- <label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Expected Delivery</span>
-    <span class="input-label datatime">{{data.estimatedDeliveryTime | date:'medium'}}</span>
-  </label>
-  </div>
-  
-  <div class="item item-divider positive">
-  Delivery Details
-  </div>
+                    <label class="item item-input item-stacked-label item-text-wrap" ng-show="data.orderStatus!=0">
+                        <span class="input-label">Expected Delivery</span>
+                        <span class="input-label datatime">{{data.estimatedDeliveryTime | date:'medium'}}</span>
+                    </label>
+                </div>
 
- <label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Address line1</span>
-    <span class="input-label">{{data.orderDetails.patient.addressLine1}}</span>
-  </label>
-<label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Address line2</span>
-    <span class="input-label">{{data.orderDetails.patient.addressLine2}}</span>
-  </label>
+                <div class="item item-divider positive">
+                    Delivery Details
+                </div>
 
- <label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Phone</span>
-    <span class="input-label">{{data.orderDetails.patient.phoneNumber}}</span>
-  </label>
-   <label class="item item-input item-stacked-label item-text-wrap">
-    <span class="input-label">Tracking Id</span>
-    <span class="input-label">{{data.orderDetails.trackingId}}</span>
-  </label>
+                <label class="item item-input item-stacked-label item-text-wrap">
+                    <span class="input-label">Address line1</span>
+                    <span class="input-label">{{data.orderDetails.patient.addressLine1}}</span>
+                </label>
+                <label class="item item-input item-stacked-label item-text-wrap">
+                    <span class="input-label">Address line2</span>
+                    <span class="input-label">{{data.orderDetails.patient.addressLine2}}</span>
+                </label>
 
-  <div class="item item-input-inset">
-      <div >
- <a class="button button-balanced" type="button" ng-click="goHome()">
+                <label class="item item-input item-stacked-label item-text-wrap">
+                    <span class="input-label">Phone</span>
+                    <span class="input-label">{{data.orderDetails.patient.phoneNumber}}</span>
+                </label>
+                <label class="item item-input item-stacked-label item-text-wrap">
+                    <span class="input-label">Tracking Id</span>
+                    <span class="input-label">{{data.orderDetails.trackingId}}</span>
+                </label>
+
+                 <div class="item-input-inset">
+                    
+                        <a class="item-input-wrapper button button-balanced" type="button" ng-click="goHome()">
   Next Order
-</a>   
-</div>
-    <div>
- <a class="button button-assertive" style="margin-left:10px" type="button" ng-disabled="data.cancelSuccess != ''" ng-click="cancelOrder(data.orderDetails.trackingId)">
+</a>
+                    
+                    
+                        <a class="item-input-wrapper button button-assertive" style="margin-left:10px" type="button" ng-disabled="data.disableCancel" ng-click="cancelOrder(data.orderDetails.trackingId)">
   Cancel Order
-</a>   
+</a>
 
-</div>
-</div>
+                    
+                </div>
+            </div>
 
-  </div>
-
-  </div>
-<br/><br/><br/><br/><br/><br/>
- </ion-content>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+    </ion-content>
 </ion-view>
