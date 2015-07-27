@@ -1,16 +1,19 @@
-﻿<ion-view view-title="Cart">
+﻿<ion-view view-title="Cart" cache-view="false">
     <ion-content>
-        <div ng-controller="BuyNowCtrl">
+        <div ng-controller="BuyNowCtrl" ng-submit="placeorder()">
+        <form name="cartForm">
             <div ng-if="items!=''">
                 <div class="quantity list" ng-repeat="item in items">
-
                     <label class="item-text-wrap item-input">{{ item.item }}</label>
                     <div class="item-input-inset">
                         <label class="item-input-wrapper">
-                            <input type="number" min="1" ng-model="item.quantity" value="item.quantity" ng-change="quantityChanged(item)">
+                            <input name="quantity" type="number" min="1" ng-model="item.quantity" value="item.quantity" ng-change="quantityChanged(item)">                            
                         </label>
                         <button ng-click="destroy(item)" class="icon ion-close-circled button button-assertive button-small"> </button>
+                        
                     </div>
+   				  <code class="item-text-wrap" ng-if="item.quantity < 0">Quantity should be greater than 0</code>
+
 				</div>
                     <div class="item-input-stacked">
                         <ion-radio ng-model="data.prescriptionChoice" ng-value="'A'">Show prescription on delivery</ion-radio>
@@ -20,9 +23,12 @@
                          <div class="item-input-inset">
                         <a ng-href="#/app/home" href="#/app/home" class="item-input-wrapper button button-positive">Add more</a>
 
-                        <button ng-click="placeorder()" class="item-input-wrapper button button-balanced">Place order</button>
-                        </div>
+                        <button type="submit" ng-disabled="!cartForm.$valid" class="item-input-wrapper button button-balanced">Place order</button>
+                        </div>                  
                     </div>
+                         <code ng-show="data.message!=''" class="item-text-wrap padding assertive">{{ data.message }}</code>
+				 <code class="item-text-wrap padding assertive" ng-if="!cartForm.$valid">Quantity should be greater than 0</code>
+
                </div>
                 <div class="item" ng-if="items==''">
                     <div class="padding">No items in the cart</div>
@@ -30,6 +36,7 @@
                     <a ng-href="#/app/home" href="#/app/home" class="item-input-wrapper button button-positive">Add Items</a>
                       </div>
                 </div>
+                </form>
             </div>
             <br/><br/><br/><br/><br/><br/> <!--for scrolliing effect-->
     </ion-content>
