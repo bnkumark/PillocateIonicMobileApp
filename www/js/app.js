@@ -13,9 +13,7 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
   if(window.Connection) {
    if(navigator.connection.type == Connection.NONE) {
   alert("No active internet connection!! Please check and try again");
-    if(navigator.connection.type == Connection.NONE) {
    ionic.Platform.exitApp();
-   }
   }
 /*  $ionicPopup.confirm({
                         title: "Internet Disconnected",
@@ -145,6 +143,27 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
         }
       }
     })
+ .state('app.contactus', {
+      url: "/contactus",
+      cache: false,
+      views: {
+        'menuContent': {
+          templateUrl: "templates/contactus.html",
+      /*    controller: 'contactusCtrl'*/
+        }
+      }
+    })
+    .state('app.about', {
+      url: "/about",
+      cache: false,
+      views: {
+        'menuContent': {
+          templateUrl: "templates/about.html",
+      /*    controller: 'contactusCtrl'*/
+        }
+      }
+    })
+
  .state('app.trackorder', {
       url: "/trackorder",
       cache: false,
