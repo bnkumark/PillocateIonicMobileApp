@@ -1,0 +1,21 @@
+﻿<ion-view view-title="Orders" cache-view="false">
+  <ion-content>
+    <form>
+   
+            <div ng-show="orders == null" class="item">There are no orders present</div>
+            <h4 ng-show="orders != null" class="padding positive">Orders list</h4>
+           <!--  <ion-list>-->
+            <div ng-repeat="order in orders" ng-click="orderSelected(order.trackingId)">
+                    <div class="card">
+				      <p  class="item" style="text-overflow: ellipsis;border-width:0px">
+						   {{order.brandNames}}				  </p>
+ 					  <p class="item royal" style="text-overflow: ellipsis;border-width:0px">
+						   {{order.trackingId}}
+					  </p>
+					</div>
+                </div>
+                <br/>                <br/>                <br/>                <br/>                <br/>                <br/>                <br/>                <br/>
+        <!--    </ion-list>-->
+	</form>
+  </ion-content>
+</ion-view>

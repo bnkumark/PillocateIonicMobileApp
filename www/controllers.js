@@ -318,7 +318,7 @@
 
      if (goAhead == true) {
          if ($scope.data.prescriptionChoice == 'A') {
-             $state.go('app.orderdetails');
+             $state.go('app.selectaddress');
          } else {
              $state.go('app.uploadpage');
          }
@@ -334,12 +334,23 @@
     $scope.data = {
         "store": $SelectedStore.selectedStore,
         "brandName": $SelectedStore.getselectedBrandItem().label,
-        "circle": $SelectedValues.getSelectedCircle()
+        "circle": $SelectedValues.getSelectedCircle(),
+        "selectAddress" : $OrderDetailsService.getaddressName()
     };
     $scope.order = {
         "quantity": 1,
         "offerstatus": ''
     };
+    console.log("$scope.data.selectAddress"+$scope.data.selectAddress);
+    if($scope.data.selectAddress != '')
+    {
+    
+      $scope.order = $OrderDetailsService.getAddress($scope.data.selectAddress);
+      console.log("$scope.order"+$scope.order);
+      $scope.offerstatus = '';
+      $scope.order.isTermsChecked = false;
+    }
+    
     //TODO hardcoding this for now
     $scope.data.store.country = 'India';
 
@@ -361,30 +372,7 @@
         var attachmentId = $SelectedValues.getAttachmentId();
 
         console.log('addressline2 ' + order.addressline2);
-    /* 
-      if(!submitform.phone.$valid)
-        {
-        console.log("submitform.phone.$valid:"+submitform.phone.$valid+"submitform.phone.$error:"+submitform.phone.$error)
-        alert("Phone can not be empty!"+submitform.phone.$error);
-        
-        }
-*/
-
-        /*if(order.email == '' || order.email === undefined)
-        {
-        alert("Email can not be empty!");
-        }
-        else if(!submitform.phone.$valid)
-        {
-        console.log("submitform.phone.$valid"+submitform.phone.$valid+"submitform.phone.$error"+submitform.phone.$error)
-        alert("Phone can not be empty!"+submitform.phone.$error);
-        
-        }
-        else if(order.addressline1 == '' || order.addressline1 === undefined)
-        {
-        alert("Address line 1 can not be empty!");
-        }
-		else*/
+    
 		 if(order.isTermsChecked == false)
         {
         alert("Please accept the Terms and Conditions!");
@@ -416,6 +404,18 @@
                     $SelectedValues.emptyItems();
                     $OrderDetailsService.setorderDetails(data);
                     $OrderDetailsService.setOrderMessage('Your order has been placed!');
+                    $OrderDetailsService.storeOrder(data);
+                    
+                     if($scope.data.selectAddress == '')
+    {
+
+                    var address = prompt("Do you want to save delivery details?", "Address 1");
+                    //TODO check for existing key
+   				 if (address!= null) {
+   				     $OrderDetailsService.storeAddress(address,order);
+   					 }
+   					 }
+    
                     $state.go('app.ordercompletion');
                 } else {
                     alert("Could not submit order, please check if all fields filled properly."+data.orderDetailsList[0].errors.errors);
@@ -456,7 +456,13 @@
         };
 
         $scope.getOrderDetails = function() {
-            $http.get("http://demo.pillocate.com/webservice/showOrderCollectionDetails?trackingId=" + $scope.data.trackingId)
+          
+    // $scope.data.status = $OrderDetailsService.showOrderDetails($scope.data.trackingId);
+
+
+
+
+  $http.get("http://demo.pillocate.com/webservice/showOrderCollectionDetails?trackingId=" + $scope.data.trackingId)
                 .success(function(data) {
                     console.log('order details fetched:' + data);
                     if (data != -2) {
@@ -491,11 +497,6 @@
             console.log('normally loading the order complete');
             $OrderDetailsService.setReload(false);
         }
-/*        console.log('OrdercompletionCtrl called with:' + $OrderDetailsService.getScreen());
-        var screen = $OrderDetailsService.getScreen();
-*/     
-/*            "showTracking": (screen != 'orderCompletion'),*/
-            //"showOrderDetails": (screen == 'orderCompletion'),
   
 		 $scope.data = {
             "trackingId": '',
@@ -504,7 +505,6 @@
              "orderSuccess": $OrderDetailsService.getOrderMessage(),
              "enableCancel" : false
         };
-       // console.log(' showOrderDetails:' + $scope.data.showOrderDetails);
 
         $scope.goHome = function() {
             $state.go('app.home');
@@ -619,13 +619,79 @@ $scope.circle = $SelectedValues.getSelectedCircle();
 
   $scope.$watch(function() {
         return $SelectedValues.getSelectedCircle();
-    }, function(value) {
+    }, function(value) {    
         $scope.circle = value;
     });
 
   
 }])
 //end FooterCtrl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//start ordersCtrl
+.controller('ordersCtrl', ['$scope', '$http','OrderDetailsService' , '$state','CheckNetwork', function($scope, $http, $OrderDetailsService,  $state, $CheckNetwork) {
+    console.log("ordersCtrl");
+    
+	$scope.orders = $OrderDetailsService.getOrders();
+	console.log("orders:"+	$scope.orders );
+	
+	// $OrderDetailsService.getOrders(); 
+      
+     /*$scope.$watch(function() {
+        return $OrderDetailsService.getOrders().length;
+    }, function(value) {
+        $scope.orders = value;
+    });
+*/    
+    $scope.orderSelected = function(trackingId)
+    {
+
+            $http.get("http://demo.pillocate.com/webservice/showOrderCollectionDetails?trackingId=" + trackingId)
+                .success(function(data) {
+                    console.log('order details fetched:' + data);
+                    if (data != -2) {
+                        $OrderDetailsService.setorderDetails(data);
+                        $OrderDetailsService.setOrderMessage('Your order details!');
+                        //$OrderDetailsService.setScreen('orderCompletion');
+                        $state.go('app.ordercompletion');
+                        return "";
+                    } else {
+                        return "Invalid Tracking Id";
+                    }
+                })
+                .error(function(data) {
+                $CheckNetwork.check();
+                });
+
+    }   
+}])
+//end ordersCtrl
+//start selectaddressCtrl
+.controller('selectaddressCtrl', ['$scope', '$http','OrderDetailsService' , '$state','CheckNetwork', function($scope, $http, $OrderDetailsService,  $state, $CheckNetwork) {
+    console.log("selectaddressCtrl");
+    
+	$scope.addresses= $OrderDetailsService.getAllAddressKey();
+	console.log("addresses:"+	$scope.addresses);
+		
+	   
+    $scope.addressSelected= function(address)
+    {
+      console.log("addressSelected:"+address);
+          $OrderDetailsService.setaddressName(address);
+          $state.go('app.orderdetails');
+    } 
+    
+$scope.skip = function()
+{
+ $OrderDetailsService.setaddressName('');
+          $state.go('app.orderdetails');
+
+}  
+$scope.destroy = function(address)
+{
+alert("TODO");
+}
+}])
+//end selectaddressCtrl
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -833,7 +899,7 @@ $scope.saveUser =function(xxx){
     
     $scope.goToOrderDetails = function() {
                 if ($scope.canGoToNext == true) {
-                    $state.go('app.orderdetails');
+                    $state.go('app.selectaddress');
                 } else {
                     alert("Upload the prescription first!");
                 }
@@ -1089,11 +1155,12 @@ app.service('CheckNetwork', function($q) {
 
 //start OrderDetailsService
 //TODO: Probably we can move this to a seperate JS file
-app.service('OrderDetailsService', function($q) {
+app.service('OrderDetailsService',['CheckNetwork','$state','$http', function($q,$CheckNetwork,$state,$http) {
         var orderDetails = {};
         var screen = {};
         var reloading = {};
         var message = '';
+        var addressName = '';
         return {
             getorderDetails: function() {
                 return orderDetails;
@@ -1101,13 +1168,8 @@ app.service('OrderDetailsService', function($q) {
             setorderDetails: function(x) {
                 orderDetails = x;
             },
-          /*  getScreen: function() {
-                return screen;
-            },
-            setScreen: function(x) {
-                screen = x;
-            },
-*/            getReload: function() {
+  
+            getReload: function() {
                 return reloading;
             },
             setReload: function(x) {
@@ -1120,8 +1182,94 @@ app.service('OrderDetailsService', function($q) {
             getOrderMessage : function()
             {
             return message;
-            }
+            },
+             setaddressName  : function(x)
+            {
+            addressName = x;
+            },
+            getaddressName  : function()
+            {
+            return addressName;
+            },
 
-        }
-    })
+            storeOrder: function(order)
+            {
+
+             var orders = window.localStorage.getItem("orders");
+             
+             var brandNames='';
+             for(i=0;i<order.orderDetailsList.length;i++)
+             {
+             	brandNames = brandNames + order.orderDetailsList[i].brandName;
+             	if(i<(order.orderDetailsList.length-1))
+             	{
+             	brandNames = brandNames + ", ";
+             	}
+             }
+             
+             var ordersToStore = {brandNames:brandNames,trackingId:order.trackingId};
+             var ordersArray = [];  
+             if(orders != null)
+             {
+              var ordersArray = JSON.parse(orders);
+             //if the orders list exceeds 10, delete the first item.
+              if(ordersArray.length >= 10)
+              {
+              	ordersArray = ordersArray.shift();
+              }
+              //insert at 0 index
+              ordersArray.unshift(ordersToStore);              
+             }
+             else
+             {
+             //insert at 0 index
+             ordersArray.unshift(ordersToStore);
+             }
+             window.localStorage.setItem("orders",JSON.stringify(ordersArray));
+            },
+            
+            getOrders: function()
+            {
+               var orders = window.localStorage.getItem("orders");
+               console.log("orders IN service before parse:"+orders);
+               if(orders != null)
+               {
+                console.log("orders IN service after parse:"+(JSON.parse(orders)));
+
+               return JSON.parse(orders);
+               }
+               else
+               {
+               return null;
+               }
+            },
+            storeAddress: function(key,address)
+            {                    
+              key = key.replace(' ','_');
+              console.log("StoreAddress:"+"address"+key);
+             window.localStorage.setItem("address"+key,JSON.stringify(address));
+            },
+            
+            getAddress: function(key)
+            {
+                key = key.replace(' ','_');
+                return JSON.parse(window.localStorage.getItem("address"+key));
+            },   
+            
+            getAllAddressKey: function()
+            {
+                 var keys =   Object.keys(window.localStorage);
+                 var addressKeys = [];
+                 for(i=0;i<keys.length;i++)
+                 {
+                   if(keys[i].indexOf("address") == 0)
+                   {
+                   addressKeys.push(keys[i].replace("address", "").replace("_"," "));
+                   }
+                 }
+                 return addressKeys;
+            }
+       
+          }
+    }])
     //end OrderDetailsService

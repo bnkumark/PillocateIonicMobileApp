@@ -1,0 +1,26 @@
+﻿<ion-view view-title="Select Address" cache-view="false">
+  <ion-content>
+    
+   			<div ng-show="addresses.length!=0" class="padding positive">Use saved address or Skip</div>
+            <!--  <ion-list>-->
+            <div ng-repeat="address in addresses" >
+                   
+					 <div class="item-input-inset">
+                       <p  class="item item-input-wrapper" ng-click="addressSelected(address)" style="text-overflow: ellipsis">
+						   {{address}}				  </p> 	
+
+						    <button ng-click="destroy(address)" class="icon ion-close-circled button button-assertive button-small"> </button>
+
+                        
+                    </div>
+
+                </div>
+              
+                 <div  class="item-input-inset">
+            <a class="item-input-wrapper button button-calm" ng-click="skip()">Skip</a>
+        </div>
+
+        <!--    </ion-list>-->
+	
+  </ion-content>
+</ion-view>

@@ -153,6 +153,26 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
         }
       }
     })
+     .state('app.orders', {
+      url: "/orders",
+      cache: false,
+      views: {
+        'menuContent': {
+          templateUrl: "templates/orders.html",
+          controller: 'ordersCtrl'
+        }
+      }
+    })
+.state('app.selectaddress', {
+      url: "/selectaddress",
+      cache: false,
+      views: {
+        'menuContent': {
+          templateUrl: "templates/selectaddress.html",
+          controller: 'selectaddressCtrl'
+        }
+      }
+    })
     .state('app.about', {
       url: "/about",
       cache: false,
