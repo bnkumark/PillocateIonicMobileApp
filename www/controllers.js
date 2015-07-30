@@ -35,9 +35,22 @@
     };
 })
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-.controller('HomeCtrl', ['$scope', '$http', '$state', 'SelectedValues', '$ionicHistory', '$ionicScrollDelegate', '$ionicNavBarDelegate', '$timeout', 'CheckNetwork', function($scope, $http, $state, $SelectedValues, $ionicHistory, $ionicScrollDelegate, $ionicNavBarDelegate, $timeout, $CheckNetwork) {
+.controller('HomeCtrl', ['$scope', '$http', '$state', 'SelectedValues', '$ionicHistory', '$ionicScrollDelegate', '$ionicNavBarDelegate', '$timeout', 'CheckNetwork','$ionicPlatform', function($scope, $http, $state, $SelectedValues, $ionicHistory, $ionicScrollDelegate, $ionicNavBarDelegate, $timeout, $CheckNetwork,$ionicPlatform) {
    
-    var circleValue = window.localStorage.getItem("circle");
+   // Disable BACK button on home
+ /* $ionicPlatform.registerBackButtonAction(function (event) {
+    if($state.current.name=="app.home"){
+      var exit = confirm("Do you want to exit the app?");
+      if(exit==true){
+      navigator.app.exitApp();
+      }
+    }
+    else {
+      navigator.app.backHistory();
+    }
+  }, 100);
+  
+*/    var circleValue = window.localStorage.getItem("circle");
     var cityValue = window.localStorage.getItem("city");
     console.log("Local circle storage state:" + circleValue + cityValue);
     if (circleValue != "true") {
@@ -104,11 +117,11 @@
                 alert("Please select your City & Circle to proceed!.");
                 $state.go('app.location');
             }
-            else if (selectedCity == '') {
+            else if (selectedCity == '' || selectedCity === undefined) {
                 alert("Please select your city to proceed!.");
                 $state.go('app.location');
             }
-            else if (selectedCircle == '') {
+            else if (selectedCircle == '' || selectedCircle ==undefined) {
                 alert("Please select your Circle to proceed!.");
                 $state.go('app.location');
             }
@@ -128,7 +141,7 @@
                                 if(data.length > 0)
                                 {
                                	 $scope.data.autoSuggetions = data.slice(0, 6);;
-                               	 $SelectedValues.setSelectedBrand(data);
+                               	 //$SelectedValues.setSelectedBrand(data);
                                	 //$SelectedValues.setSelectedCircle(selectedCircle);
                                 }
                                 else
@@ -145,7 +158,7 @@
                         $scope.data.autoSuggetions = [];
                     }
                 },
-                1000
+                800
             );
             //Console will log 'Timer rejected!' if it is cancelled.
             timer.then(
@@ -159,6 +172,20 @@
             }
         }
         //end of  $scope.search
+        
+        $scope.keyPressed = function(eventObject)
+        {
+        console.log("eventObject:"+eventObject);
+                console.log("eventObject.which:"+eventObject.which);
+                if(eventObject.which == 13)
+                {
+                   $scope.data.autoSuggetions = [];
+                $SelectedValues.setsearchTerm($scope.data.search);
+                $scope.data.search = '';
+                 $state.go('app.searchresultslist');
+                }
+     
+        }
 
     //Start
     $scope.brandSelected = function(item) {
@@ -174,6 +201,62 @@
         }
     }
 }])
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//start searchresultslistCtrl
+.controller('searchresultslistCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','CheckNetwork','$ionicLoading', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork,$ionicLoading) {
+        console.log('searchresultslistCtrlcalled');
+        $scope.data = {
+            "search":  $SelectedValues.getsearchTerm(),
+            "autoSuggetions": [],
+            selectedCircle : $SelectedValues.getSelectedCircle(),
+            selectedCity:  $SelectedValues.getSelectedCity()
+        };
+
+$ionicLoading.show({
+      template: 'Getting results...',
+      hideOnStateChange : true
+    });
+    
+$http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle + "&city="+$scope.data.selectedCity)
+                            .success(function(data) {
+                             $ionicLoading.hide();
+                                //console.log('setting auto suggestions ' + data);
+                                if(data.length > 0)
+                                {
+                               	 $scope.data.autoSuggetions = data.slice(0, 6);;
+                               	 //$SelectedValues.setSelectedBrand(data);
+                               	 //$SelectedValues.setSelectedCircle(selectedCircle);
+                                }
+                                else
+                                {
+                                	$scope.data.autoSuggetions = [{label: $scope.data.search, id : null}]
+                                }
+                                searchGotFocus = true;
+                            })
+                            .error(function(data) {
+                             $ionicLoading.hide();
+                                console.log('getting auto suggestions failed');
+                                $CheckNetwork.check();
+                            });
+                            
+                            $scope.brandSelected = function(item) {
+        console.log('brandSelected method');
+        $SelectedValues.setselectedBrandItem(item);
+        $scope.data.search = ''; //clear the search box
+        if (item.id == null) {
+            console.log('item.id is null');
+            $state.go('app.requestmedicine');
+        } else {
+            console.log('item.id is not null');
+            $state.go('app.searchresults');
+        }
+    }
+
+
+        
+    }])
+    //end TrackOrderCtrl
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start searchResultsCtrl
@@ -252,7 +335,12 @@
 					$scope.data.message = "Quantity should be greater than 0";
 					return false;
 				}
-				else
+				else if($scope.data.searchResults.storeId === undefined || $scope.data.searchResults.inventoryId === undefined)
+				{
+  					$scope.data.message = "Something went wrong, please go back to home and search again";
+					return false;
+				}
+				else 
 				{
 				  var item = {
             item: selectedBrand.label,
@@ -275,7 +363,7 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start BuyNowCtrl
-.controller('BuyNowCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', '$state', function($scope, $http, $SelectedValues, $SelectedStore, $state) {
+.controller('BuyNowCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', '$state','OrderDetailsService', function($scope, $http, $SelectedValues, $SelectedStore, $state,$OrderDetailsService) {
     $scope.data = {    
         message: '',
         items: $SelectedValues.getItems(),
@@ -318,7 +406,14 @@
 
      if (goAhead == true) {
          if ($scope.data.prescriptionChoice == 'A') {
+             if($OrderDetailsService.getAllAddressKey().length > 0)
+             {
              $state.go('app.selectaddress');
+             }
+             else
+             {
+             $state.go('app.orderdetails');
+             }
          } else {
              $state.go('app.uploadpage');
          }
@@ -337,19 +432,31 @@
         "circle": $SelectedValues.getSelectedCircle(),
         "selectAddress" : $OrderDetailsService.getaddressName()
     };
-    $scope.order = {
+    /*$scope.order = {
         "quantity": 1,
         "offerstatus": ''
     };
-    console.log("$scope.data.selectAddress"+$scope.data.selectAddress);
-    if($scope.data.selectAddress != '')
+*/    
+    $scope.$on('$ionicView.enter', function() {
+     // Code you want executed every time view is opened
+     console.log('Opened! on enter');
+
+ console.log('Opened! on enter, $scope.data.selectAddress'+$OrderDetailsService.getaddressName());
+     if($OrderDetailsService.getaddressName() != '')
     {
     
-      $scope.order = $OrderDetailsService.getAddress($scope.data.selectAddress);
+      $scope.order = $OrderDetailsService.getAddress($OrderDetailsService.getaddressName());
       console.log("$scope.order"+$scope.order);
-      $scope.offerstatus = '';
+     // $scope.order.offerstatus = '';
       $scope.order.isTermsChecked = false;
     }
+    else
+    {
+     $scope.order = null;
+    }
+  })
+  
+      
     
     //TODO hardcoding this for now
     $scope.data.store.country = 'India';
@@ -386,10 +493,10 @@
            { 
 
 	       // $SelectedValues.addCartToServer();
-         var cartItemsSTring = $SelectedValues.addItemsToServerString();
+         var cartItemsString = $SelectedValues.addItemsToServerString();
         
         //TODO do not hardcode contry and state
-        $http.get("http://demo.pillocate.com/webservice/addItemsToCartAndPlaceOrder?cartItemList="+cartItemsSTring +"&circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city="+$SelectedValues.getSelectedCity() + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
+        $http.get("http://demo.pillocate.com/webservice/addItemsToCartAndPlaceOrder?cartItemList="+cartItemsString +"&circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city="+$SelectedValues.getSelectedCity() + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
             .success(function(data) {
 
                 console.log("data:" + data);
@@ -406,11 +513,33 @@
                     $OrderDetailsService.setOrderMessage('Your order has been placed!');
                     $OrderDetailsService.storeOrder(data);
                     
-                     if($scope.data.selectAddress == '')
+                    console.log("$scope.data.selectAddress:"+$OrderDetailsService.getaddressName());
+                     if($OrderDetailsService.getaddressName() == '')
     {
+    				var addresses = $OrderDetailsService.getAllAddressKey();
 
-                    var address = prompt("Do you want to save delivery details?", "Address 1");
-                    //TODO check for existing key
+                    var address = prompt("Do you want to save delivery details?", "Address "+addresses.length+1);
+                    
+                    var itemPresent = true;
+                    
+                    while(itemPresent)
+                    {
+                      if(address !=null)
+                      {
+                      if(addresses.indexOf(address) == -1)
+                      {
+                      itemPresent = false;
+                      }
+                      else
+                      {
+                      address = prompt("Address with that name already present, give another name", "Address "+addresses.length+1);
+                      }
+                      }else
+                      {
+                      itemPresent = false;
+                      }
+                    }
+                    
    				 if (address!= null) {
    				     $OrderDetailsService.storeAddress(address,order);
    					 }
@@ -688,7 +817,12 @@ $scope.skip = function()
 }  
 $scope.destroy = function(address)
 {
-alert("TODO");
+var index = $scope.addresses.indexOf(address);
+if (index > -1) {
+    $scope.addresses.splice(index, 1);
+}
+
+$OrderDetailsService.removeAddressKey(address);
 }
 }])
 //end selectaddressCtrl
@@ -892,14 +1026,22 @@ $scope.saveUser =function(xxx){
     }]) //end LocationCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //start UploadpageCtrl
-.controller('UploadpageCtrl', ['$scope', '$cordovaCamera', '$http', '$state', 'CheckNetwork', 'SelectedValues', function($scope, $cordovaCamera, $http, $state, $CheckNetwork, $SelectedValues) {
+.controller('UploadpageCtrl', ['$scope', '$cordovaCamera', '$http', '$state', 'CheckNetwork', 'SelectedValues','OrderDetailsService', function($scope, $cordovaCamera, $http, $state, $CheckNetwork, $SelectedValues,$OrderDetailsService) {
    
 	$scope.source = null;
     $scope.canGoToNext = false;
     
     $scope.goToOrderDetails = function() {
                 if ($scope.canGoToNext == true) {
-                    $state.go('app.selectaddress');
+             if($OrderDetailsService.getAllAddressKey().length > 0)
+             {
+             $state.go('app.selectaddress');
+             }
+             else
+             {
+             $state.go('app.orderdetails');
+             }
+
                 } else {
                     alert("Upload the prescription first!");
                 }
@@ -968,6 +1110,7 @@ app.service('SelectedValues', function($q,$http) {
         var selectedCity='';
 		var items=[];
 		var attachmentId='';
+	    var searchTerm = '';
         return {
         
         	retrieveCircleFromStorage: function() {
@@ -980,7 +1123,7 @@ app.service('SelectedValues', function($q,$http) {
         	console.log("city data retreived from storage:"+selectedCity);
         	},
         	
-            getSelectedBrand: function(id) {
+          /*  getSelectedBrand: function(id) {
                 for (i = 0; i < selectedBrand.length; i++) {
                     if (selectedBrand[i].id == id) {
                         return selectedBrand[i];
@@ -991,7 +1134,7 @@ app.service('SelectedValues', function($q,$http) {
             setSelectedBrand: function(x) {
                 selectedBrand = x;
             },
-            getSelectedCircle: function() {
+*/            getSelectedCircle: function() {
                 return selectedCircle;
             },
             setSelectedCircle: function(x) {
@@ -1010,6 +1153,15 @@ app.service('SelectedValues', function($q,$http) {
                 attachmentId= x;              
             },
             
+			getsearchTerm : function() {
+                return searchTerm ;
+            },
+            
+            setsearchTerm : function(x) {
+            console.log("set searchTerm :"+x);
+                searchTerm = x;              
+            },
+
             getSelectedCity: function() {
                 return selectedCity;
             },
@@ -1217,6 +1369,7 @@ app.service('OrderDetailsService',['CheckNetwork','$state','$http', function($q,
               {
               	ordersArray = ordersArray.shift();
               }
+              console.log("ordersArray:"+ordersArray);
               //insert at 0 index
               ordersArray.unshift(ordersToStore);              
              }
@@ -1244,7 +1397,8 @@ app.service('OrderDetailsService',['CheckNetwork','$state','$http', function($q,
                }
             },
             storeAddress: function(key,address)
-            {                    
+            {    
+              address.isTermsChecked = false;                
               key = key.replace(' ','_');
               console.log("StoreAddress:"+"address"+key);
              window.localStorage.setItem("address"+key,JSON.stringify(address));
@@ -1268,6 +1422,10 @@ app.service('OrderDetailsService',['CheckNetwork','$state','$http', function($q,
                    }
                  }
                  return addressKeys;
+            },
+            removeAddressKey: function(key)
+            {
+            window.localStorage.removeItem("address"+key.replace(" ","_"));
             }
        
           }

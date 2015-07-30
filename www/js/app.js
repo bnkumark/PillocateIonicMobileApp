@@ -113,6 +113,15 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
         }
       }
     })
+ .state('app.searchresultslist', {
+      url: "/searchresultslist",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/searchresultslist.html",
+         controller: 'searchresultslistCtrl'
+        }
+      }
+    })
 
  .state('app.searchresults', {
       url: "/searchresults",
