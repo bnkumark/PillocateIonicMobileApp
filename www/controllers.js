@@ -177,6 +177,7 @@
         {
         console.log("eventObject:"+eventObject);
                 console.log("eventObject.which:"+eventObject.which);
+                //13 is for enter key
                 if(eventObject.which == 13)
                 {
                    $scope.data.autoSuggetions = [];
@@ -192,6 +193,7 @@
         console.log('brandSelected method');
         $SelectedValues.setselectedBrandItem(item);
         $scope.data.search = ''; //clear the search box
+         $scope.data.autoSuggetions = [];
         if (item.id == null) {
             console.log('item.id is null');
             $state.go('app.requestmedicine');
@@ -260,7 +262,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start searchResultsCtrl
-.controller('SearchResultsCtrl', ['$scope', '$http', 'SelectedValues', '$ionicPopup', 'SelectedStore', 'CheckNetwork','$state', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore, $CheckNetwork,$state) {
+.controller('SearchResultsCtrl', ['$scope', '$http', 'SelectedValues', '$ionicPopup', 'SelectedStore', 'CheckNetwork','$state','$ionicLoading', function($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore, $CheckNetwork,$state,$ionicLoading) {
     console.log('searchResultsCtrl method');
     var selectedBrand = $SelectedValues.getselectedBrandItem();
     var selectedCircle = $SelectedValues.getSelectedCircle();
@@ -278,8 +280,15 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
     
     console.log($scope.data.items);
     
+  $ionicLoading.show({
+      template: 'Getting Medicine details...',
+      hideOnStateChange : true
+    });
+
+    
     $http.get("http://demo.pillocate.com/webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + selectedBrand.id + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
         .success(function(data) {
+        $ionicLoading.hide();
             console.log('searchResultsCtrl success');
             if(data.availabilityFlag == false)
             {
@@ -293,6 +302,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
 
         })
         .error(function(data) {
+                $ionicLoading.hide();
             $CheckNetwork.check();
         });
         
@@ -327,7 +337,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
     
     function addtocartlocal()
     {
-  //console.log("$scope.data.quantity: "+$scope.data.quantity);
+
 				
 				if($scope.data.quantity === undefined || $scope.data.quantity <= 0)
 				{
@@ -363,7 +373,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start BuyNowCtrl
-.controller('BuyNowCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', '$state','OrderDetailsService', function($scope, $http, $SelectedValues, $SelectedStore, $state,$OrderDetailsService) {
+.controller('BuyNowCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', '$state','OrderDetailsService','$ionicLoading', function($scope, $http, $SelectedValues, $SelectedStore, $state,$OrderDetailsService,$ionicLoading) {
     $scope.data = {    
         message: '',
         items: $SelectedValues.getItems(),
@@ -424,7 +434,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
  }   
 }])//end
 //start OrderDetailsCtrl
-.controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
+.controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork','$ionicLoading', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
     console.log('OrderDetailsCtrlmethod called');
     $scope.data = {
         "store": $SelectedStore.selectedStore,
@@ -468,6 +478,11 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
 
     $scope.submitorder = function(order) {
     
+    $ionicLoading.show({
+      template: 'Submitting Order...'
+    });
+
+    
         if (selectedBrand.name == null) {
             selectedBrand.name = '';
             console.log('selectedBrand.name is null');
@@ -498,7 +513,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
         //TODO do not hardcode contry and state
         $http.get("http://demo.pillocate.com/webservice/addItemsToCartAndPlaceOrder?cartItemList="+cartItemsString +"&circle=" + $SelectedValues.getSelectedCircle() + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city="+$SelectedValues.getSelectedCity() + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
             .success(function(data) {
-
+             $ionicLoading.hide();
                 console.log("data:" + data);
                 console.log('data.orderDetailsList[0].trackingId:' + data.trackingId);
                 if(data == 'No items in the cart')
@@ -518,7 +533,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
     {
     				var addresses = $OrderDetailsService.getAllAddressKey();
 
-                    var address = prompt("Do you want to save delivery details?", "Address "+addresses.length+1);
+                    var address = prompt("Do you want to save delivery details?", "Address "+(addresses.length+1));
                     
                     var itemPresent = true;
                     
@@ -532,7 +547,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
                       }
                       else
                       {
-                      address = prompt("Address with that name already present, give another name", "Address "+addresses.length+1);
+                      address = prompt("Address with that name already present, give another name", "Address "+(addresses.length+1));
                       }
                       }else
                       {
@@ -553,6 +568,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
                 }
             })
             .error(function(data) {
+             $ionicLoading.hide();
                 $CheckNetwork.check();
                 alert("some error occured:" + data);
             });
@@ -577,7 +593,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
 }])    //end OrderDetailsCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start TrackOrderCtrl
-.controller('TrackOrderCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','CheckNetwork', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork) {
+.controller('TrackOrderCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','CheckNetwork','$ionicLoading', function($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
         console.log('TrackOrderCtrl called');
         $scope.data = {
             "trackingId": '',
@@ -585,14 +601,14 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
         };
 
         $scope.getOrderDetails = function() {
+        
+         $ionicLoading.show({
+      template: 'Getting Order details...'
+    });
           
-    // $scope.data.status = $OrderDetailsService.showOrderDetails($scope.data.trackingId);
-
-
-
-
   $http.get("http://demo.pillocate.com/webservice/showOrderCollectionDetails?trackingId=" + $scope.data.trackingId)
                 .success(function(data) {
+                $ionicLoading.hide();
                     console.log('order details fetched:' + data);
                     if (data != -2) {
                         $OrderDetailsService.setorderDetails(data);
@@ -605,6 +621,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
                     }
                 })
                 .error(function(data) {
+                                $ionicLoading.hide();
                 $CheckNetwork.check();
                 });
 
@@ -614,7 +631,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start OrderCompletionCtrl
-.controller('OrderCompletionCtrl', ['$scope', '$http', 'SelectedValues', '$ionicHistory', 'SelectedStore', 'OrderDetailsService', '$state','CheckNetwork', function($scope, $http, $SelectedValues, $ionicHistory, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork) {
+.controller('OrderCompletionCtrl', ['$scope', '$http', 'SelectedValues', '$ionicHistory', 'SelectedStore', 'OrderDetailsService', '$state','CheckNetwork','$ionicLoading', function($scope, $http, $SelectedValues, $ionicHistory, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork,$ionicLoading) {
         $ionicHistory.clearHistory();
         if ($OrderDetailsService.getReload() == false) {
             $state.go($state.current, {}, {
@@ -664,6 +681,11 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
         
         $scope.cancelOrder = function(trackingId) {
         
+        $ionicLoading.show({
+      template: 'Cancelling Order...'
+    });
+
+        
             var confirmed=confirm("Confirm cancel. Cancellation CANNOT be undone!");
            
            if(confirmed == true)
@@ -671,6 +693,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
 
             $http.get("http://demo.pillocate.com/webservice/cancelOrder?trackingId=" + trackingId)
                 .success(function(data) {
+                $ionicLoading.hide();
                 if(data == 'Success')
                 {
                   for(i=0;i<$scope.data.orderDetails.orderDetailsList.length;i++)
@@ -689,6 +712,7 @@ $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term
                     console.log('order cancelled:' + data);
                 })
                 .error(function(data) {
+                     $ionicLoading.hide();
                 $CheckNetwork.check();
                 alert("There was some problem:"+data);
                 
@@ -1026,7 +1050,7 @@ $scope.saveUser =function(xxx){
     }]) //end LocationCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //start UploadpageCtrl
-.controller('UploadpageCtrl', ['$scope', '$cordovaCamera', '$http', '$state', 'CheckNetwork', 'SelectedValues','OrderDetailsService', function($scope, $cordovaCamera, $http, $state, $CheckNetwork, $SelectedValues,$OrderDetailsService) {
+.controller('UploadpageCtrl', ['$scope', '$cordovaCamera', '$http', '$state', 'CheckNetwork', 'SelectedValues','OrderDetailsService','$ionicLoading', function($scope, $cordovaCamera, $http, $state, $CheckNetwork, $SelectedValues,$OrderDetailsService,$ionicLoading) {
    
 	$scope.source = null;
     $scope.canGoToNext = false;
@@ -1048,6 +1072,9 @@ $scope.saveUser =function(xxx){
             };
     
     $scope.imgUpload = function(sourceTypevalue) {
+    $ionicLoading.show({
+      template: 'Uploading prescription...'
+    });
         document.addEventListener("deviceready", function() {
             var options = {
                 quality: 100,
@@ -1065,6 +1092,7 @@ $scope.saveUser =function(xxx){
                 $scope.source = imageURI;
 
                 var fnSuccess = function(r) {
+                 $ionicLoading.hide();
                     var parsedResponse = JSON.parse(r.response);
 
                     console.log("upload success:" + r.response);
@@ -1074,6 +1102,7 @@ $scope.saveUser =function(xxx){
                 }
 
                 var fnError = function(r) {
+                                 $ionicLoading.hide();
                     console.log("upload failed:" + r);
                     alert("upload failed:" + r);
                 }
@@ -1089,6 +1118,7 @@ $scope.saveUser =function(xxx){
                 ft.upload(fileURI, encodedURI, fnSuccess, fnError, options);
 
             }, function(err) {
+                             $ionicLoading.hide();
                 // error
                 alert("Sorry!No picture was selected");
             });
