@@ -1,4 +1,4 @@
-<widget id="com.ionicframework.myapp148108" version="0.0.17" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.ionicframework.myapp148108" version="0.0.18" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
   <name>Pillocate</name>
   <description>&#xD;
@@ -11,6 +11,7 @@
   <access origin="*"/>
   <access origin="tel:*" launch-external="yes"/>
   <allow-intent href="tel:*"/>
+  <allow-navigation href="http://*/*" />
   <preference name="webviewbounce" value="false"/>
   <preference name="UIWebViewBounce" value="false"/>
   <preference name="DisallowOverscroll" value="true"/>

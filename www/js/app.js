@@ -113,6 +113,15 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
         }
       }
     })
+       .state('app.start', {
+           url: "/start",
+           views: {
+               'menuContent': {
+                   templateUrl: "templates/start.html",
+                   controller: 'startCtrl'
+               }
+           }
+       })
  .state('app.searchresultslist', {
       url: "/searchresultslist",
       views: {
@@ -122,7 +131,22 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
         }
       }
     })
-
+       .state('app.sellerdetails', {
+           url: "/sellerdetails",
+           views: {
+               'menuContent': {
+                   templateUrl: "templates/sellerdetails.html",                 
+               }
+           }
+       })
+             .state('app.alternatesellers', {
+                 url: "/alternatesellers",
+                 views: {
+                     'menuContent': {
+                         templateUrl: "templates/alternatesellers.html",
+                     }
+                 }
+             })
  .state('app.searchresults', {
       url: "/searchresults",
       views: {
@@ -214,7 +238,7 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
       }
     });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/home');
+  $urlRouterProvider.otherwise('/app/start');
 });
 
 

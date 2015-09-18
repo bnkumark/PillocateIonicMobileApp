@@ -5,7 +5,7 @@
     </ion-nav-title>
     <ion-content>
         <P class="item item-text-wrap" style="text-align:center;color:#0F75BC;text-transform:uppercase;border-width:0px">Online portal to
-            <br/>Find medicines near you-14</P>
+            <br/>Find medicines near you</P>
         <div class="list">
 
             <div id="searchbox" class="list item-input-inset" padding="false" style="background-color:white;margin-bottom:-20px">
@@ -19,6 +19,29 @@
                     {{brandItem.label}}
                 </ion-item>
             </ion-list>
+        </div>
+        <div ng-show="data.showItemSelected">
+            <div ng-show="data.message!=''" class="item positive">{{ data.message }}</div>
+            <div class="item item-text-wrap">{{data.localBrand}}</div>
+            <div class="quantity">
+                <label class="item item-input">
+                    <span class="input-label">Quantity:</span>
+                    <input type="number" min="1" ng-model="data.quantity" value="1">
+                </label>
+            </div>
+        
+                <label class="item item-input">
+                    <span class="input-label">Approx MRP:</span>
+                    <span class="item-text-wrap">{{data.quantity}} X 49 = Rs.245</span>
+                     
+                </label>
+          
+            <div class="item-input-inset">
+                <button ng-click="addtocart()" ng-disabled="isDisabled" ng-model="isDisabled" class="item-input-wrapper button button-positive">
+                    +Add to Cart
+                </button>
+                <button class="item-input-wrapper  padding-left button button-balanced" ng-click="checkout()">Checkout</button>
+            </div>
         </div>
         <div class="footer item item-text-wrap" style="text-align:center;" id="box">
             Enter name of Medicine
