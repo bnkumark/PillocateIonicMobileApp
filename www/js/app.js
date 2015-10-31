@@ -86,6 +86,15 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
       }
     }
   })
+    .state('app.profile', {
+    url: '/profile',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/profile.html',
+
+      }
+    }
+  })
   .state('app.uploadpage', {
     url: '/uploadpage',
     views: {

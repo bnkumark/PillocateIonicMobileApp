@@ -656,6 +656,13 @@ $scope.saveUser =function(xxx){
 }])
 //end SignupCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
+//start ProfileCtrl
+.controller('ProfileCtrl', ['$scope',  function($scope) {
+
+
+}])
+//end ProfileCtrl
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start LocationCtrl
 .controller('LocationCtrl', ['$scope', 'SelectedValues', '$http', 'CheckNetwork', function($scope, $SelectedValues, $http, $CheckNetwork) {
 console.log('------------------------------ 1.window.localStorage.getItem(---------------------------------------------');
