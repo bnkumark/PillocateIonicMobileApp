@@ -6,22 +6,34 @@
                 <div class="quantity list" ng-repeat="item in items">
                     <label class="item-text-wrap item-input">{{ item.item }}</label>
                     <div class="item-input-inset">
+						<span class="input-label">Quantity:</span>
                         <label class="item-input-wrapper">
-                            <input name="quantity" type="number" min="1" ng-model="item.quantity" value="item.quantity" ng-change="quantityChanged(item)">                            
+						<!--<span class="input-label">Quantity:</span>-->
+                            <input name="quantity" type="number" min="1" ng-model="item.quantity" value="item.quantity" ng-change="quantityChanged(item)">                          
+                        </label>
+						<span class="input-label">Price:</span>
+						<label class="item-input-wrapper">
+			
+							<span class="item-text-wrap">Rs.{{item.quantity*50}}</span>                          
                         </label>
                         <button ng-click="destroy(item)" class="icon ion-close-circled button button-assertive button-small"> </button>
                         
                     </div>
    				  <code class="item-text-wrap" ng-if="item.quantity < 0">Quantity should be greater than 0</code>
 
+					<div class="item-input-inset">
+						<span class="input-label">Approx Total Price: </span>
+						<span class="item-text-wrap">Rs.{{245}}</span>                          
+                   </div>
 				</div>
                     <div class="item-input-stacked">
                         <!--<ion-radio ng-model="data.prescriptionChoice" ng-value="'A'">Show prescription on delivery</ion-radio>-->
-                        <ion-radio ng-model="data.prescriptionChoice" ng-value="'B'">Upload prescription now </ion-radio>
+                        <ion-radio ng-model="data.prescriptionChoice" ng-value="'B'">Upload new prescription </ion-radio>
+						<ion-radio ng-model="data.prescriptionChoice" ng-value="'B'">Use existing prescription </ion-radio>
 
                         <br>
                          <div class="item-input-inset">
-                        <!--<a ng-href="#/app/home" href="#/app/home" class="item-input-wrapper button button-positive">Add more</a>-->
+                        <a ng-href="#/app/home" href="#/app/home" class="item-input-wrapper button button-positive">Add more</a>
 
                         <button type="submit" ng-disabled="!cartForm.$valid" class="item-input-wrapper button button-balanced">Go!</button>
                         </div>                  

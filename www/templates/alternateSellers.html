@@ -2,19 +2,26 @@
     <ion-content>
         <div class="item item-text-wrap positive">Approx total MRP for your order is Rs.245</div>
         <span class="item item-text-wrap">Order is available with:</span>
-        <div class="list">
+        <div class="item-input-stacked">
+		<ion-radio ng-model="data.sellerChoice" ng-value="'A'">
             <label class="item">
                 <span class="input-label ">Liberty Drug Corner</span>
                 <i class="icon ion-star  energized"></i>            <i class="icon ion-star energized"></i>  <i class="icon ion-star  energized"></i>  <i class="icon ion-star  energized"></i>  <i class="icon ion-star energized"></i><br>
                 <span class=" royal">52 in your area have liked this seller</span><br>
                 <!--<span class="balanced">10% off on order</span>-->
             </label>
+		</ion-radio>
+		<ion-radio ng-model="data.sellerChoice" ng-value="'B'">
             <label class="item">
                 <span class="input-label  ">Metro Pharmacy</span>
                 <i class="icon ion-star   energized"></i>            <i class="icon ion-star  energized"></i>  <i class="icon ion-star  energized"></i><br>
                 <span class=" royal">5 in your area have liked this seller</span><br>
                 <!--<span class="balanced">5% off on order</span>-->
             </label>
+		</ion-radio>
+        </div>
+		<div class="item-input-inset">
+            <button class="item-input-wrapper  padding-left button button-balanced" ng-click="goToOrderDetails()">Confirm</button>
         </div>
     </ion-content>
 </ion-view>

@@ -524,9 +524,11 @@
 
     $scope.goToOrderDetails = function () {
          if ($OrderDetailsService.getAllAddressKey().length > 0) {
+			 console.log('savedAddress');
             $state.go('app.selectaddress');
          }
          else {
+			 console.log('go to order details');
              $state.go('app.orderdetails');
          }
     }   

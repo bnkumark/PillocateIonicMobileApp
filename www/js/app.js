@@ -144,7 +144,8 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
            url: "/sellerdetails",
            views: {
                'menuContent': {
-                   templateUrl: "templates/sellerdetails.html",                 
+                   templateUrl: "templates/sellerdetails.html",
+				   controller: 'sellerDetailsCtrl'				   
                }
            }
        })
@@ -153,6 +154,7 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
                  views: {
                      'menuContent': {
                          templateUrl: "templates/alternatesellers.html",
+						 controller: 'sellerDetailsCtrl'	
                      }
                  }
              })
