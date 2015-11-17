@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -31,20 +31,20 @@
         </div>
     </ion-footer-bar>
 -->    
-    <div class="tabs tabs-icon-left positive" ng-controller="FooterCtrl">
+  <div class="tabs tabs-icon-left positive" ng-controller="FooterCtrl">
   <a href="#/app/buynow" class="tab-item">
     <i class="icon ion-android-cart"></i>
-    {{cartItems}}
+        <span class="assertive">{{cartItems}}</span>
   </a>
   <a href="#/app/start" class="tab-item">
     <i class="icon ion-home"></i>
-   
   </a>
   <a href="#/app/location" class="tab-item">
     <i class="icon ion-location"></i>
     {{circle}}
   </a>
 </div>
+
 </body>
 
 </html>

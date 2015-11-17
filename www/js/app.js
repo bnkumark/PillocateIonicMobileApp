@@ -86,6 +86,7 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
       }
     }
   })
+  
     .state('app.profile', {
     url: '/profile',
     views: {
@@ -145,7 +146,7 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
            views: {
                'menuContent': {
                    templateUrl: "templates/sellerdetails.html",
-				   controller: 'sellerDetailsCtrl'				   
+				            controller: 'sellerDetailsCtrl'				   
                }
            }
        })
@@ -154,7 +155,7 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
                  views: {
                      'menuContent': {
                          templateUrl: "templates/alternatesellers.html",
-						 controller: 'sellerDetailsCtrl'	
+						            controller: 'sellerDetailsCtrl'	
                      }
                  }
              })

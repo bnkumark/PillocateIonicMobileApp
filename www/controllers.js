@@ -115,6 +115,8 @@
         message: ''
     };
 
+    if(!$scope.data.showItemSelected)console.log("!showItemSelected");
+
     $scope.scrollToTop = function () {
         console.log('scrollToTop called');
         var el = document.querySelector("#searchbox");
@@ -458,7 +460,8 @@
         message: '',
         items: $SelectedValues.getItems(),
         message2: '',
-        prescriptionChoice: 'A'
+        prescriptionChoice: 'A',
+        totalprice: $SelectedValues.getTotalPrice()
     };
 
     $scope.$watch(function () {
@@ -474,6 +477,7 @@
                 $SelectedValues.removeItems(items[i]);
             }
         }
+        $scope.data.totalprice = $SelectedValues.getTotalPrice();
     }
 
     $scope.quantityChanged = function (item) {
@@ -481,8 +485,9 @@
             console.log("calling updateItem with:" + item.inventoryid + ":" + item.quantity);
             $SelectedValues.updateItem(item.inventoryid, item.quantity);
             $scope.data.message = '';
+            $scope.data.totalprice = $SelectedValues.getTotalPrice();
         }
-    }
+    } 
 
     $scope.placeorder = function () {
         var goAhead = true;
@@ -499,6 +504,7 @@
                 //    $state.go('app.selectaddress');
                 //}
                 //else {
+                    //$state.go('app.uploadpage');
                     $state.go('app.sellerdetails');
                     //$state.go('app.orderdetails');
                 //}
@@ -520,6 +526,7 @@
         //"autoSuggetions": [],
         //selectedCircle: $SelectedValues.getSelectedCircle(),
         //selectedCity: $SelectedValues.getSelectedCity()
+        totalprice: $SelectedValues.getTotalPrice()
     };
 
     $scope.goToOrderDetails = function () {
@@ -1120,6 +1127,15 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
 
     $scope.source = null;
     $scope.canGoToNext = false;
+    
+    $scope.showSellerDetails = function () {
+        if ($scope.canGoToNext == true) {
+             $state.go('app.sellerdetails');
+         }
+         else {
+            alert("Upload the prescription first!");
+        }
+    }
 
     $scope.goToOrderDetails = function () {
         if ($scope.canGoToNext == true) {
@@ -1205,6 +1221,7 @@ app.service('SelectedValues', function ($q, $http) {
     var items = [];
     var attachmentId = '';
     var searchTerm = '';
+    var totalprice = 0;
     return {
 
         retrieveCircleFromStorage: function () {
@@ -1308,6 +1325,16 @@ app.service('SelectedValues', function ($q, $http) {
             return false;
         },
 
+        getTotalPrice: function () {
+        totalprice = 0;
+        for (i = 0; i < items.length; i++) {
+            if (items[i].quantity > 0) {
+                totalprice += 50*items[i].quantity;
+                }
+            }
+        return totalprice;
+        //$scope.data.totalprice = totalprice;
+    },   
         addCartToServer: function () {
             var cartItemList = "[";
             for (i = 0; i < items.length; i++) {

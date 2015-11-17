@@ -1,6 +1,6 @@
 ﻿<ion-view view-title="Alternate Sellers" cache-view="false">
     <ion-content>
-        <div class="item item-text-wrap positive">Approx total MRP for your order is Rs.245</div>
+        <div class="item item-text-wrap positive">Approx total MRP for your order is Rs.{{ data.totalprice }}</div>
         <span class="item item-text-wrap">Order is available with:</span>
         <div class="item-input-stacked">
 		<ion-radio ng-model="data.sellerChoice" ng-value="'A'">

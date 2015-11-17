@@ -32,15 +32,15 @@
         
                 <label class="item item-input">
                     <span class="input-label">Approx MRP:</span>
-                    <span class="item-text-wrap">{{data.quantity}} X 50 = Rs.{{data.quantity*50}}</span>
+                    <span class="input-label">{{data.quantity}} X 50 = Rs.{{data.quantity*50}}</span>
                      
                 </label>
           
             <div class="item-input-inset">
-                <button ng-click="addtocart()" ng-disabled="isDisabled" ng-model="isDisabled" class="item-input-wrapper button button-positive">
-                    +Add to Cart
+                <button ng-click="addtocart()" ng-disabled="isDisabled" ng-model="isDisabled" class="item-input-wrapper icon ion-plus button button-positive">
+                    Add to Cart
                 </button>
-                <button class="item-input-wrapper  padding-left button button-balanced" ng-click="checkout()">Checkout</button>
+                <button class="item-input-wrapper icon ion-checkmark padding-left button button-balanced" ng-click="checkout()"> Checkout</button>
             </div>
         </div>
         <div class="footer item item-text-wrap" style="text-align:center;" id="box">
