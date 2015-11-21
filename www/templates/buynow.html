@@ -1,22 +1,21 @@
-﻿<ion-view view-title="Cart" cache-view="false">
+<ion-view view-title="Cart" cache-view="false">
     <ion-content>
-        <div ng-controller="BuyNowCtrl" ng-submit="placeorder()">
-        <form name="cartForm">
+        <!-- <form name="cartForm" novalidate="" class="css-form"> -->
             <div ng-if="items!=''">
                 <div class="quantity list" ng-repeat="item in items">
                  <div class="card">
                     <label class="item-text-wrap item-input">{{ item.item }}</label>
-                    <div class="item-input">
+                    <div class="item-input padding-right">
 						  <span class="input-label">Quantity:</span>
                         <label class="item-input-wrapper">
 						<!--<span class="input-label">Quantity:</span>-->
-                            <input name="quantity" type="number" min="1" ng-model="item.quantity" value="item.quantity" ng-change="quantityChanged(item)">                          
+                            <input name="quantity" type="number" min="1" ng-model="item.quantity" value="item.quantity" ng-change="quantityChanged(item)">         
                         </label>
                     </div>
-					<div class="item-input">
+					<div class="item-input padding-right">
                         <span class="input-label">Price:</span>
                         <label class="item-input-wrapper">
-                            <span class="input-label">Rs.{{item.quantity*50}}</span>
+                            <span class="input-label">Rs.{{item.quantity>0?item.quantity*50:0}}</span>
                         </label>
                         <button ng-click="destroy(item)" class="icon ion-trash-a button button-assertive button-small"> </button>
                   </div>
@@ -28,21 +27,25 @@
                         <span class="input-label">Rs.{{ data.totalprice }} (approx)</span>                          
                    </div>
 <br/><br/>
+                <form name="cartForm" novalidate="" class="css-form" ng-submit="placeorder(order)">
                     <div class="item-input-stacked">
                         <!--<ion-radio ng-model="data.prescriptionChoice" ng-value="'A'">Show prescription on delivery</ion-radio>-->
-                        <ion-radio ng-model="data.prescriptionChoice" ng-value="'B'">Upload prescription </ion-radio>
-						<ion-radio ng-model="data.prescriptionChoice" ng-value="'A'">I will show prescription at delivery </ion-radio>
+                        <ion-radio ng-model="order.prescriptionChoice" ng-value="'A'">I will show prescription at delivery </ion-radio>
+                        <ion-radio ng-model="order.prescriptionChoice" ng-value="'B'">Upload prescription </ion-radio>
 
                         <br>
                          <div class="item-input-inset">
                         <a ng-href="#/app/home" href="#/app/home" class="item-input-wrapper button button-positive">Add more</a>
+                
+                        <input class="item-input-wrapper button button-balanced" ng-disabled="!cartForm.$valid" value="Go!" type="submit">
+                        
+              <!--       <button ng-click="placeorder()" ng-disabled="!cartForm.$valid" class="item-input-wrapper button button-balanced">Go!</button>  -->
 
-                        <button type="submit" ng-disabled="!cartForm.$valid" class="item-input-wrapper button button-balanced">Go!</button>
                         </div>                  
                     </div>
                          <code ng-show="data.message!=''" class="item-text-wrap padding assertive">{{ data.message }}</code>
 				 <code class="item-text-wrap padding assertive" ng-if="!cartForm.$valid">Quantity should be greater than 0</code>
-
+                </form>
                </div>
                 <div class="item" ng-if="items==''">
                     <div class="padding">No items in the cart</div>
@@ -50,8 +53,6 @@
                     <a ng-href="#/app/home" href="#/app/home" class="item-input-wrapper button button-positive">Add Items</a>
                       </div>
                 </div>
-                </form>
-            </div>
             <br/><br/><br/><br/><br/><br/> <!--for scrolliing effect-->
     </ion-content>
 </ion-view>

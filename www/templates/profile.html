@@ -1,31 +1,46 @@
-<ion-view view-title="Profile" name="profileView">
-<ion-header-bar>
-<h1 class="title">Enter your details!</h1>
-</ion-header-bar>
+<ion-view view-title="Profile">
 <ion-content>
-<form >
-  <div class="list">
-    <label class="item item-input item-stacked-label">
+<!-- <ion-header-bar>
+<h1 class="title">Enter your details!</h1>
+</ion-header-bar> -->
+<form novalidate class="css-form" ng-model="profile" ng-submit="registeruser(profile)">
+ <div class="item item-text-wrap" ng-hide="data.profilestatus">Enter your details!</div>
+ <label class="item item-input item-stacked-label">
     <span class="input-label">Name</span>
-    <input type="text" placeholder="Name" ng-model="username">
-    </label>
-    <label class="item item-input item-stacked-label">
+    <div ng-hide="data.profilestatus">
+    <input type="text" placeholder="Name" ng-model="profile.name">
+    </div>
+    <div ng-show="data.profilestatus">
+    <span class="input-label">{{profile.name}}</span>
+    </div>
+  </label>
+  <label class="item item-input item-stacked-label">
     <span class="input-label">Email</span>
-    <input type="email" placeholder="abc@xyz.com" ng-model="email">
-    </label>
-    <label class="item item-input item-stacked-label">
+    <div ng-hide="data.profilestatus">
+    <input type="email" placeholder="abc@xyz.com" ng-model="profile.email">
+    </div>
+    <div ng-show="data.profilestatus">
+    <span class="input-label">{{profile.email}}</span>
+    </div>
+  </label>
+  <label class="item item-input item-stacked-label">
     <span class="input-label">Phone Number</span>
-    <input type="text" placeholder="+91" ng-model="phone">
-    </label>
-
-    <label class="item item-input item-stacked-label">
+    <div ng-hide="data.profilestatus">
+    <input type="tel" placeholder="+91" ng-model="profile.phone">
+    </div>
+    <div ng-show="data.profilestatus">
+    <span class="input-label">{{profile.phone}}</span>
+    </div>
+</label>
+<!--     <label class="item item-input item-stacked-label">
     <span class="input-label">Address</span>
     <input type="text" placeholder="address" ng-model="address">
-    </label>
-    <label class="item">
-    <button class="button button-block button-positive" type="submit">Register</button>
-    </label>
-  </div>
+    </label> -->
+<div class="item-input-inset padding" ng-hide="data.profilestatus"> 
+    <button class="item-input-wrapper button button-positive" type="submit">
+  Register
+</button>
+</div>
 </form>
 </ion-content>
 </ion-view>

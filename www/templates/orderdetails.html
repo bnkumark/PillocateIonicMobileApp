@@ -6,8 +6,17 @@
                     Delivery details
                 </div>
                   <div class="padding assertive">(Fields marked * are mandatory)</div>
+                  <label class="item item-input item-floating-label">
+                    <span class="input-label">Dr.Name</span>
+                    <input type="text" name="doctorname" placeholder="Doctor name" ng-model="order.doctorname">
+                </label>
                 <label class="item item-input item-floating-label">
-                  
+                    <span class="input-label">*Patient Name</span>
+                    <input type="text" name="patientname" placeholder="Patient name" ng-model="order.patientname" required>
+                    <code class="assertive" ng-if="submitform.patientname.$touched&&submitform.patientname.$error.required">patient name is required</code>
+                </label>
+
+                <label class="item item-input item-floating-label">                  
                     <span class="input-label">*Name</span>
                     <input type="text" name="name" placeholder="Full name" ng-model="order.name" required>
                     <code class="assertive" ng-if="submitform.name.$touched&&submitform.name.$error.required">name is required</code>

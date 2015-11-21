@@ -87,15 +87,16 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
     }
   })
   
-    .state('app.profile', {
+  .state('app.profile', {
     url: '/profile',
     views: {
       'menuContent': {
         templateUrl: 'templates/profile.html',
-
+        controller: 'ProfileCtrl'
       }
     }
   })
+
   .state('app.uploadpage', {
     url: '/uploadpage',
     views: {
@@ -146,7 +147,7 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
            views: {
                'menuContent': {
                    templateUrl: "templates/sellerdetails.html",
-				            controller: 'sellerDetailsCtrl'				   
+				            controller: 'SellerDetailsCtrl'				   
                }
            }
        })
@@ -155,7 +156,7 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
                  views: {
                      'menuContent': {
                          templateUrl: "templates/alternatesellers.html",
-						            controller: 'sellerDetailsCtrl'	
+						            // controller: 'sellerDetailsCtrl'	
                      }
                  }
              })
@@ -224,6 +225,17 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
       views: {
         'menuContent': {
           templateUrl: "templates/about.html",
+      /*    controller: 'contactusCtrl'*/
+        }
+      }
+    })
+
+.state('app.privacypolicy', {
+      url: "/privacypolicy",
+      cache: false,
+      views: {
+        'menuContent': {
+          templateUrl: "templates/privacypolicy.html",
       /*    controller: 'contactusCtrl'*/
         }
       }
