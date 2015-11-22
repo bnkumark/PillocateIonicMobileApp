@@ -1,6 +1,6 @@
 ﻿<ion-view view-title="Seller Details" cache-view="false">
     <ion-content>
-        <div class="item item-text-wrap positive">Approx total MRP for your order is Rs.{{ data.totalprice }}</div>
+            <div class="item item-text-wrap positive">Approx total MRP for your order is &#8377; {{ data.totalprice }}</div>
         <div class="quantity">
             <label class="item">
                 <span class="item-text-wrap">Item is available with:</span>
@@ -9,11 +9,14 @@
                 <span class=" royal">52 in your area have liked this seller</span>
             </label>
         </div>
+
         <div class="item">
             <a href="#/app/alternatesellers" class="link">View Alternate Sellers</a>
         </div>
+
         <div class="item-input-inset">
-            <button class="item-input-wrapper  padding-left button button-balanced" ng-click="goToOrderDetails()">Confirm</button>
+            <input class="item-input-wrapper button button-balanced" ng-click="goToOrderDetails()" value="Confirm" type="submit">
         </div>
+        
     </ion-content>
 </ion-view>

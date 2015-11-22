@@ -163,7 +163,7 @@
                     console.log('search method');
                     if ($scope.data.search != '') {
                      
-                        $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + selectedCircle + "&city=" + selectedCity)
+                        $http.get("http://localhost:8100/api/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + selectedCircle + "&city=" + selectedCity)
                             .success(function (data) {
                                 //console.log('setting auto suggestions ' + data);
                                 if (data.length > 0) {
@@ -233,7 +233,7 @@
             var selectedCircle = $SelectedValues.getSelectedCircle();
             var selectedCity = $SelectedValues.getSelectedCity();
             $scope.data.showItemSelected = true;
-            $http.get("http://demo.pillocate.com/webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + item.id + "&brandName=" + item.label + "&circle=" + selectedCircle)
+            $http.get("http://localhost:8100/api/webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + item.id + "&brandName=" + item.label + "&circle=" + selectedCircle)
                 .success(function (data) {
                     $ionicLoading.hide();
                  
@@ -319,7 +319,7 @@
         hideOnStateChange: true
     });
 
-    $http.get("http://demo.pillocate.com/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle + "&city=" + $scope.data.selectedCity)
+    $http.get("http://localhost:8100/api/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle + "&city=" + $scope.data.selectedCity)
                                 .success(function (data) {
                                     $ionicLoading.hide();
                                     //console.log('setting auto suggestions ' + data);
@@ -380,7 +380,7 @@
     });
 
 
-    $http.get("http://demo.pillocate.com/webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + selectedBrand.id + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
+    $http.get("http://localhost:8100/api/webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + selectedBrand.id + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
         .success(function (data) {
             $ionicLoading.hide();
             console.log('searchResultsCtrl success');
@@ -463,7 +463,7 @@
         message: '',
         items: $SelectedValues.getItems(),
         message2: '',
-        // prescriptionChoice: 'A',
+        prescriptionChoice: 'A',
         totalprice: $SelectedValues.getTotalPrice()
     };
 
@@ -494,7 +494,7 @@
         $scope.data.totalprice = $SelectedValues.getTotalPrice();
     } 
 
-    $scope.placeorder = function (order) {
+    $scope.placeorder = function () {
         var goAhead = true;
         for (i = 0; i < $scope.items.length; i++) {
             console.log("$scope.items[i].quantity:" + $scope.items[i].quantity);
@@ -504,7 +504,8 @@
         }
 
         if (goAhead == true) {
-            if (order.prescriptionChoice == 'A') {
+            if ($scope.data.prescriptionChoice == 'A') {
+                            //alert("choice A");
                 //if ($OrderDetailsService.getAllAddressKey().length > 0) {
                 //    $state.go('app.selectaddress');
                 //}
@@ -514,6 +515,7 @@
                     //$state.go('app.orderdetails');
                 //}
             } else {
+                            //alert("choice B");
                 $state.go('app.uploadpage');
             }
         } else {
@@ -523,17 +525,18 @@
     }
 }])//end
 
-        //start startCtrl
+        //start SellerDetailsCtrl
 .controller('SellerDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
     console.log('SellerDetailsCtrl');
     $scope.data = {
-        //"search": $SelectedValues.getsearchTerm(),
-        //"autoSuggetions": [],
-        //selectedCircle: $SelectedValues.getSelectedCircle(),
-        //selectedCity: $SelectedValues.getSelectedCity()
+        sellerChoice: 'A',
         totalprice: $SelectedValues.getTotalPrice()
     };
 
+    $scope.$on('$ionicView.enter', function () {
+        // Code you want executed every time view is opened
+        //alert("SellerDetailsCtrl");
+    })
     $scope.goToOrderDetails = function () {
          if ($OrderDetailsService.getAllAddressKey().length > 0) {
 			 console.log('savedAddress');
@@ -545,7 +548,7 @@
          }
     }   
 }])
-//end startCtrl
+//end SellerDetailsCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start OrderDetailsCtrl
 .controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','ProfileService', 'CheckNetwork', '$ionicLoading', function ($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $ProfileService, $CheckNetwork, $ionicLoading) {
@@ -619,7 +622,7 @@
                 var cartItemsString = $SelectedValues.addItemsToServerString();
 
                 //TODO do not hardcode contry and state
-                $http.get("http://demo.pillocate.com/webservice/addItemsToCartAndPlaceOrder?cartItemList=" + cartItemsString + "&circle=" + $SelectedValues.getSelectedCircle() + "&doctorname=" + order.doctorname + "&patientname=" + order.patientname + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + $SelectedValues.getSelectedCity() + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
+                $http.get("http://localhost:8100/api/webservice/addItemsToCartAndPlaceOrder?cartItemList=" + cartItemsString + "&circle=" + $SelectedValues.getSelectedCircle() + "&doctorname=" + order.doctorname + "&patientname=" + order.patientname + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + $SelectedValues.getSelectedCity() + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
                     .success(function (data) {
                         $ionicLoading.hide();
                         console.log("data:" + data);
@@ -681,7 +684,7 @@
 
     $scope.applyOffer = function () {
 
-        $http.get("http://demo.pillocate.com/webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
+        $http.get("http://localhost:8100/api/webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
             .success(function (data) {
                 $scope.order.offerstatus = data;
             })
@@ -707,7 +710,7 @@
             template: 'Getting Order details...'
         });
 
-        $http.get("http://demo.pillocate.com/webservice/showOrderCollectionDetails?trackingId=" + $scope.data.trackingId)
+        $http.get("http://localhost:8100/api/webservice/showOrderCollectionDetails?trackingId=" + $scope.data.trackingId)
                       .success(function (data) {
                           $ionicLoading.hide();
                           console.log('order details fetched:' + data);
@@ -789,7 +792,7 @@
 
         if (confirmed == true) {
 
-            $http.get("http://demo.pillocate.com/webservice/cancelOrder?trackingId=" + trackingId)
+            $http.get("http://localhost:8100/api/webservice/cancelOrder?trackingId=" + trackingId)
                 .success(function (data) {
                     $ionicLoading.hide();
                     if (data == 'Success') {
@@ -832,7 +835,7 @@
             alert("message can not be empty!");
         }
         else {
-            $http.get("http://demo.pillocate.com/webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
+            $http.get("http://localhost:8100/api/webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
                 .success(function (data) {
                     $scope.data.feedbackstatus = data;
                     console.log('feedback submit success:' + data);
@@ -890,7 +893,7 @@
 */
     $scope.orderSelected = function (trackingId) {
 
-        $http.get("http://demo.pillocate.com/webservice/showOrderCollectionDetails?trackingId=" + trackingId)
+        $http.get("http://localhost:8100/api/webservice/showOrderCollectionDetails?trackingId=" + trackingId)
             .success(function (data) {
                 console.log('order details fetched:' + data);
                 if (data != -2) {
@@ -957,7 +960,7 @@
 
     $scope.submitfeedback = function (feedback) {
         console.log(feedback.name);
-        $http.get("http://demo.pillocate.com/webservice/requestNewBrand?brandName=" + $scope.data.medicine + "&emailID=" + feedback.email + "&phoneNumber=" + feedback.phone + "&circle=" + selectedCircle)
+        $http.get("http://localhost:8100/api/webservice/requestNewBrand?brandName=" + $scope.data.medicine + "&emailID=" + feedback.email + "&phoneNumber=" + feedback.phone + "&circle=" + selectedCircle)
             .success(function (data) {
                 $scope.data.feedbackstatus = data;
                 console.log('feedback submit success:' + data);
@@ -1001,7 +1004,7 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
 
     $scope.loginNew = function (xxx) {
 
-        $http.get("http://demo.pillocate.com/webservice/Login?Username=" + xxx.user + "&Password=" + xxx.pass)
+        $http.get("http://localhost:8100/api/webservice/Login?Username=" + xxx.user + "&Password=" + xxx.pass)
               .success(function () {
                   alert("Login was Successful.");
                   console.log("Login success");
@@ -1079,7 +1082,7 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
         //$SelectedValues.setSelectedCircle($scope.data.selectedCircle);
     }*/
 
-    $http.get("http://demo.pillocate.com/webservice/getCityArray")
+    $http.get("http://localhost:8100/api/webservice/getCityArray")
         .success(function (cities) {
 
             console.log("getting city array:" + cities)
@@ -1096,7 +1099,7 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
         console.log("$scope.data.selectedCity" + $scope.data.selectedCity);
         //window.localStorage.setItem("city", "true");
         $SelectedValues.setSelectedCity($scope.data.selectedCity);
-        $http.get("http://demo.pillocate.com/webservice/getCircleArray?city=" + $scope.data.selectedCity)
+        $http.get("http://localhost:8100/api/webservice/getCircleArray?city=" + $scope.data.selectedCity)
             .success(function (circles) {
                 $scope.data.circleOptions = circles.circleArray;
                 console.log(circles);
@@ -1107,7 +1110,7 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
     }
 
     function getCircles(city) {
-        $http.get("http://demo.pillocate.com/webservice/getCircleArray?city=" + city)
+        $http.get("http://localhost:8100/api/webservice/getCircleArray?city=" + city)
              .success(function (circles) {
                  $scope.data.circleOptions = circles.circleArray;
                  console.log(circles.circleArray);
@@ -1222,7 +1225,7 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
                     alert("upload failed:" + r);
                 }
 
-                var formURL = 'http://demo.pillocate.com/webservice/uploadPrescriptionFile';
+                var formURL = 'http://localhost:8100/api/webservice/uploadPrescriptionFile';
                 var encodedURI = encodeURI(formURL);
                 var fileURI = imageURI;
                 var options = new FileUploadOptions();
@@ -1380,7 +1383,7 @@ app.service('SelectedValues', function ($q, $http) {
             cartItemList = cartItemList + "]'";
             console.log('cartItemList: ' + cartItemList);
 
-            $http.get("http://demo.pillocate.com/webservice/addItemsToCart?cartItemList=" + cartItemList)
+            $http.get("http://localhost:8100/api/webservice/addItemsToCart?cartItemList=" + cartItemList)
                 .success(function (data) {
 
                     console.log(data);

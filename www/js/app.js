@@ -142,24 +142,7 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
         }
       }
     })
-       .state('app.sellerdetails', {
-           url: "/sellerdetails",
-           views: {
-               'menuContent': {
-                   templateUrl: "templates/sellerdetails.html",
-				            controller: 'SellerDetailsCtrl'				   
-               }
-           }
-       })
-             .state('app.alternatesellers', {
-                 url: "/alternatesellers",
-                 views: {
-                     'menuContent': {
-                         templateUrl: "templates/alternatesellers.html",
-						            // controller: 'sellerDetailsCtrl'	
-                     }
-                 }
-             })
+
  .state('app.searchresults', {
       url: "/searchresults",
       views: {
@@ -178,6 +161,24 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
         }
       }
     })
+       .state('app.sellerdetails', {
+           url: "/sellerdetails",
+           views: {
+               'menuContent': {
+                   templateUrl: "templates/sellerdetails.html",
+                    controller: 'SellerDetailsCtrl'           
+               }
+           }
+       })
+             .state('app.alternatesellers', {
+                 url: "/alternatesellers",
+                 views: {
+                     'menuContent': {
+                         templateUrl: "templates/alternatesellers.html",
+                        controller: 'SellerDetailsCtrl'  
+                     }
+                 }
+             })
 
  .state('app.ordercompletion', {
       url: "/ordercompletion",

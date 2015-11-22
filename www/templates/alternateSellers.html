@@ -1,6 +1,6 @@
 ﻿<ion-view view-title="Alternate Sellers" cache-view="false">
     <ion-content>
-        <div class="item item-text-wrap positive">Approx total MRP for your order is Rs.{{ data.totalprice }}</div>
+        <div class="item item-text-wrap positive">Approx total MRP for your order is &#8377; {{ data.totalprice }}</div>
         <span class="item item-text-wrap">Order is available with:</span>
         <div class="item-input-stacked">
 		<ion-radio ng-model="data.sellerChoice" ng-value="'A'">
@@ -21,7 +21,8 @@
 		</ion-radio>
         </div>
 		<div class="item-input-inset">
-            <button class="item-input-wrapper  padding-left button button-balanced" ng-click="goToOrderDetails()">Confirm</button>
+            <!-- <button class="item-input-wrapper  padding-left button button-balanced" ng-click="goToOrderDetails()">Confirm</button> -->
+            <input class="item-input-wrapper button button-balanced" ng-click="goToOrderDetails()" value="Confirm" type="submit">
         </div>
     </ion-content>
 </ion-view>
