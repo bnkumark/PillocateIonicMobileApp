@@ -463,7 +463,6 @@
         message: '',
         items: $SelectedValues.getItems(),
         message2: '',
-        prescriptionChoice: 'A',
         totalprice: $SelectedValues.getTotalPrice()
     };
 
@@ -475,7 +474,7 @@
         $scope.items = value;
     });
 
-    $scope.destroy = function (item) {
+    function destroy(item) {
         var items = $SelectedValues.getItems();
         for (i = 0; i < items.length; i++) {
             if (items[i].inventoryid == item.inventoryid) {
@@ -494,7 +493,28 @@
         $scope.data.totalprice = $SelectedValues.getTotalPrice();
     } 
 
-    $scope.placeorder = function () {
+    $scope.increaseQuantity = function (item) {
+        // if (item.quantity > 0) {
+            console.log("calling updateItem with:" + item.inventoryid + ":" + item.quantity);
+            $SelectedValues.updateItem(item.inventoryid, item.quantity+1);
+            $scope.data.message = '';
+        // }
+        $scope.data.totalprice = $SelectedValues.getTotalPrice();
+    } 
+
+    $scope.decreaseQuantity = function (item) {
+        if (item.quantity > 1) {
+            console.log("calling updateItem with:" + item.inventoryid + ":" + item.quantity);
+            $SelectedValues.updateItem(item.inventoryid, item.quantity-1);
+            $scope.data.message = '';
+        }
+        else {
+            destroy(item);
+        }
+        $scope.data.totalprice = $SelectedValues.getTotalPrice();
+    } 
+
+    $scope.showSellerDetails = function () {
         var goAhead = true;
         for (i = 0; i < $scope.items.length; i++) {
             console.log("$scope.items[i].quantity:" + $scope.items[i].quantity);
@@ -504,20 +524,7 @@
         }
 
         if (goAhead == true) {
-            if ($scope.data.prescriptionChoice == 'A') {
-                            //alert("choice A");
-                //if ($OrderDetailsService.getAllAddressKey().length > 0) {
-                //    $state.go('app.selectaddress');
-                //}
-                //else {
-                    //$state.go('app.uploadpage');
                     $state.go('app.sellerdetails');
-                    //$state.go('app.orderdetails');
-                //}
-            } else {
-                            //alert("choice B");
-                $state.go('app.uploadpage');
-            }
         } else {
             $scope.data.message = "Quantity should be greater than 0 for all items";
         }
@@ -533,22 +540,54 @@
         totalprice: $SelectedValues.getTotalPrice()
     };
 
-    $scope.$on('$ionicView.enter', function () {
-        // Code you want executed every time view is opened
-        //alert("SellerDetailsCtrl");
-    })
-    $scope.goToOrderDetails = function () {
-         if ($OrderDetailsService.getAllAddressKey().length > 0) {
-			 console.log('savedAddress');
-            $state.go('app.selectaddress');
-         }
-         else {
-			 console.log('go to order details');
-             $state.go('app.orderdetails');
-         }
+     // $scope.choosePrescription = function () {
+     //     if ($scope.data.prescriptionChoice == 'A') {
+     //            if ($OrderDetailsService.getAllAddressKey().length > 0) {
+     //                    console.log('savedAddress');
+     //                    $state.go('app.selectaddress');
+     //            }
+     //            else {
+     //                    console.log('go to order details');
+     //                    $state.go('app.orderdetails');
+     //            }
+     //        } else {
+     //                        //alert("choice B");
+     //            $state.go('app.uploadpage');
+     //        }
+     //    }   
+
+        $scope.choosePrescription = function () {
+             $state.go('app.prescriptionchoice');
     }   
 }])
 //end SellerDetailsCtrl
+
+        //start PrescriptionChoiceCtrl
+.controller('PrescriptionChoiceCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
+    console.log('PrescriptionChoiceCtrl');
+    $scope.data = {
+        prescriptionChoice: 'A',
+        // totalprice: $SelectedValues.getTotalPrice()
+    };
+
+     $scope.placeorder = function () {
+         if ($scope.data.prescriptionChoice == 'B') {
+                if ($OrderDetailsService.getAllAddressKey().length > 0) {
+                        console.log('savedAddress');
+                        $state.go('app.selectaddress');
+                }
+                else {
+                        console.log('go to order details');
+                        $state.go('app.orderdetails');
+                }
+            } else {
+                            //alert("choice B");
+                $state.go('app.uploadpage');
+            }
+        }     
+}])
+//end PrescriptionChoiceCtrl
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start OrderDetailsCtrl
 .controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','ProfileService', 'CheckNetwork', '$ionicLoading', function ($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $ProfileService, $CheckNetwork, $ionicLoading) {
@@ -1166,14 +1205,14 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
     $scope.source = null;
     $scope.canGoToNext = false;
     
-    $scope.showSellerDetails = function () {
-        if ($scope.canGoToNext == true) {
-             $state.go('app.sellerdetails');
-         }
-         else {
-            alert("Upload the prescription first!");
-        }
-    }
+    // $scope.showSellerDetails = function () {
+    //     if ($scope.canGoToNext == true) {
+    //          $state.go('app.sellerdetails');
+    //      }
+    //      else {
+    //         alert("Upload the prescription first!");
+    //     }
+    // }
 
     $scope.goToOrderDetails = function () {
         if ($scope.canGoToNext == true) {

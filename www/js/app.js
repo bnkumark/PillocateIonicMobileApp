@@ -161,6 +161,17 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
         }
       }
     })
+
+    .state('app.prescriptionchoice', {
+      url: "/prescriptionchoice",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/prescriptionchoice.html",
+          controller: 'PrescriptionChoiceCtrl'
+        }
+      }
+    })
+
        .state('app.sellerdetails', {
            url: "/sellerdetails",
            views: {

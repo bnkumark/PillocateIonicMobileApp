@@ -6,29 +6,28 @@
                     Delivery details
                 </div>
                   <div class="padding assertive">(Fields marked * are mandatory)</div>
-                  <label class="item item-input item-floating-label">
-                    <span class="input-label">Dr.Name</span>
-                    <input type="text" name="doctorname" placeholder="Doctor name" ng-model="order.doctorname">
-                </label>
-                <label class="item item-input item-floating-label">
+                 <label class="item item-input item-floating-label">
                     <span class="input-label">*Patient Name</span>
-                    <input type="text" name="patientname" placeholder="Patient name" ng-model="order.patientname" required>
+                    <input type="text" name="patientname" placeholder="Patient Name" ng-model="order.patientname" required>
                     <code class="assertive" ng-if="submitform.patientname.$touched&&submitform.patientname.$error.required">patient name is required</code>
                 </label>
-
+                <label class="item item-input item-floating-label">
+                    <span class="input-label">Dr.Name</span>
+                    <input type="text" name="doctorname" placeholder="Doctor Name" ng-model="order.doctorname">
+                </label>
                 <label class="item item-input item-floating-label">                  
                     <span class="input-label">*Name</span>
-                    <input type="text" name="name" placeholder="Full name" ng-model="order.name" required>
+                    <input type="text" name="name" placeholder="Full Name" ng-model="order.name" required>
                     <code class="assertive" ng-if="submitform.name.$touched&&submitform.name.$error.required">name is required</code>
                 </label>
                 <label class="item item-input item-floating-label">
                     <span class="input-label">*Address</span>
-                    <input type="text" name="address1" placeholder="Your address line 1" ng-model="order.addressline1" ng-minlength="3" required>
+                    <input type="text" name="address1" placeholder="Address" ng-model="order.addressline1" ng-minlength="3" required>
                     <code class="assertive" ng-if="submitform.address1.$touched&&submitform.address1.$error.minlength">Minimum 3 characters</code>
                     <code class="assertive" ng-if="submitform.address1.$touched&&submitform.address1.$error.required">address line 1 is required</code>
                 </label>
                 <label class="item item-input item-stacked-label">
-                    <input type="text" name="address2" placeholder="Your address line 2" ng-model="order.addressline2" ng-minlength="3">
+                    <input type="text" name="address2" placeholder="Address" ng-model="order.addressline2" ng-minlength="3">
                     <code class="assertive" ng-if="submitform.address2.$touched&&submitform.address2.$error.minlength">Minimum 3 characters</code>
                 </label>
                 <label class="item item-input item-stacked-label">
@@ -37,19 +36,18 @@
                     <div class="assertive">(Delivery restricted to this area)</div>
                 </label>
                 <label class="item item-input item-floating-label">
-                    <span class="input-label">*Phone</span>
-                    <input type="tel" name="phone" placeholder="phone" ng-model="order.phone" ng-minlength="10" ng-maxlength="10" required>
-                    <code class="assertive" ng-if="submitform.phone.$touched&&submitform.phone.$error.minlength">Minimum 10 digits</code>
-                    <code class="assertive" ng-if="submitform.phone.$touched&&submitform.phone.$error.maxlength">Maximum 10 digits</code>
-                    <code class="assertive" ng-if="submitform.phone.$touched&&submitform.phone.$error.required">phone number is required</code>
-
-                </label>
-                <label class="item item-input item-floating-label">
                     <span class="input-label">*Email Id</span>
-                   <input type="email" name="email" placeholder="email id" ng-model="order.email" required>
+                   <input type="email" name="email" placeholder="Email id" ng-model="order.email" required>
                     <code class="assertive" ng-if="submitform.email.$touched&&submitform.email.$error.email">Invalid email format</code>
                     <code class="assertive" ng-if="submitform.email.$touched&&submitform.email.$error.required">email is required</code>
                     <div class="item-text-wrap">(Tracking information will be sent to this Email address)</div>
+                </label>
+                <label class="item item-input item-floating-label">
+                    <span class="input-label">*Phone</span>
+                    <input type="tel" name="phone" placeholder="Phone No." ng-model="order.phone" ng-minlength="10" ng-maxlength="10" required>
+                    <code class="assertive" ng-if="submitform.phone.$touched&&submitform.phone.$error.minlength">Minimum 10 digits</code>
+                    <code class="assertive" ng-if="submitform.phone.$touched&&submitform.phone.$error.maxlength">Maximum 10 digits</code>
+                    <code class="assertive" ng-if="submitform.phone.$touched&&submitform.phone.$error.required">phone number is required</code>
                 </label>
 
                 <label class="item item-input item-stacked-label item-text-wrap">

@@ -1,0 +1,19 @@
+<ion-view view-title="Prescription Choice" cache-view="false">
+    <ion-content>
+
+<br/><br/>
+                <form name="prescriptionForm" novalidate="" class="css-form" ng-submit="placeorder()">
+                    <div class="item-input-stacked">
+                        <ion-radio ng-model="data.prescriptionChoice" ng-value="'A'">Upload New prescription </ion-radio>
+                        <ion-radio ng-model="data.prescriptionChoice" ng-value="'B'">Use previously uploaded prescription </ion-radio>
+                        <br>
+                        
+                        <div class="item-input-inset">
+                          <input class="item-input-wrapper button button-balanced" value="Go!" type="submit">
+                        </div>
+                    </div>
+                </form>
+              
+            <br/><br/><br/><br/><br/><br/> <!--for scrolliing effect-->
+    </ion-content>
+</ion-view>

@@ -3,35 +3,30 @@
         <!-- <form name="cartForm" novalidate="" class="css-form"> -->
             <div ng-if="items!=''">
                 <div class="quantity list" ng-repeat="item in items">
-                 <div class="card">
+                 <div class="item card-item">
                     <label class="item-text-wrap item-input">{{ item.item }}</label>
-                    <div class="item-input padding-right">
-						  <span class="input-label">Quantity:</span>
-                        <label class="item-input-wrapper">
-						<!--<span class="input-label">Quantity:</span>-->
-                            <input name="quantity" type="number" min="1" ng-model="item.quantity" value="item.quantity" ng-change="quantityChanged(item)">         
-                        </label>
+                    <div class="row">
+                      <div class="col col-50">
+                        <button ng-click="decreaseQuantity(item)" class="button button-icon icon ion-android-remove-circle button-small"> </button>
+                       <label >{{item.quantity}}</label>
+                      <button ng-click="increaseQuantity(item)" class="button button-icon icon ion-android-add-circle button-small"> </button>
                     </div>
-					<div class="item-input padding-right">
-                        <span class="input-label">Price:</span>
-                        <label class="item-input-wrapper">
-                            <span class="input-label">&#8377; {{item.quantity>0?item.quantity*50:0}}</span>
-                        </label>
-                        <button ng-click="destroy(item)" class="icon ion-trash-a button button-assertive button-small"> </button>
-                  </div>
+                     <div class="col col-35 col-offset-15">
+                              <span class="input-label">&#8377; {{item.quantity>0?item.quantity*50:0}}</span>
+                      </div>
                  </div>
-   				  <code class="item-text-wrap" ng-if="item.quantity < 0">Quantity should be greater than 0</code>
+   				  <!-- <code class="item-text-wrap" ng-if="item.quantity < 0">Quantity should be greater than 0</code> -->
 				</div>
+        </div>
                    <div class="item-input">
                         <span class="input-label">Total Price: </span>
                         <span class="input-label">&#8377; {{ data.totalprice }} (approx)</span>                          
                    </div>
 <br/><br/>
-                <form name="cartForm" novalidate="" class="css-form" ng-submit="placeorder()">
+                <form name="cartForm" novalidate="" class="css-form" ng-submit="showSellerDetails()">
                     <div class="item-input-stacked">
-                        <!--<ion-radio ng-model="data.prescriptionChoice" ng-value="'A'">Show prescription on delivery</ion-radio>-->
-                        <ion-radio ng-model="data.prescriptionChoice" ng-value="'A'">I will show prescription at delivery </ion-radio>
-                        <ion-radio ng-model="data.prescriptionChoice" ng-value="'B'">Upload prescription </ion-radio>
+                        <!-- <ion-radio ng-model="data.prescriptionChoice" ng-value="'A'">I will show prescription at delivery </ion-radio> -->
+                        <!-- <ion-radio ng-model="data.prescriptionChoice" ng-value="'B'">Upload prescription </ion-radio> -->
 
                         <br>
                          <div class="item-input-inset">
@@ -43,7 +38,7 @@
                         </div>                  
                     </div>
                          <code ng-show="data.message!=''" class="item-text-wrap padding assertive">{{ data.message }}</code>
-				 <code class="item-text-wrap padding assertive" ng-if="!cartForm.$valid">Quantity should be greater than 0</code>
+				 <!-- <code class="item-text-wrap padding assertive" ng-if="!cartForm.$valid">Quantity should be greater than 0</code> -->
                 </form>
                </div>
                 <div class="item" ng-if="items==''">
