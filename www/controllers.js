@@ -4,54 +4,41 @@
 
 .controller('AppCtrl', function ($scope, $ionicModal, $timeout) {
     // Form data for the login modal
-    $scope.loginData = {};
+    //$scope.loginData = {};
 
     // Create the login modal that we will use later
-    $ionicModal.fromTemplateUrl('templates/login.html', {
-        scope: $scope
-    }).then(function (modal) {
-        $scope.modal = modal;
-    });
+    //$ionicModal.fromTemplateUrl('templates/login.html', {
+    //    scope: $scope
+    //}).then(function (modal) {
+    //    $scope.modal = modal;
+    //});
 
     // Triggered in the login modal to close it
-    $scope.closeLogin = function () {
-        $scope.modal.hide();
-    };
+    //$scope.closeLogin = function () {
+    //    $scope.modal.hide();
+    //};
 
     // Open the login modal
-    $scope.login = function () {
-        $scope.modal.show();
-    };
+    //$scope.login = function () {
+    //    $scope.modal.show();
+    //};
 
     // Perform the login action when the user submits the login form
-    $scope.doLogin = function () {
-        console.log('Doing login', $scope.loginData);
+    //$scope.doLogin = function () {
+    //    console.log('Doing login', $scope.loginData);
 
         // Simulate a login delay. Remove this and replace with your login
         // code if using a login system
-        $timeout(function () {
-            $scope.closeLogin();
-        }, 1000);
-    };
+    //    $timeout(function () {
+    //        $scope.closeLogin();
+    //    }, 1000);
+    //};
 })
 
     //start startCtrl
 .controller('startCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
     console.log('startCtrl');
-    $scope.data = {
-        //"search": $SelectedValues.getsearchTerm(),
-        //"autoSuggetions": [],
-        //selectedCircle: $SelectedValues.getSelectedCircle(),
-        //selectedCity: $SelectedValues.getSelectedCity()
-    };
-
-    //$ionicLoading.show({
-    //    template: 'Getting results...',
-    //    hideOnStateChange: true
-    //});
-
-
-
+   
     $scope.goToSearchMed = function () {
         $state.go('app.home');
     }
@@ -165,11 +152,8 @@
                      
                         $http.get("http://localhost:8100/api/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + selectedCircle + "&city=" + selectedCity)
                             .success(function (data) {
-                                //console.log('setting auto suggestions ' + data);
                                 if (data.length > 0) {
                                     $scope.data.autoSuggetions = data.slice(0, 6);;
-                                    //$SelectedValues.setSelectedBrand(data);
-                                    //$SelectedValues.setSelectedCircle(selectedCircle);
                                 }
                                 else {
                                     $scope.data.autoSuggetions = [{ label: $scope.data.search, id: null }]
@@ -204,10 +188,6 @@
         console.log("eventObject.which:" + eventObject.which);
         //13 is for enter key
         if (eventObject.which == 13) {
-            //$scope.data.autoSuggetions = [];
-            //$SelectedValues.setsearchTerm($scope.data.search);
-            //$scope.data.search = '';
-            //$state.go('app.searchresultslist');
         }
     }
 
@@ -322,11 +302,8 @@
     $http.get("http://localhost:8100/api/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle + "&city=" + $scope.data.selectedCity)
                                 .success(function (data) {
                                     $ionicLoading.hide();
-                                    //console.log('setting auto suggestions ' + data);
                                     if (data.length > 0) {
                                         $scope.data.autoSuggetions = data.slice(0, 6);;
-                                        //$SelectedValues.setSelectedBrand(data);
-                                        //$SelectedValues.setSelectedCircle(selectedCircle);
                                     }
                                     else {
                                         $scope.data.autoSuggetions = [{ label: $scope.data.search, id: null }]
@@ -540,22 +517,6 @@
         totalprice: $SelectedValues.getTotalPrice()
     };
 
-     // $scope.choosePrescription = function () {
-     //     if ($scope.data.prescriptionChoice == 'A') {
-     //            if ($OrderDetailsService.getAllAddressKey().length > 0) {
-     //                    console.log('savedAddress');
-     //                    $state.go('app.selectaddress');
-     //            }
-     //            else {
-     //                    console.log('go to order details');
-     //                    $state.go('app.orderdetails');
-     //            }
-     //        } else {
-     //                        //alert("choice B");
-     //            $state.go('app.uploadpage');
-     //        }
-     //    }   
-
         $scope.choosePrescription = function () {
              $state.go('app.prescriptionchoice');
     }   
@@ -567,7 +528,6 @@
     console.log('PrescriptionChoiceCtrl');
     $scope.data = {
         prescriptionChoice: 'A',
-        // totalprice: $SelectedValues.getTotalPrice()
     };
 
      $scope.placeorder = function () {
@@ -581,7 +541,6 @@
                         $state.go('app.orderdetails');
                 }
             } else {
-                            //alert("choice B");
                 $state.go('app.uploadpage');
             }
         }     
@@ -598,11 +557,7 @@
         "circle": $SelectedValues.getSelectedCircle(),
         "selectAddress": $OrderDetailsService.getaddressName()
     };
-    /*$scope.order = {
-        "quantity": 1,
-        "offerstatus": ''
-    };
-*/
+
     $scope.$on('$ionicView.enter', function () {
         // Code you want executed every time view is opened
         console.log('Opened! on enter');
@@ -681,7 +636,7 @@
                                 if ($OrderDetailsService.getaddressName() == '') {
                                     var addresses = $OrderDetailsService.getAllAddressKey();
 
-                                    var address = prompt("Do you want to save delivery details?", "Address " + (addresses.length + 1));
+                                    var address = prompt("Do you want to save delivery details?", "Home" );
 
                                     var itemPresent = true;
 
@@ -691,7 +646,7 @@
                                                 itemPresent = false;
                                             }
                                             else {
-                                                address = prompt("Address with that name already present, give another name", "Address " + (addresses.length + 1));
+                                                address = prompt("Address with that name already present, give another name", "Office " + (addresses.length + 1));
                                             }
                                         } else {
                                             itemPresent = false;
@@ -756,7 +711,6 @@
                           if (data != -2) {
                               $OrderDetailsService.setorderDetails(data);
                               $OrderDetailsService.setOrderMessage('Your order details!');
-                              //$OrderDetailsService.setScreen('orderCompletion');
                               $state.go('app.ordercompletion');
                               $scope.data.status = "";
                           } else {
@@ -922,14 +876,6 @@
     $scope.orders = $OrderDetailsService.getOrders();
     console.log("orders:" + $scope.orders);
 
-    // $OrderDetailsService.getOrders(); 
-
-    /*$scope.$watch(function() {
-       return $OrderDetailsService.getOrders().length;
-   }, function(value) {
-       $scope.orders = value;
-   });
-*/
     $scope.orderSelected = function (trackingId) {
 
         $http.get("http://localhost:8100/api/webservice/showOrderCollectionDetails?trackingId=" + trackingId)
@@ -1111,16 +1057,6 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
         selectedCity: cityData,
     };
 
-    /*if ($scope.data.selectedCity != null) {
-        console.log("scope.data.selectedCity:" + $scope.data.selectedCity);
-        $SelectedValues.setSelectedCity($scope.data.selectedCity);
-    }
-
-    /*      if ($scope.data.selectedCircle != null) {
-        console.log("$scope.data.selectedCircle:" + $scope.data.selectedCircle);
-        //$SelectedValues.setSelectedCircle($scope.data.selectedCircle);
-    }*/
-
     $http.get("http://localhost:8100/api/webservice/getCityArray")
         .success(function (cities) {
 
@@ -1136,7 +1072,7 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
         console.log("If city selected is not empty, then get circles list!");
         //TODO this is repeat of below code
         console.log("$scope.data.selectedCity" + $scope.data.selectedCity);
-        //window.localStorage.setItem("city", "true");
+
         $SelectedValues.setSelectedCity($scope.data.selectedCity);
         $http.get("http://localhost:8100/api/webservice/getCircleArray?city=" + $scope.data.selectedCity)
             .success(function (circles) {
@@ -1205,15 +1141,6 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
     $scope.source = null;
     $scope.canGoToNext = false;
     
-    // $scope.showSellerDetails = function () {
-    //     if ($scope.canGoToNext == true) {
-    //          $state.go('app.sellerdetails');
-    //      }
-    //      else {
-    //         alert("Upload the prescription first!");
-    //     }
-    // }
-
     $scope.goToOrderDetails = function () {
         if ($scope.canGoToNext == true) {
             if ($OrderDetailsService.getAllAddressKey().length > 0) {
@@ -1311,18 +1238,7 @@ app.service('SelectedValues', function ($q, $http) {
             console.log("city data retreived from storage:" + selectedCity);
         },
 
-        /*  getSelectedBrand: function(id) {
-              for (i = 0; i < selectedBrand.length; i++) {
-                  if (selectedBrand[i].id == id) {
-                      return selectedBrand[i];
-                  }
-              }
-              return null;
-          },
-          setSelectedBrand: function(x) {
-              selectedBrand = x;
-          },
-*/            getSelectedCircle: function () {
+    getSelectedCircle: function () {
     return selectedCircle;
 },
         setSelectedCircle: function (x) {
@@ -1579,6 +1495,7 @@ app.service('OrderDetailsService', ['CheckNetwork', '$state', '$http', function 
                 return null;
             }
         },
+
         storeAddress: function (key, address) {
             address.isTermsChecked = false;
             key = key.replace(' ', '_');
@@ -1601,6 +1518,7 @@ app.service('OrderDetailsService', ['CheckNetwork', '$state', '$http', function 
             }
             return addressKeys;
         },
+
         removeAddressKey: function (key) {
             window.localStorage.removeItem("address" + key.replace(" ", "_"));
         }
@@ -1620,7 +1538,6 @@ app.service('ProfileService', ['CheckNetwork', '$state', '$http', function ($q, 
         },
 
         getProfile: function () {
-            //console.log("profile:" + JSON.parse(window.localStorage.getItem("profile")));
             return JSON.parse(window.localStorage.getItem("profile"));
         }
     }
