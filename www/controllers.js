@@ -99,7 +99,8 @@
         quantity: 1,
         "searchResults": [],
         "showItemSelected": false,
-        message: ''
+        message: '',
+        mrp: 'NA'
     };
 
     $scope.$on('$ionicView.enter', function () {
@@ -193,16 +194,17 @@
 
     //Start
     $scope.brandSelected = function (item) {
+
         console.log('brandSelected method');
         $SelectedValues.setselectedBrandItem(item);
         $scope.data.search = ''; //clear the search box
         $scope.data.autoSuggetions = [];
+
         if (item.id == null) {
             console.log('item.id is null');
             $state.go('app.requestmedicine');
         } else {
             console.log('item.id is not null');
-            // $state.go('app.searchresults');
             $ionicLoading.show({
                 template: 'Getting Medicine details...',
                 hideOnStateChange: true
@@ -213,7 +215,7 @@
             var selectedCircle = $SelectedValues.getSelectedCircle();
             var selectedCity = $SelectedValues.getSelectedCity();
             $scope.data.showItemSelected = true;
-            $http.get("http://localhost:8100/api/webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + item.id + "&brandName=" + item.label + "&circle=" + selectedCircle)
+            $http.get("http://localhost:8100/api/webservice/search?city=" + selectedCity + "&brandId=" + item.id + "&inventoryId=" + item.id + "&brandName=" + item.label + "&circle=" + selectedCircle)
                 .success(function (data) {
                     $ionicLoading.hide();
                  
@@ -223,9 +225,11 @@
                         $state.go('app.requestmedicine');
                     }
                     else {
+                        if (data.mrp != null) {
+                            $scope.data.mrp = data.mrp;
+                        }
                         $scope.data.searchResults = data;
                     }
-
                 })
                 .error(function (data) {
                     $ionicLoading.hide();
@@ -238,7 +242,6 @@
 
     $scope.addtocart = function () {
         if ($SelectedValues.isItemPresentInCart($scope.data.searchResults.inventoryId) == false) {
-
             addtocartlocal();
         }
         else {
@@ -270,7 +273,8 @@
                 item: $scope.data.localBrand,
                 quantity: $scope.data.quantity,
                 storeid: $scope.data.searchResults.storeId,
-                inventoryid: $scope.data.searchResults.inventoryId
+                inventoryid: $scope.data.searchResults.inventoryId,
+                mrp : $scope.data.searchResults.mrp
             };
 
             $scope.count = true;
@@ -646,7 +650,7 @@
                                                 itemPresent = false;
                                             }
                                             else {
-                                                address = prompt("Address with that name already present, give another name", "Office " + (addresses.length + 1));
+                                                address = prompt("Address with that name already present, give another name", "Office " + (addresses.length));
                                             }
                                         } else {
                                             itemPresent = false;
@@ -1156,9 +1160,7 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
     };
 
     $scope.imgUpload = function (sourceTypevalue) {
-        $ionicLoading.show({
-            template: 'Uploading prescription...'
-        });
+        
         document.addEventListener("deviceready", function () {
             var options = {
                 quality: 100,
@@ -1191,6 +1193,10 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
                     alert("upload failed:" + r);
                 }
 
+                $ionicLoading.show({
+                    template: 'Uploading prescription...'
+                });
+
                 var formURL = 'http://localhost:8100/api/webservice/uploadPrescriptionFile';
                 var encodedURI = encodeURI(formURL);
                 var fileURI = imageURI;
@@ -1200,9 +1206,9 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
                 //options.mimeType = "text/plain";
                 var ft = new FileTransfer();
                 ft.upload(fileURI, encodedURI, fnSuccess, fnError, options);
+                $ionicLoading.hide();
 
             }, function (err) {
-                $ionicLoading.hide();
                 // error
                 alert("Sorry!No picture was selected");
             });
@@ -1322,7 +1328,7 @@ app.service('SelectedValues', function ($q, $http) {
         totalprice = 0;
         for (i = 0; i < items.length; i++) {
             if (items[i].quantity > 0) {
-                totalprice += 50*items[i].quantity;
+                totalprice += items[i].mrp*items[i].quantity;
                 }
             }
         return totalprice;

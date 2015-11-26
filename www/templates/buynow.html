@@ -12,7 +12,7 @@
                       <button ng-click="increaseQuantity(item)" class="button button-icon icon ion-android-add-circle button-small"> </button>
                     </div>
                      <div class="col col-35 col-offset-15">
-                              <span class="input-label">&#8377; {{item.quantity>0?item.quantity*50:0}}</span>
+                              <span class="input-label">&#8377; {{item.quantity*item.mrp}}</span>
                       </div>
                  </div>
    				  <!-- <code class="item-text-wrap" ng-if="item.quantity < 0">Quantity should be greater than 0</code> -->
