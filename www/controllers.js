@@ -36,7 +36,7 @@
 })
 
     //start startCtrl
-.controller('startCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
+.controller('startCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
     console.log('startCtrl');
    
     $scope.goToSearchMed = function () {
@@ -50,7 +50,7 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-.controller('HomeCtrl', ['$scope', '$http', '$state', 'SelectedValues', '$ionicHistory', '$ionicScrollDelegate', '$ionicNavBarDelegate', '$timeout', 'CheckNetwork', '$ionicPlatform','$ionicLoading', function ($scope, $http, $state, $SelectedValues, $ionicHistory, $ionicScrollDelegate, $ionicNavBarDelegate, $timeout, $CheckNetwork, $ionicPlatform,$ionicLoading) {
+.controller('HomeCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', '$ionicHistory', '$ionicScrollDelegate', '$ionicNavBarDelegate', '$timeout', 'CheckNetwork', '$ionicPlatform','$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $ionicHistory, $ionicScrollDelegate, $ionicNavBarDelegate, $timeout, $CheckNetwork, $ionicPlatform,$ionicLoading) {
 
     // Disable BACK button on home
     /* $ionicPlatform.registerBackButtonAction(function (event) {
@@ -65,7 +65,28 @@
        }
      }, 100);
      
-   */  var circleValue = window.localStorage.getItem("circle");
+   */
+
+    var req = {
+        method: 'POST',
+        url: 'http://localhost:8100/api/j_spring_security_check',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Source':'IONIC'
+        },
+        data: 'j_username=gchandu27@gmail.com&j_password=chandu123'
+    }
+
+    $http(req).then(function (response) { alert('success'+response); }, function (response) { alert('failed'+response); });
+
+    //$http.post('http://localhost:8100/api/j_spring_security_check', { j_username: 'bnkumar_k@yahoo.co.in', j_password: 'bogavaram7' }).success(function (response) {
+    //    alert(response);
+    //});
+    //$http.post('http://www.webservicex.net/globalweather.asmx', { CityName: 'delhi', CountryName: 'india' }).success(function (response) {
+    //    alert(response);
+    //});
+    
+    var circleValue = window.localStorage.getItem("circle");
     var cityValue = window.localStorage.getItem("city");
     console.log("Local circle storage state:" + circleValue + cityValue);
     if (circleValue != "true") {
@@ -151,7 +172,7 @@
                     console.log('search method');
                     if ($scope.data.search != '') {
                      
-                        $http.get("http://localhost:8100/api/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + selectedCircle + "&city=" + selectedCity)
+                        $http.get($config.serverUrl+"webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + selectedCircle + "&city=" + selectedCity)
                             .success(function (data) {
                                 if (data.length > 0) {
                                     $scope.data.autoSuggetions = data.slice(0, 6);;
@@ -215,7 +236,7 @@
             var selectedCircle = $SelectedValues.getSelectedCircle();
             var selectedCity = $SelectedValues.getSelectedCity();
             $scope.data.showItemSelected = true;
-            $http.get("http://localhost:8100/api/webservice/search?city=" + selectedCity + "&brandId=" + item.id + "&inventoryId=" + item.id + "&brandName=" + item.label + "&circle=" + selectedCircle)
+            $http.get($config.serverUrl+"webservice/search?city=" + selectedCity + "&brandId=" + item.id + "&inventoryId=" + item.id + "&brandName=" + item.label + "&circle=" + selectedCircle)
                 .success(function (data) {
                     $ionicLoading.hide();
                  
@@ -289,7 +310,7 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start searchresultslistCtrl
-.controller('searchresultslistCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
+.controller('searchresultslistCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
     console.log('searchresultslistCtrlcalled');
     $scope.data = {
         "search": $SelectedValues.getsearchTerm(),
@@ -303,7 +324,7 @@
         hideOnStateChange: true
     });
 
-    $http.get("http://localhost:8100/api/webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle + "&city=" + $scope.data.selectedCity)
+    $http.get($config.serverUrl+"webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle + "&city=" + $scope.data.selectedCity)
                                 .success(function (data) {
                                     $ionicLoading.hide();
                                     if (data.length > 0) {
@@ -337,7 +358,7 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start searchResultsCtrl
-.controller('SearchResultsCtrl', ['$scope', '$http', 'SelectedValues', '$ionicPopup', 'SelectedStore', 'CheckNetwork', '$state', '$ionicLoading', function ($scope, $http, $SelectedValues, $ionicPopup, $SelectedStore, $CheckNetwork, $state, $ionicLoading) {
+.controller('SearchResultsCtrl', ['$scope','config', '$http', 'SelectedValues', '$ionicPopup', 'SelectedStore', 'CheckNetwork', '$state', '$ionicLoading', function ($scope,$config, $http, $SelectedValues, $ionicPopup, $SelectedStore, $CheckNetwork, $state, $ionicLoading) {
     console.log('searchResultsCtrl method');
     var selectedBrand = $SelectedValues.getselectedBrandItem();
     var selectedCircle = $SelectedValues.getSelectedCircle();
@@ -361,7 +382,7 @@
     });
 
 
-    $http.get("http://localhost:8100/api/webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + selectedBrand.id + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
+    $http.get($config.serverUrl+"webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + selectedBrand.id + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
         .success(function (data) {
             $ionicLoading.hide();
             console.log('searchResultsCtrl success');
@@ -439,7 +460,7 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start BuyNowCtrl
-.controller('BuyNowCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', '$state', 'OrderDetailsService', '$ionicLoading', function ($scope, $http, $SelectedValues, $SelectedStore, $state, $OrderDetailsService, $ionicLoading) {
+.controller('BuyNowCtrl', ['$scope','config', '$http', 'SelectedValues', 'SelectedStore', '$state', 'OrderDetailsService', '$ionicLoading', function ($scope,$config, $http, $SelectedValues, $SelectedStore, $state, $OrderDetailsService, $ionicLoading) {
     $scope.data = {
         message: '',
         items: $SelectedValues.getItems(),
@@ -514,7 +535,7 @@
 }])//end
 
         //start SellerDetailsCtrl
-.controller('SellerDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
+.controller('SellerDetailsCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
     console.log('SellerDetailsCtrl');
     $scope.data = {
         sellerChoice: 'A',
@@ -528,7 +549,7 @@
 //end SellerDetailsCtrl
 
         //start PrescriptionChoiceCtrl
-.controller('PrescriptionChoiceCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
+.controller('PrescriptionChoiceCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
     console.log('PrescriptionChoiceCtrl');
     $scope.data = {
         prescriptionChoice: 'A',
@@ -553,7 +574,7 @@
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start OrderDetailsCtrl
-.controller('OrderDetailsCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','ProfileService', 'CheckNetwork', '$ionicLoading', function ($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $ProfileService, $CheckNetwork, $ionicLoading) {
+.controller('OrderDetailsCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','ProfileService', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $ProfileService, $CheckNetwork, $ionicLoading) {
     console.log('OrderDetailsCtrlmethod called');
     $scope.data = {
         "store": $SelectedStore.selectedStore,
@@ -620,7 +641,7 @@
                 var cartItemsString = $SelectedValues.addItemsToServerString();
 
                 //TODO do not hardcode contry and state
-                $http.get("http://localhost:8100/api/webservice/addItemsToCartAndPlaceOrder?cartItemList=" + cartItemsString + "&circle=" + $SelectedValues.getSelectedCircle() + "&doctorname=" + order.doctorname + "&patientname=" + order.patientname + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + $SelectedValues.getSelectedCity() + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
+                $http.get($config.serverUrl+"webservice/addItemsToCartAndPlaceOrder?cartItemList=" + cartItemsString + "&circle=" + $SelectedValues.getSelectedCircle() + "&doctorname=" + order.doctorname + "&patientname=" + order.patientname + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + $SelectedValues.getSelectedCity() + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
                     .success(function (data) {
                         $ionicLoading.hide();
                         console.log("data:" + data);
@@ -682,7 +703,7 @@
 
     $scope.applyOffer = function () {
 
-        $http.get("http://localhost:8100/api/webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
+        $http.get($config.serverUrl+"webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
             .success(function (data) {
                 $scope.order.offerstatus = data;
             })
@@ -695,7 +716,7 @@
 }])    //end OrderDetailsCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start TrackOrderCtrl
-.controller('TrackOrderCtrl', ['$scope', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
+.controller('TrackOrderCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
     console.log('TrackOrderCtrl called');
     $scope.data = {
         "trackingId": '',
@@ -708,7 +729,7 @@
             template: 'Getting Order details...'
         });
 
-        $http.get("http://localhost:8100/api/webservice/showOrderCollectionDetails?trackingId=" + $scope.data.trackingId)
+        $http.get($config.serverUrl+"webservice/showOrderCollectionDetails?trackingId=" + $scope.data.trackingId)
                       .success(function (data) {
                           $ionicLoading.hide();
                           console.log('order details fetched:' + data);
@@ -732,7 +753,7 @@
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start OrderCompletionCtrl
-.controller('OrderCompletionCtrl', ['$scope', '$http', 'SelectedValues', '$ionicHistory', 'SelectedStore', 'OrderDetailsService', '$state', 'CheckNetwork', '$ionicLoading', function ($scope, $http, $SelectedValues, $ionicHistory, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork, $ionicLoading) {
+.controller('OrderCompletionCtrl', ['$scope','config', '$http', 'SelectedValues', '$ionicHistory', 'SelectedStore', 'OrderDetailsService', '$state', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $SelectedValues, $ionicHistory, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork, $ionicLoading) {
     $ionicHistory.clearHistory();
     if ($OrderDetailsService.getReload() == false) {
         $state.go($state.current, {}, {
@@ -789,7 +810,7 @@
 
         if (confirmed == true) {
 
-            $http.get("http://localhost:8100/api/webservice/cancelOrder?trackingId=" + trackingId)
+            $http.get($config.serverUrl+"webservice/cancelOrder?trackingId=" + trackingId)
                 .success(function (data) {
                     $ionicLoading.hide();
                     if (data == 'Success') {
@@ -820,7 +841,7 @@
     //end OrdercompletionCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start FeedbackCtrl
-.controller('FeedbackCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', '$state', 'CheckNetwork', function ($scope, $http, $SelectedValues, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork) {
+.controller('FeedbackCtrl', ['$scope','config', '$http', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', '$state', 'CheckNetwork', function ($scope,$config, $http, $SelectedValues, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork) {
 
     $scope.data = {
         "feedbackstatus": ''
@@ -832,7 +853,7 @@
             alert("message can not be empty!");
         }
         else {
-            $http.get("http://localhost:8100/api/webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
+            $http.get($config.serverUrl+"webservice/sendFeedback?name=" + feedback.name + "&emailID=" + feedback.email + "&message=" + feedback.message)
                 .success(function (data) {
                     $scope.data.feedbackstatus = data;
                     console.log('feedback submit success:' + data);
@@ -851,7 +872,7 @@
 //end FeedbackCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start FooterCtrl
-.controller('FooterCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', '$state', 'CheckNetwork', function ($scope, $http, $SelectedValues, $SelectedStore, $state, $CheckNetwork) {
+.controller('FooterCtrl', ['$scope','config', '$http', 'SelectedValues', 'SelectedStore', '$state', 'CheckNetwork', function ($scope,$config, $http, $SelectedValues, $SelectedStore, $state, $CheckNetwork) {
     console.log("footer ctrl");
     $scope.cartItems;
 
@@ -874,7 +895,7 @@
 //end FooterCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start ordersCtrl
-.controller('ordersCtrl', ['$scope', '$http', 'OrderDetailsService', '$state', 'CheckNetwork', function ($scope, $http, $OrderDetailsService, $state, $CheckNetwork) {
+.controller('ordersCtrl', ['$scope','config', '$http', 'OrderDetailsService', '$state', 'CheckNetwork', function ($scope,$config, $http, $OrderDetailsService, $state, $CheckNetwork) {
     console.log("ordersCtrl");
 
     $scope.orders = $OrderDetailsService.getOrders();
@@ -882,7 +903,7 @@
 
     $scope.orderSelected = function (trackingId) {
 
-        $http.get("http://localhost:8100/api/webservice/showOrderCollectionDetails?trackingId=" + trackingId)
+        $http.get($config.serverUrl+"webservice/showOrderCollectionDetails?trackingId=" + trackingId)
             .success(function (data) {
                 console.log('order details fetched:' + data);
                 if (data != -2) {
@@ -903,7 +924,7 @@
 }])
 //end ordersCtrl
 //start selectaddressCtrl
-.controller('selectaddressCtrl', ['$scope', '$http', 'OrderDetailsService', '$state', 'CheckNetwork', function ($scope, $http, $OrderDetailsService, $state, $CheckNetwork) {
+.controller('selectaddressCtrl', ['$scope','config', '$http', 'OrderDetailsService', '$state', 'CheckNetwork', function ($scope,$config, $http, $OrderDetailsService, $state, $CheckNetwork) {
     console.log("selectaddressCtrl");
 
     $scope.addresses = $OrderDetailsService.getAllAddressKey();
@@ -935,7 +956,7 @@
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 //start Requestmedicine
-.controller('requestmedicineCtrl', ['$scope', '$http', 'SelectedValues', 'SelectedStore', '$state', 'CheckNetwork', function ($scope, $http, $SelectedValues, $SelectedStore, $state, $CheckNetwork) {
+.controller('requestmedicineCtrl', ['$scope','config', '$http', 'SelectedValues', 'SelectedStore', '$state', 'CheckNetwork', function ($scope,$config, $http, $SelectedValues, $SelectedStore, $state, $CheckNetwork) {
 
     $scope.data = {
         message: '',
@@ -949,7 +970,7 @@
 
     $scope.submitfeedback = function (feedback) {
         console.log(feedback.name);
-        $http.get("http://localhost:8100/api/webservice/requestNewBrand?brandName=" + $scope.data.medicine + "&emailID=" + feedback.email + "&phoneNumber=" + feedback.phone + "&circle=" + selectedCircle)
+        $http.get($config.serverUrl+"webservice/requestNewBrand?brandName=" + $scope.data.medicine + "&emailID=" + feedback.email + "&phoneNumber=" + feedback.phone + "&circle=" + selectedCircle)
             .success(function (data) {
                 $scope.data.feedbackstatus = data;
                 console.log('feedback submit success:' + data);
@@ -968,7 +989,7 @@
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start LoginCtrl
-app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log, $scope, $state, $http) {
+app.controller('LoginCtrl', ['$log', '$scope','config', '$state', '$http', function ($log, $scope, $state, $http) {
     $scope.signNew = function () {
         console.log("Go Worked!");
         $state.go('app.signup');
@@ -993,7 +1014,7 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
 
     $scope.loginNew = function (xxx) {
 
-        $http.get("http://localhost:8100/api/webservice/Login?Username=" + xxx.user + "&Password=" + xxx.pass)
+        $http.get($config.serverUrl+"webservice/Login?Username=" + xxx.user + "&Password=" + xxx.pass)
               .success(function () {
                   alert("Login was Successful.");
                   console.log("Login success");
@@ -1016,14 +1037,14 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
 //end LoginCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start SignupCtrl
-.controller('SignupCtrl', ['$scope', function ($scope) {
+.controller('SignupCtrl', ['$scope','config', function ($scope,$config) {
 
 
 }])
 //end SignupCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start ProfileCtrl
-.controller('ProfileCtrl', ['$scope', '$http', 'ProfileService', '$state', 'CheckNetwork', function ($scope, $http, $ProfileService, $state, $CheckNetwork) {
+.controller('ProfileCtrl', ['$scope','config', '$http', 'ProfileService', '$state', 'CheckNetwork', function ($scope,$config, $http, $ProfileService, $state, $CheckNetwork) {
 
     $scope.data = {
         "profilestatus": false,
@@ -1049,7 +1070,7 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
 //end ProfileCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start LocationCtrl
-.controller('LocationCtrl', ['$scope', 'SelectedValues', '$http', 'CheckNetwork', '$state', function ($scope, $SelectedValues, $http, $CheckNetwork, $state) {
+.controller('LocationCtrl', ['$scope','config', 'SelectedValues', '$http', 'CheckNetwork', '$state', function ($scope,$config, $SelectedValues, $http, $CheckNetwork, $state) {
 
     var circleData = window.localStorage.getItem("circleData");
     var cityData = window.localStorage.getItem("cityData");
@@ -1061,7 +1082,8 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
         selectedCity: cityData,
     };
 
-    $http.get("http://localhost:8100/api/webservice/getCityArray")
+    //$http.get($config.serverUrl+"webservice/getCityArray")
+    $http.get($config.serverUrl+"webservice/getCityArray")
         .success(function (cities) {
 
             console.log("getting city array:" + cities)
@@ -1078,7 +1100,7 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
         console.log("$scope.data.selectedCity" + $scope.data.selectedCity);
 
         $SelectedValues.setSelectedCity($scope.data.selectedCity);
-        $http.get("http://localhost:8100/api/webservice/getCircleArray?city=" + $scope.data.selectedCity)
+        $http.get($config.serverUrl+"webservice/getCircleArray?city=" + $scope.data.selectedCity)
             .success(function (circles) {
                 $scope.data.circleOptions = circles.circleArray;
                 console.log(circles);
@@ -1089,7 +1111,7 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
     }
 
     function getCircles(city) {
-        $http.get("http://localhost:8100/api/webservice/getCircleArray?city=" + city)
+        $http.get($config.serverUrl+"webservice/getCircleArray?city=" + city)
              .success(function (circles) {
                  $scope.data.circleOptions = circles.circleArray;
                  console.log(circles.circleArray);
@@ -1140,7 +1162,7 @@ app.controller('LoginCtrl', ['$log', '$scope', '$state', '$http', function ($log
 }]) //end LocationCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //start UploadpageCtrl
-.controller('UploadpageCtrl', ['$scope', '$cordovaCamera', '$http', '$state', 'CheckNetwork', 'SelectedValues', 'OrderDetailsService', '$ionicLoading', function ($scope, $cordovaCamera, $http, $state, $CheckNetwork, $SelectedValues, $OrderDetailsService, $ionicLoading) {
+.controller('UploadpageCtrl', ['$scope','config', '$cordovaCamera', '$http', '$state', 'CheckNetwork', 'SelectedValues', 'OrderDetailsService', '$ionicLoading', function ($scope,$config, $cordovaCamera, $http, $state, $CheckNetwork, $SelectedValues, $OrderDetailsService, $ionicLoading) {
 
     $scope.source = null;
     $scope.canGoToNext = false;
@@ -1344,7 +1366,7 @@ app.service('SelectedValues', function ($q, $http) {
             cartItemList = cartItemList + "]'";
             console.log('cartItemList: ' + cartItemList);
 
-            $http.get("http://localhost:8100/api/webservice/addItemsToCart?cartItemList=" + cartItemList)
+            $http.get($config.serverUrl+"webservice/addItemsToCart?cartItemList=" + cartItemList)
                 .success(function (data) {
 
                     console.log(data);
@@ -1549,3 +1571,11 @@ app.service('ProfileService', ['CheckNetwork', '$state', '$http', function ($q, 
     }
 }])
 //end ProfileService
+
+app.constant('config', {
+    serverUrl: 'http://localhost:8100/api/',
+});
+
+//app.constant('serverUrl', 'http://localhost:8100/api/');
+//angular.module('constants', [])
+//  .constant('serverUrl', 'http://localhost:8100/api/');

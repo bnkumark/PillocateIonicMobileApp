@@ -176,7 +176,7 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
            url: "/sellerdetails",
            views: {
                'menuContent': {
-                   templateUrl: "templates/sellerdetails.html",
+                   templateUrl: "templates/sellerDetails.html",
                     controller: 'SellerDetailsCtrl'           
                }
            }
@@ -277,33 +277,3 @@ angular.module('starter', ['ionic', 'starter.controllers','ngCordova'])
   $urlRouterProvider.otherwise('/app/start');
 });
 
-
-/* var appi=angular.module('starter',['ngRoute']);
-appi.config(function($routeProvider){
-//set up routes
-$routeProvider
-.when('/signup',{
-  templateUrl:'templates/signup.html',
-  controller:'SignupCtrl'
-});
-
-}); */
-/*angular.module('login', ['ionic', 'starter.controllers'])
-.config(function($stateProvider, $urlRouterProvider) {
-  $stateProvider
-   .state('ap', {
-    url: "/ap",
-    abstract: true,
-    templateUrl: "templates/menu.html",
-    controller: 'AppCtrl'
-  })
-  .state('ap.signup', {
-    url: '/signup',
-    views: {
-      'menuContent': {
-        templateUrl: 'templates/signup.html',
-        controller: 'SignupCtrl'
-      }
-    }
-  })
-});*/
