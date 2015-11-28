@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 
-angular.module('starter', ['ionic', 'starter.controllers', 'locationModule', 'homeModule', 'startModule', 'UploadpageModule', 'ngCordova'])
+angular.module('starter', ['ionic', 'starter.controllers', 'locationModule', 'homeModule', 'startModule', 'UploadpageModule', 'searchresultslistModule', 'selectaddressModule', 'ngCordova'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {

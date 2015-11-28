@@ -35,54 +35,6 @@
     //};
 })
 
-//start searchresultslistCtrl
-.controller('searchresultslistCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
-    console.log('searchresultslistCtrlcalled');
-    $scope.data = {
-        "search": $SelectedValues.getsearchTerm(),
-        "autoSuggetions": [],
-        selectedCircle: $SelectedValues.getSelectedCircle(),
-        selectedCity: $SelectedValues.getSelectedCity()
-    };
-
-    $ionicLoading.show({
-        template: 'Getting results...',
-        hideOnStateChange: true
-    });
-
-    $http.get($config.serverUrl+"webservice/listOfBrandNameStartingWith?term=" + $scope.data.search + "&circle=" + $scope.data.selectedCircle + "&city=" + $scope.data.selectedCity)
-                                .success(function (data) {
-                                    $ionicLoading.hide();
-                                    if (data.length > 0) {
-                                        $scope.data.autoSuggetions = data.slice(0, 6);;
-                                    }
-                                    else {
-                                        $scope.data.autoSuggetions = [{ label: $scope.data.search, id: null }]
-                                    }
-                                    searchGotFocus = true;
-                                })
-                                .error(function (data) {
-                                    $ionicLoading.hide();
-                                    console.log('getting auto suggestions failed');
-                                    $CheckNetwork.check();
-                                });
-
-    $scope.brandSelected = function (item) {
-        console.log('brandSelected method');
-        $SelectedValues.setselectedBrandItem(item);
-        $scope.data.search = ''; //clear the search box
-        if (item.id == null) {
-            console.log('item.id is null');
-            $state.go('app.requestmedicine');
-        } else {
-            console.log('item.id is not null');
-            $state.go('app.searchresults');
-        }
-    }
-}])
-//end searchresultslistCtrl
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-
 //start searchResultsCtrl
 .controller('SearchResultsCtrl', ['$scope','config', '$http', 'SelectedValues', '$ionicPopup', 'SelectedStore', 'CheckNetwork', '$state', '$ionicLoading', function ($scope,$config, $http, $SelectedValues, $ionicPopup, $SelectedStore, $CheckNetwork, $state, $ionicLoading) {
     console.log('searchResultsCtrl method');
@@ -649,35 +601,6 @@
     }
 }])
 //end ordersCtrl
-//start selectaddressCtrl
-.controller('selectaddressCtrl', ['$scope','config', '$http', 'OrderDetailsService', '$state', 'CheckNetwork', function ($scope,$config, $http, $OrderDetailsService, $state, $CheckNetwork) {
-    console.log("selectaddressCtrl");
-
-    $scope.addresses = $OrderDetailsService.getAllAddressKey();
-    console.log("addresses:" + $scope.addresses);
-
-
-    $scope.addressSelected = function (address) {
-        console.log("addressSelected:" + address);
-        $OrderDetailsService.setaddressName(address);
-        $state.go('app.orderdetails');
-    }
-
-    $scope.skip = function () {
-        $OrderDetailsService.setaddressName('');
-        $state.go('app.orderdetails');
-
-    }
-    $scope.destroy = function (address) {
-        var index = $scope.addresses.indexOf(address);
-        if (index > -1) {
-            $scope.addresses.splice(index, 1);
-        }
-
-        $OrderDetailsService.removeAddressKey(address);
-    }
-}])
-//end selectaddressCtrl
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
