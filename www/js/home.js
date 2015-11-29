@@ -16,18 +16,6 @@ var myApp = angular.module('homeModule', [])
      
    */
 
-    var req = {
-        method: 'POST',
-        url: 'http://localhost:8100/api/j_spring_security_check',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Source': ''
-        },
-        data: 'j_username=gchandu27@gmail.com&j_password=chandu123'
-    }
-
-    $http(req).then(function (response) { alert('success' + response); }, function (response) { alert('failed' + response); });
-
     var circleValue = window.localStorage.getItem("circle");
     var cityValue = window.localStorage.getItem("city");
     console.log("Local circle storage state:" + circleValue + cityValue);
