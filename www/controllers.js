@@ -39,270 +39,270 @@
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start OrderDetailsCtrl
-.controller('OrderDetailsCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','ProfileService', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $ProfileService, $CheckNetwork, $ionicLoading) {
-    console.log('OrderDetailsCtrlmethod called');
-    $scope.data = {
-        "store": $SelectedStore.selectedStore,
-        "brandName": $SelectedStore.getselectedBrandItem().label,
-        "circle": $SelectedValues.getSelectedCircle(),
-        "selectAddress": $OrderDetailsService.getaddressName()
-    };
+//.controller('OrderDetailsCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService','ProfileService', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $ProfileService, $CheckNetwork, $ionicLoading) {
+//    console.log('OrderDetailsCtrlmethod called');
+//    $scope.data = {
+//        "store": $SelectedStore.selectedStore,
+//        "brandName": $SelectedStore.getselectedBrandItem().label,
+//        "circle": $SelectedValues.getSelectedCircle(),
+//        "selectAddress": $OrderDetailsService.getaddressName()
+//    };
 
-    $scope.$on('$ionicView.enter', function () {
-        // Code you want executed every time view is opened
-        console.log('Opened! on enter');
-        $scope.data.circle = $SelectedValues.getSelectedCircle();
-        console.log('Opened! on enter, $scope.data.selectAddress' + $OrderDetailsService.getaddressName());
-        if ($OrderDetailsService.getaddressName() != '') {
+//    $scope.$on('$ionicView.enter', function () {
+//        // Code you want executed every time view is opened
+//        console.log('Opened! on enter');
+//        $scope.data.circle = $SelectedValues.getSelectedCircle();
+//        console.log('Opened! on enter, $scope.data.selectAddress' + $OrderDetailsService.getaddressName());
+//        if ($OrderDetailsService.getaddressName() != '') {
 
-            $scope.order = $OrderDetailsService.getAddress($OrderDetailsService.getaddressName());
-            console.log("$scope.order" + $scope.order);
-            // $scope.order.offerstatus = '';
-            $scope.order.isTermsChecked = false;
-        }
-        else {
-                $scope.profile = $ProfileService.getProfile();
-                if($scope.profile != null)
-                    $scope.order =  $scope.profile;
-                else
-                    $scope.order = null;
-        }
-    })
+//            $scope.order = $OrderDetailsService.getAddress($OrderDetailsService.getaddressName());
+//            console.log("$scope.order" + $scope.order);
+//            // $scope.order.offerstatus = '';
+//            $scope.order.isTermsChecked = false;
+//        }
+//        else {
+//                $scope.profile = $ProfileService.getProfile();
+//                if($scope.profile != null)
+//                    $scope.order =  $scope.profile;
+//                else
+//                    $scope.order = null;
+//        }
+//    })
 
-    //TODO hardcoding this for now
-    $scope.data.store.country = 'India';
+//    //TODO hardcoding this for now
+//    $scope.data.store.country = 'India';
 
-    var selectedBrand = $SelectedStore.getselectedBrandItem();
-    var selectedStore = $scope.data.store;
-    console.log('selected brand value in OrderDetailsCtrl:' + selectedBrand.label);
-    console.log('store value in OrderDetailsCtrl:' + $scope.data.store.storename);
+//    var selectedBrand = $SelectedStore.getselectedBrandItem();
+//    var selectedStore = $scope.data.store;
+//    console.log('selected brand value in OrderDetailsCtrl:' + selectedBrand.label);
+//    console.log('store value in OrderDetailsCtrl:' + $scope.data.store.storename);
 
-    $scope.submitorder = function (order) {
+//    $scope.submitorder = function (order) {
 
-        if (selectedBrand.name == null) {
-            selectedBrand.name = '';
-            console.log('selectedBrand.name is null');
-        }
+//        if (selectedBrand.name == null) {
+//            selectedBrand.name = '';
+//            console.log('selectedBrand.name is null');
+//        }
 
-        order.addressline2 = $CheckNetwork.UndefinedToEmpty(order.addressline2);
-        order.offercode = $CheckNetwork.UndefinedToEmpty(order.offercode);
+//        order.addressline2 = $CheckNetwork.UndefinedToEmpty(order.addressline2);
+//        order.offercode = $CheckNetwork.UndefinedToEmpty(order.offercode);
 
-        var attachmentId = $SelectedValues.getAttachmentId();
+//        var attachmentId = $SelectedValues.getAttachmentId();
 
-        console.log('addressline2 ' + order.addressline2);
+//        console.log('addressline2 ' + order.addressline2);
 
-        if (order.isTermsChecked == false) {
-            alert("Please accept the Terms and Conditions!");
-        }
-        else {
+//        if (order.isTermsChecked == false) {
+//            alert("Please accept the Terms and Conditions!");
+//        }
+//        else {
 
-            var confirmed = confirm("Confirm the order? Order will be placed. You may get a confirmation call.");
+//            var confirmed = confirm("Confirm the order? Order will be placed. You may get a confirmation call.");
 
-            if (confirmed == true) {
-                $ionicLoading.show({
-                    template: 'Submitting Order...'
-                });
-                // $SelectedValues.addCartToServer();
-                var cartItemsString = $SelectedValues.addItemsToServerString();
+//            if (confirmed == true) {
+//                $ionicLoading.show({
+//                    template: 'Submitting Order...'
+//                });
+//                // $SelectedValues.addCartToServer();
+//                var cartItemsString = $SelectedValues.addItemsToServerString();
 
-                //TODO do not hardcode contry and state
-                $http.get($config.serverUrl+"webservice/addItemsToCartAndPlaceOrder?cartItemList=" + cartItemsString + "&circle=" + $SelectedValues.getSelectedCircle() + "&doctorname=" + order.doctorname + "&patientname=" + order.patientname + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + $SelectedValues.getSelectedCity() + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
-                    .success(function (data) {
-                        $ionicLoading.hide();
-                        console.log("data:" + data);
-                        console.log('data.orderDetailsList[0].trackingId:' + data.trackingId);
-                        if (data == 'No items in the cart') {
-                            alert("some error occured try again:" + data);
-                        }
-                        else {
-                            if (data.trackingId != '') {
-                                console.log('no errors in order');
-                                $SelectedValues.emptyItems();
-                                $OrderDetailsService.setorderDetails(data);
-                                $OrderDetailsService.setOrderMessage('Your order has been placed!');
-                                $OrderDetailsService.storeOrder(data);
+//                //TODO do not hardcode contry and state
+//                $http.get($config.serverUrl+"webservice/addItemsToCartAndPlaceOrder?cartItemList=" + cartItemsString + "&circle=" + $SelectedValues.getSelectedCircle() + "&doctorname=" + order.doctorname + "&patientname=" + order.patientname + "&name=" + order.name + "&phoneNumber=" + order.phone + "&emailID=" + order.email + "&age=0" + "&addressLine1=" + order.addressline1 + "+&addressLine2=" + order.addressline2 + "&city=" + $SelectedValues.getSelectedCity() + "&state=Maharastra" + "&country=India" + "&attachmentid=" + attachmentId + "&offerCode=" + order.offercode)
+//                    .success(function (data) {
+//                        $ionicLoading.hide();
+//                        console.log("data:" + data);
+//                        console.log('data.orderDetailsList[0].trackingId:' + data.trackingId);
+//                        if (data == 'No items in the cart') {
+//                            alert("some error occured try again:" + data);
+//                        }
+//                        else {
+//                            if (data.trackingId != '') {
+//                                console.log('no errors in order');
+//                                $SelectedValues.emptyItems();
+//                                $OrderDetailsService.setorderDetails(data);
+//                                $OrderDetailsService.setOrderMessage('Your order has been placed!');
+//                                $OrderDetailsService.storeOrder(data);
 
-                                console.log("$scope.data.selectAddress:" + $OrderDetailsService.getaddressName());
-                                if ($OrderDetailsService.getaddressName() == '') {
-                                    var addresses = $OrderDetailsService.getAllAddressKey();
+//                                console.log("$scope.data.selectAddress:" + $OrderDetailsService.getaddressName());
+//                                if ($OrderDetailsService.getaddressName() == '') {
+//                                    var addresses = $OrderDetailsService.getAllAddressKey();
 
-                                    var address = prompt("Do you want to save delivery details?", "Home" );
+//                                    var address = prompt("Do you want to save delivery details?", "Home" );
 
-                                    var itemPresent = true;
+//                                    var itemPresent = true;
 
-                                    while (itemPresent) {
-                                        if (address != null) {
-                                            if (addresses.indexOf(address) == -1) {
-                                                itemPresent = false;
-                                            }
-                                            else {
-                                                address = prompt("Address with that name already present, give another name", "Office " + (addresses.length));
-                                            }
-                                        } else {
-                                            itemPresent = false;
-                                        }
-                                    }
+//                                    while (itemPresent) {
+//                                        if (address != null) {
+//                                            if (addresses.indexOf(address) == -1) {
+//                                                itemPresent = false;
+//                                            }
+//                                            else {
+//                                                address = prompt("Address with that name already present, give another name", "Office " + (addresses.length));
+//                                            }
+//                                        } else {
+//                                            itemPresent = false;
+//                                        }
+//                                    }
 
-                                    if (address != null) {
-                                        $OrderDetailsService.storeAddress(address, order);
-                                    }
-                                }
+//                                    if (address != null) {
+//                                        $OrderDetailsService.storeAddress(address, order);
+//                                    }
+//                                }
 
-                                $state.go('app.ordercompletion');
-                            } else {
-                                alert("Could not submit order, please check if all fields filled properly." + data.orderDetailsList[0].errors.errors);
-                            }
-                            $scope.order = null;
-                        }
-                    })
-                    .error(function (data) {
-                        $ionicLoading.hide();
-                        $CheckNetwork.check();
-                        alert("some error occured:" + data);
-                    });
+//                                $state.go('app.ordercompletion');
+//                            } else {
+//                                alert("Could not submit order, please check if all fields filled properly." + data.orderDetailsList[0].errors.errors);
+//                            }
+//                            $scope.order = null;
+//                        }
+//                    })
+//                    .error(function (data) {
+//                        $ionicLoading.hide();
+//                        $CheckNetwork.check();
+//                        alert("some error occured:" + data);
+//                    });
 
-            }
-        }
+//            }
+//        }
 
-    };
+//    };
 
-    $scope.applyOffer = function () {
+//    $scope.applyOffer = function () {
 
-        $http.get($config.serverUrl+"webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
-            .success(function (data) {
-                $scope.order.offerstatus = data;
-            })
-            .error(function (data) {
-                $CheckNetwork.check();
-                $scope.order.offerstatus = data;
-            });
+//        $http.get($config.serverUrl+"webservice/isValidOfferCode?offerCode=" + $scope.order.offercode)
+//            .success(function (data) {
+//                $scope.order.offerstatus = data;
+//            })
+//            .error(function (data) {
+//                $CheckNetwork.check();
+//                $scope.order.offerstatus = data;
+//            });
 
-    }
-}])    //end OrderDetailsCtrl
+//    }
+//}])    //end OrderDetailsCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start TrackOrderCtrl
-.controller('TrackOrderCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
-    console.log('TrackOrderCtrl called');
-    $scope.data = {
-        "trackingId": '',
-        "status": ''
-    };
+//.controller('TrackOrderCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
+//    console.log('TrackOrderCtrl called');
+//    $scope.data = {
+//        "trackingId": '',
+//        "status": ''
+//    };
 
-    $scope.getOrderDetails = function () {
+//    $scope.getOrderDetails = function () {
 
-        $ionicLoading.show({
-            template: 'Getting Order details...'
-        });
+//        $ionicLoading.show({
+//            template: 'Getting Order details...'
+//        });
 
-        $http.get($config.serverUrl+"webservice/showOrderCollectionDetails?trackingId=" + $scope.data.trackingId)
-                      .success(function (data) {
-                          $ionicLoading.hide();
-                          console.log('order details fetched:' + data);
-                          if (data != -2) {
-                              $OrderDetailsService.setorderDetails(data);
-                              $OrderDetailsService.setOrderMessage('Your order details!');
-                              $state.go('app.ordercompletion');
-                              $scope.data.status = "";
-                          } else {
-                              $scope.data.status = "Invalid Tracking Id";
-                          }
-                      })
-                      .error(function (data) {
-                          $ionicLoading.hide();
-                          $CheckNetwork.check();
-                      });
+//        $http.get($config.serverUrl+"webservice/showOrderCollectionDetails?trackingId=" + $scope.data.trackingId)
+//                      .success(function (data) {
+//                          $ionicLoading.hide();
+//                          console.log('order details fetched:' + data);
+//                          if (data != -2) {
+//                              $OrderDetailsService.setorderDetails(data);
+//                              $OrderDetailsService.setOrderMessage('Your order details!');
+//                              $state.go('app.ordercompletion');
+//                              $scope.data.status = "";
+//                          } else {
+//                              $scope.data.status = "Invalid Tracking Id";
+//                          }
+//                      })
+//                      .error(function (data) {
+//                          $ionicLoading.hide();
+//                          $CheckNetwork.check();
+//                      });
 
-    }
-}])
+//    }
+//}])
     //end TrackOrderCtrl
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start OrderCompletionCtrl
-.controller('OrderCompletionCtrl', ['$scope','config', '$http', 'SelectedValues', '$ionicHistory', 'SelectedStore', 'OrderDetailsService', '$state', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $SelectedValues, $ionicHistory, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork, $ionicLoading) {
-    $ionicHistory.clearHistory();
-    if ($OrderDetailsService.getReload() == false) {
-        $state.go($state.current, {}, {
-            reload: true
-        });
-        $OrderDetailsService.setReload(true);
-        console.log('reloading order complete');
-    } else {
-        console.log('normally loading the order complete');
-        $OrderDetailsService.setReload(false);
-    }
+//.controller('OrderCompletionCtrl', ['$scope','config', '$http', 'SelectedValues', '$ionicHistory', 'SelectedStore', 'OrderDetailsService', '$state', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $SelectedValues, $ionicHistory, $SelectedStore, $OrderDetailsService, $state, $CheckNetwork, $ionicLoading) {
+//    $ionicHistory.clearHistory();
+//    if ($OrderDetailsService.getReload() == false) {
+//        $state.go($state.current, {}, {
+//            reload: true
+//        });
+//        $OrderDetailsService.setReload(true);
+//        console.log('reloading order complete');
+//    } else {
+//        console.log('normally loading the order complete');
+//        $OrderDetailsService.setReload(false);
+//    }
 
-    $scope.data = {
-        "trackingId": '',
-        "orderDetails": $OrderDetailsService.getorderDetails(),
-        "cancelSuccess": '',
-        "orderSuccess": $OrderDetailsService.getOrderMessage(),
-        "enableCancel": false
-    };
+//    $scope.data = {
+//        "trackingId": '',
+//        "orderDetails": $OrderDetailsService.getorderDetails(),
+//        "cancelSuccess": '',
+//        "orderSuccess": $OrderDetailsService.getOrderMessage(),
+//        "enableCancel": false
+//    };
 
-    $scope.goHome = function () {
-        $state.go('app.home');
-    };
+//    $scope.goHome = function () {
+//        $state.go('app.home');
+//    };
 
-    $scope.getStatusText = function (data) {
-        console.log("getstatustext called with:" + data);
-        if (data == "0") {
-            $scope.data.disableCancel = true;
-            return "Order Cancelled";
-        }
-        if (data == "1")
-            return "Placed (Yet to be accepted)";
+//    $scope.getStatusText = function (data) {
+//        console.log("getstatustext called with:" + data);
+//        if (data == "0") {
+//            $scope.data.disableCancel = true;
+//            return "Order Cancelled";
+//        }
+//        if (data == "1")
+//            return "Placed (Yet to be accepted)";
 
-        if (data == "2")
-            return "Accepted";
+//        if (data == "2")
+//            return "Accepted";
 
-        if (data == "3")
-            return "Dispatched";
+//        if (data == "3")
+//            return "Dispatched";
 
-        if (data == "4")
-            return "Delivered";
+//        if (data == "4")
+//            return "Delivered";
 
-        return '';
-    };
+//        return '';
+//    };
 
-    $scope.cancelOrder = function (trackingId) {
+//    $scope.cancelOrder = function (trackingId) {
 
-        $ionicLoading.show({
-            template: 'Cancelling Order...'
-        });
+//        $ionicLoading.show({
+//            template: 'Cancelling Order...'
+//        });
 
 
-        var confirmed = confirm("Confirm cancel. Cancellation CANNOT be undone!");
+//        var confirmed = confirm("Confirm cancel. Cancellation CANNOT be undone!");
 
-        if (confirmed == true) {
+//        if (confirmed == true) {
 
-            $http.get($config.serverUrl+"webservice/cancelOrder?trackingId=" + trackingId)
-                .success(function (data) {
-                    $ionicLoading.hide();
-                    if (data == 'Success') {
-                        for (i = 0; i < $scope.data.orderDetails.orderDetailsList.length; i++) {
-                            $scope.data.orderDetails.orderDetailsList[i].orderStatus = "0";
-                        }
-                        $scope.data.disableCancel = true;
-                        $scope.data.cancelSuccess = 'Your Order has been cancelled successfully!';
-                    }
-                    else {
-                        $scope.data.cancelSuccess = data;
-                        $scope.data.orderSuccess = '';
-                    }
-                    $scope.data.orderSuccess = '';
-                    console.log('order cancelled:' + data);
-                })
-                .error(function (data) {
-                    $ionicLoading.hide();
-                    $CheckNetwork.check();
-                    alert("There was some problem:" + data);
+//            $http.get($config.serverUrl+"webservice/cancelOrder?trackingId=" + trackingId)
+//                .success(function (data) {
+//                    $ionicLoading.hide();
+//                    if (data == 'Success') {
+//                        for (i = 0; i < $scope.data.orderDetails.orderDetailsList.length; i++) {
+//                            $scope.data.orderDetails.orderDetailsList[i].orderStatus = "0";
+//                        }
+//                        $scope.data.disableCancel = true;
+//                        $scope.data.cancelSuccess = 'Your Order has been cancelled successfully!';
+//                    }
+//                    else {
+//                        $scope.data.cancelSuccess = data;
+//                        $scope.data.orderSuccess = '';
+//                    }
+//                    $scope.data.orderSuccess = '';
+//                    console.log('order cancelled:' + data);
+//                })
+//                .error(function (data) {
+//                    $ionicLoading.hide();
+//                    $CheckNetwork.check();
+//                    alert("There was some problem:" + data);
 
-                });
-        }
+//                });
+//        }
 
-    };
+//    };
 
-}])
+//}])
     //end OrdercompletionCtrl
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start FeedbackCtrl
