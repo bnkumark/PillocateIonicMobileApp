@@ -112,43 +112,6 @@
 //    }
 //}])//end
 
-        //start SellerDetailsCtrl
-.controller('SellerDetailsCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
-    console.log('SellerDetailsCtrl');
-    $scope.data = {
-        sellerChoice: 'A',
-        totalprice: $SelectedValues.getTotalPrice()
-    };
-
-        $scope.choosePrescription = function () {
-             $state.go('app.prescriptionchoice');
-    }   
-}])
-//end SellerDetailsCtrl
-
-        //start PrescriptionChoiceCtrl
-.controller('PrescriptionChoiceCtrl', ['$scope','config', '$http', '$state', 'SelectedValues', 'SelectedStore', 'OrderDetailsService', 'CheckNetwork', '$ionicLoading', function ($scope,$config, $http, $state, $SelectedValues, $SelectedStore, $OrderDetailsService, $CheckNetwork, $ionicLoading) {
-    console.log('PrescriptionChoiceCtrl');
-    $scope.data = {
-        prescriptionChoice: 'A',
-    };
-
-     $scope.placeorder = function () {
-         if ($scope.data.prescriptionChoice == 'B') {
-                if ($OrderDetailsService.getAllAddressKey().length > 0) {
-                        console.log('savedAddress');
-                        $state.go('app.selectaddress');
-                }
-                else {
-                        console.log('go to order details');
-                        $state.go('app.orderdetails');
-                }
-            } else {
-                $state.go('app.uploadpage');
-            }
-        }     
-}])
-//end PrescriptionChoiceCtrl
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 //start OrderDetailsCtrl
@@ -471,36 +434,6 @@
 
 }])
 //end FooterCtrl
-//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
-//start ordersCtrl
-.controller('ordersCtrl', ['$scope','config', '$http', 'OrderDetailsService', '$state', 'CheckNetwork', function ($scope,$config, $http, $OrderDetailsService, $state, $CheckNetwork) {
-    console.log("ordersCtrl");
-
-    $scope.orders = $OrderDetailsService.getOrders();
-    console.log("orders:" + $scope.orders);
-
-    $scope.orderSelected = function (trackingId) {
-
-        $http.get($config.serverUrl+"webservice/showOrderCollectionDetails?trackingId=" + trackingId)
-            .success(function (data) {
-                console.log('order details fetched:' + data);
-                if (data != -2) {
-                    $OrderDetailsService.setorderDetails(data);
-                    $OrderDetailsService.setOrderMessage('Your order details!');
-                    //$OrderDetailsService.setScreen('orderCompletion');
-                    $state.go('app.ordercompletion');
-                    return "";
-                } else {
-                    return "Invalid Tracking Id";
-                }
-            })
-            .error(function (data) {
-                $CheckNetwork.check();
-            });
-
-    }
-}])
-//end ordersCtrl
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
@@ -952,7 +885,3 @@ app.service('ProfileService', ['CheckNetwork', '$state', '$http', function ($q, 
 app.constant('config', {
     serverUrl: 'http://localhost:8100/api/',
 });
-
-//app.constant('serverUrl', 'http://localhost:8100/api/');
-//angular.module('constants', [])
-//  .constant('serverUrl', 'http://localhost:8100/api/');
