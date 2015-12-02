@@ -5,9 +5,10 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 
-angular.module('starter', ['ionic', 'starter.controllers', 'locationModule','ordersModule','OrderDetailsModule','TrackOrderModule','OrderCompletionModule','SellerDetailsModule','PrescriptionChoiceModule','BuyNowModule', 'homeModule', 'startModule', 'UploadpageModule', 'searchresultslistModule', 'selectaddressModule','SearchResultsModule', 'ngCordova'])
+angular.module('starter', ['ionic', 'starter.controllers', 'locationModule', 'ordersModule', 'OrderDetailsModule', 'TrackOrderModule', 'OrderCompletionModule', 'SellerDetailsModule', 'PrescriptionChoiceModule', 'BuyNowModule', 'homeModule', 'startModule', 'UploadpageModule', 'searchresultslistModule', 'selectaddressModule', 'SearchResultsModule', 'ngCordova', 'ngCookies'])
 
-.run(function($ionicPlatform) {
+.run(function ($ionicPlatform, $http, $cookies) {
+    $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
   $ionicPlatform.ready(function() {
   
   if(window.Connection) {
@@ -39,9 +40,10 @@ angular.module('starter', ['ionic', 'starter.controllers', 'locationModule','ord
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
-  $stateProvider
+.config(function ($httpProvider, $stateProvider, $urlRouterProvider) {
+    $httpProvider.defaults.withCredentials = true;
 
+  $stateProvider
   .state('app', {
     url: "/app",
     abstract: true,
@@ -275,5 +277,35 @@ angular.module('starter', ['ionic', 'starter.controllers', 'locationModule','ord
     });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/start');
+})
+
+.provider('myCSRF',[function(){
+    var headerName = 'X-CSRFToken';
+    var cookieName = 'csrftoken';
+    var allowedMethods = ['GET'];
+
+    this.setHeaderName = function(n) {
+        headerName = n;
+    }
+    this.setCookieName = function(n) {
+        cookieName = n;
+    }
+    this.setAllowedMethods = function(n) {
+        allowedMethods = n;
+    }
+    this.$get = ['$cookies', function($cookies){
+        return {
+            'request': function(config) {
+                if(allowedMethods.indexOf(config.method) === -1) {
+                    // do something on success
+                    config.headers[headerName] = $cookies[cookieName];
+                }
+                return config;
+            }
+        }
+    }];
+}]).config(function($httpProvider) {
+    $httpProvider.interceptors.push('myCSRF');
 });
+
 

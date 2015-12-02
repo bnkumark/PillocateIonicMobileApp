@@ -96,6 +96,16 @@
 //start Requestmedicine
 .controller('requestmedicineCtrl', ['$scope','config', '$http', 'SelectedValues', 'SelectedStore', '$state', 'CheckNetwork', function ($scope,$config, $http, $SelectedValues, $SelectedStore, $state, $CheckNetwork) {
 
+    var req2 = {
+        method: 'POST',
+        url: 'http://demo.pillocate.com/webservice/getUserDetails()',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    }
+
+    $http(req2).then(function (response) { alert('success' + response.data); }, function (response) { alert('failed' + response.data); });
+
     $scope.data = {
         message: '',
         medicine: $SelectedValues.getselectedBrandItem().label
@@ -539,5 +549,18 @@ app.service('ProfileService', ['CheckNetwork', '$state', '$http', function ($q, 
 //end ProfileService
 
 app.constant('config', {
-    serverUrl: 'http://localhost:8100/api/',
+   // serverUrl: 'http://localhost:8100/api/',
+    serverUrl: 'http://demo.pillocate.com/'    
 });
+
+//app.config(['$httpProvider', function ($httpProvider) {
+//    //$http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+//    $httpProvider.defaults.withCredentials = true;
+//    $httpProvider.defaults.method = 'POST';
+//    $httpProvider.defaults.headers.get = { 'Content-Type': 'application/x-www-form-urlencoded' };
+//    //$httpProvider.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+//}]);
+
+//app.run(['$httpProvider', '$cookies', function ($http, $cookies) {
+//   $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+//}]);

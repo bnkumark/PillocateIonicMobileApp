@@ -23,7 +23,7 @@ var myApp = angular.module('SearchResultsModule', [])
     });
 
 
-    $http.get($config.serverUrl + "webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + selectedBrand.id + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
+    $http.get($config.serverUrl + "webservice/search?city=" + selectedCity + "&brandId=" + "&inventoryId=" + selectedBrand.name + "&brandName=" + selectedBrand.label + "&circle=" + selectedCircle)
         .success(function (data) {
             $ionicLoading.hide();
             console.log('searchResultsCtrl success');

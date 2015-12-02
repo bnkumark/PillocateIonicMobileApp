@@ -15,7 +15,32 @@ var myApp = angular.module('homeModule', [])
      }, 100);
      
    */
+    //$httpProvider.defaults.withCredentials = true;
+    //$httpProvider.defaults.method = 'POST';
+    //$httpProvider.defaults.headers.get = { 'Content-Type': 'application/x-www-form-urlencoded' };
+    //$httpProvider.defaults.headers.Con = true;
+    //var req = {
+    //    method: 'POST',
+    //    url: 'http://demo.pillocate.com/j_spring_security_check',
+    //    headers: {
+    //        'Content-Type': 'application/x-www-form-urlencoded',
+    //        "Access-Control-Allow-Credentials" : true
+    //    },
+    //    data: 'j_username=gchandu27@gmail.com&j_password=chandu123',
+    //    withCredential:true
+    //}
+    
+    $http.post($config.serverUrl , "j_spring_security_check?j_username=gchandu27@gmail.com&j_password=chandu123")
+                            .success(function (data) {
+                                alert('success: ' + data);
+                            })
+                            .error(function (data) {
+                                alert('error: ' + data);
+                            })
 
+    //$http(req).then(function (response) { alert('success' + response.data); }, function (response) { alert('failed' + response.data); });
+    
+  
     var circleValue = window.localStorage.getItem("circle");
     var cityValue = window.localStorage.getItem("city");
     console.log("Local circle storage state:" + circleValue + cityValue);
@@ -151,31 +176,34 @@ var myApp = angular.module('homeModule', [])
         $scope.data.search = ''; //clear the search box
         $scope.data.autoSuggetions = [];
 
-        if (item.id == null) {
-            console.log('item.id is null');
-            $state.go('app.requestmedicine');
-        } else {
+        //if (item.id == null) {
+        //    console.log('item.id is null');
+        //    $state.go('app.requestmedicine');
+        //} else
+        {
             console.log('item.id is not null');
             $ionicLoading.show({
                 template: 'Getting Medicine details...',
                 hideOnStateChange: true
             });
+
             $scope.data.localBrand = item.label;
             $scope.isDisabled = false;
             $scope.data.message = "";
             var selectedCircle = $SelectedValues.getSelectedCircle();
             var selectedCity = $SelectedValues.getSelectedCity();
             $scope.data.showItemSelected = true;
-            $http.get($config.serverUrl + "webservice/search?city=" + selectedCity + "&brandId=" + item.id + "&inventoryId=" + item.id + "&brandName=" + item.label + "&circle=" + selectedCircle)
+            $http.get($config.serverUrl + "webservice/search?city=" + selectedCity + "&brandId=" + item.name + "&inventoryId=" + item.name + "&brandName=" + item.label + "&circle=" + selectedCircle)
                 .success(function (data) {
                     $ionicLoading.hide();
 
                     console.log('searchResultsCtrl success');
-                    if (data.availabilityFlag == false) {
-                        console.log("Medicine not avaialble");
-                        $state.go('app.requestmedicine');
-                    }
-                    else {
+                    //if (data.availabilityFlag == false) {
+                    //    console.log("Medicine not avaialble");
+                    //    $state.go('app.requestmedicine');
+                    //}
+                    //else
+                    {
                         if (data.mrp != null) {
                             $scope.data.mrp = data.mrp;
                         }

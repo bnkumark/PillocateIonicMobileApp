@@ -7,7 +7,27 @@ var myApp = angular.module('BuyNowModule', [])
         totalprice: $SelectedValues.getTotalPrice()
     };
 
-    // $scope.order.prescriptionChoice = 'A';
+
+    $http.post($config.serverUrl + "webservice/checkAuthentication")
+                        .success(function (data) {
+                            alert('success: ' + data);
+                        })
+                        .error(function (data) {
+                            alert('error: ' + data);
+                        })
+
+    //var req2 = {
+    //    method: 'POST',
+    //    url: 'http://demo.pillocate.com/webservice/getUserDetails()',
+    //    headers: {
+    //        'Content-Type': 'application/x-www-form-urlencoded'
+    //    },
+    //    withCredential: true
+    //}
+
+    //$http(req2).then(function (response) { alert('success' + response.data); }, function (response) { alert('failed' + response.data); });
+
+    //// $scope.order.prescriptionChoice = 'A';
 
     $scope.$watch(function () {
         return $SelectedValues.getItems();
