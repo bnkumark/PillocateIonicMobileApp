@@ -15,32 +15,8 @@ var myApp = angular.module('homeModule', [])
      }, 100);
      
    */
-    //$httpProvider.defaults.withCredentials = true;
-    //$httpProvider.defaults.method = 'POST';
-    //$httpProvider.defaults.headers.get = { 'Content-Type': 'application/x-www-form-urlencoded' };
-    //$httpProvider.defaults.headers.Con = true;
-    //var req = {
-    //    method: 'POST',
-    //    url: 'http://demo.pillocate.com/j_spring_security_check',
-    //    headers: {
-    //        'Content-Type': 'application/x-www-form-urlencoded',
-    //        "Access-Control-Allow-Credentials" : true
-    //    },
-    //    data: 'j_username=gchandu27@gmail.com&j_password=chandu123',
-    //    withCredential:true
-    //}
-    
-    $http.post($config.serverUrl , "j_spring_security_check?j_username=gchandu27@gmail.com&j_password=chandu123")
-                            .success(function (data) {
-                                alert('success: ' + data);
-                            })
-                            .error(function (data) {
-                                alert('error: ' + data);
-                            })
 
-    //$http(req).then(function (response) { alert('success' + response.data); }, function (response) { alert('failed' + response.data); });
-    
-  
+
     var circleValue = window.localStorage.getItem("circle");
     var cityValue = window.localStorage.getItem("city");
     console.log("Local circle storage state:" + circleValue + cityValue);
@@ -76,11 +52,13 @@ var myApp = angular.module('homeModule', [])
         "searchResults": [],
         "showItemSelected": false,
         message: '',
-        mrp: 'NA'
+        mrp: 'NA',
+		"recentViewItems": [],
     };
 
     $scope.$on('$ionicView.enter', function () {
         $scope.data.showItemSelected = false;
+		$scope.data.recentViewItems = $SelectedValues.getRecentViewItems();
     })
 
     $scope.scrollToTop = function () {
@@ -169,24 +147,31 @@ var myApp = angular.module('homeModule', [])
     }
 
     //Start
-    $scope.brandSelected = function (item) {
+    $scope.brandSelected = function (item, fromRecent) {
 
         console.log('brandSelected method');
         $SelectedValues.setselectedBrandItem(item);
         $scope.data.search = ''; //clear the search box
         $scope.data.autoSuggetions = [];
+		$scope.data.recentViewItems = [];
 
-        //if (item.id == null) {
-        //    console.log('item.id is null');
-        //    $state.go('app.requestmedicine');
-        //} else
-        {
-            console.log('item.id is not null');
+        if (item.name == null) {
+            console.log('item.name is null');
+            $state.go('app.requestmedicine');
+        } else {
+            console.log('item.name is not null');
+			
+			// Check if not called from recent view items.
+			if(!fromRecent)
+			{
+				// Store only if not called from recent view items
+				$SelectedValues.addRecentViewItem(item);
+			}
+			
             $ionicLoading.show({
                 template: 'Getting Medicine details...',
                 hideOnStateChange: true
             });
-
             $scope.data.localBrand = item.label;
             $scope.isDisabled = false;
             $scope.data.message = "";
@@ -198,16 +183,18 @@ var myApp = angular.module('homeModule', [])
                     $ionicLoading.hide();
 
                     console.log('searchResultsCtrl success');
-                    //if (data.availabilityFlag == false) {
-                    //    console.log("Medicine not avaialble");
-                    //    $state.go('app.requestmedicine');
-                    //}
-                    //else
-                    {
+                    if (!data.availabilityFlag) {
+                         console.log("Medicine not avaialble");
+                        $state.go('app.requestmedicine');
+                    }
+                    else {
                         if (data.mrp != null) {
                             $scope.data.mrp = data.mrp;
                         }
                         $scope.data.searchResults = data;
+						$scope.data.medType = data.form;
+						$scope.data.defaultUnits = data.noOfUnits;
+						changeDescription($scope.data.quantity);
                     }
                 })
                 .error(function (data) {
@@ -216,10 +203,49 @@ var myApp = angular.module('homeModule', [])
                 });
         }
     }
+	
+	var changeDescription = function(newQty){
+		if($scope.data.medType)
+		{
+			console.log(' Type '+$scope.data.medType);
+			if(newQty == null) {
+				newQty = 0;
+			}
+			if($scope.data.medType.indexOf('TAB')  > -1)
+			{
+				$scope.data.desc = newQty+" strip of "+$scope.data.defaultUnits+" tablets each.";
+			}else if($scope.data.medType.indexOf('CAP') > -1)
+			{
+				$scope.data.desc = newQty+" strip of "+$scope.data.defaultUnits+" capsules each.";
+			}else if($scope.data.medType.indexOf('VIAL') > -1)
+			{
+				$scope.data.desc = newQty+" vial of "+$scope.data.defaultUnits+" each.";
+			}else if($scope.data.medType.indexOf('SYR') > -1)
+			{
+				$scope.data.desc = newQty+" syrup of "+$scope.data.defaultUnits+" each.";
+			}else if($scope.data.medType.indexOf('INJ') > -1)
+			{
+				$scope.data.desc = newQty+" injection of "+$scope.data.defaultUnits+" each.";
+			}else if($scope.data.medType.indexOf('DPS') > -1)
+			{
+				$scope.data.desc = newQty+" dps of "+$scope.data.defaultUnits+" each.";
+			}else if($scope.data.medType.indexOf('POWD') > -1)
+			{
+				$scope.data.desc = newQty+" boxes of "+$scope.data.defaultUnits+" each.";
+			}else{
+				$scope.data.desc = newQty+" units.";
+			}
+		}	
+	}
+	
+	$scope.$watch('data.quantity', function (newQty, oldQty) {
+		changeDescription(newQty);	
+	});
 
     $scope.isDisabled = false;
 
     $scope.addtocart = function () {
+		console.log('Inventary id '+$scope.data.searchResults.inventoryId);
         if ($SelectedValues.isItemPresentInCart($scope.data.searchResults.inventoryId) == false) {
             addtocartlocal();
         }
@@ -253,7 +279,8 @@ var myApp = angular.module('homeModule', [])
                 quantity: $scope.data.quantity,
                 storeid: $scope.data.searchResults.storeId,
                 inventoryid: $scope.data.searchResults.inventoryId,
-                mrp: $scope.data.searchResults.mrp
+                mrp: $scope.data.searchResults.mrp,
+				brandId: $scope.data.searchResults.brandId
             };
 
             $scope.count = true;

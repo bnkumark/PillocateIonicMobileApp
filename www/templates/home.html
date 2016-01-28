@@ -15,8 +15,30 @@
                 </label>
             </div>
             <ion-list>
-                <ion-item ng-repeat="brandItem in data.autoSuggetions" ng-click="brandSelected(brandItem)">
+				<div ng-if="!(data.showItemSelected || data.search)" class="item item-divider">
+					Recently Viewed
+				</div>
+				<ion-item ng-if="!(data.showItemSelected || data.search)" class="item-icon-right" ng-repeat="brandItem in data.recentViewItems" ng-click="brandSelected(brandItem,true)">
                     {{brandItem.label}}
+					<i ng-if="brandItem.form && brandItem.form.indexOf('TAB') > -1 " class="icon ion-pill-tab"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('CAP') > -1 " class="icon ion-pill-cap"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('INJ') > -1 " class="icon ion-pill-inj"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('VIAL') > -1 " class="icon ion-pill-vial"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('DPS') > -1 " class="icon ion-pill-dps"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('SYR') > -1 " class="icon ion-pill-syr"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('SUSP') > -1 " class="icon ion-pill-susp"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('POWD') > -1 " class="icon ion-pill-powd"  ></i>
+                </ion-item>
+                <ion-item class="item-icon-right" ng-repeat="brandItem in data.autoSuggetions" ng-click="brandSelected(brandItem,false)">
+                    {{brandItem.label}}
+					<i ng-if="brandItem.form && brandItem.form.indexOf('TAB') > -1 " class="icon ion-pill-tab"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('CAP') > -1 " class="icon ion-pill-cap"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('INJ') > -1 " class="icon ion-pill-inj"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('VIAL') > -1 " class="icon ion-pill-vial"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('DPS') > -1 " class="icon ion-pill-dps"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('SYR') > -1 " class="icon ion-pill-syr"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('SUSP') > -1 " class="icon ion-pill-susp"  ></i>
+					<i ng-if="brandItem.form && brandItem.form.indexOf('POWD') > -1 " class="icon ion-pill-powd"  ></i>
                 </ion-item>
             </ion-list>
         </div>
@@ -29,6 +51,7 @@
                     <input type="number" min="1" ng-model="data.quantity" value="1">
                 </label>
             </div>
+			<div ng-if="data.desc" class="item item-text-wrap">{{data.desc}}</div>
         
                 <label class="item item-input">
                     <span class="input-label">Approx MRP:</span>

@@ -1,0 +1,24 @@
+﻿<ion-view view-title="Rate Seller" cache-view="false" >
+    <ion-content>
+            <div class="item item-text-wrap positive">How was the service?</div>
+        <div class="quantity">
+            <div class="item">
+                <span class="input-label">{{data.order.storeName}}</span>
+                <ionic-ratings ratingsobj='ratingsObject'></ionic-ratings>
+            </div>
+        </div>
+
+        <ion-checkbox ng-model="data.addToFavorite" class="checkbox-balanced">Add to Favorites</ion-checkbox>
+
+		<div class="quantity">
+            <label class="item">
+                <textarea type="textarea" placeholder="Add comments here." ng-model="data.note" style="width:100%;" rows="4" ></textarea>				
+            </label>
+        </div>
+		
+        <div class="item-input-inset">
+            <button class="item-input-wrapper button button-balanced" ng-click="rateSeller()">Rate</button>
+        </div>
+        
+    </ion-content>
+</ion-view>

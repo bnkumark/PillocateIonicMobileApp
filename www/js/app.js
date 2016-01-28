@@ -5,10 +5,9 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 
-angular.module('starter', ['ionic', 'starter.controllers', 'locationModule', 'ordersModule', 'OrderDetailsModule', 'TrackOrderModule', 'OrderCompletionModule', 'SellerDetailsModule', 'PrescriptionChoiceModule', 'BuyNowModule', 'homeModule', 'startModule', 'UploadpageModule', 'searchresultslistModule', 'selectaddressModule', 'SearchResultsModule', 'ngCordova', 'ngCookies'])
+angular.module('starter', ['ionic', 'starter.controllers', 'locationModule', 'homeModule', 'startModule', 'UploadpageModule', 'searchresultslistModule', 'selectaddressModule','SearchResultsModule', 'ngCordova','RateSellerModule'])
 
-.run(function ($ionicPlatform, $http, $cookies) {
-    $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
   
   if(window.Connection) {
@@ -38,12 +37,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'locationModule', 'or
       StatusBar.styleDefault();
     }
   });
-})
-
-.config(function ($httpProvider, $stateProvider, $urlRouterProvider) {
-    $httpProvider.defaults.withCredentials = true;
-
+}).config(['$compileProvider', function($compileProvider) {
+        	//$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|file|blob|content):|data:image\//);
+			$compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|mailto|file|tel):/);
+}])
+.config(function($stateProvider, $urlRouterProvider, $cordovaAppRateProvider) {
   $stateProvider
+
   .state('app', {
     url: "/app",
     abstract: true,
@@ -274,38 +274,44 @@ angular.module('starter', ['ionic', 'starter.controllers', 'locationModule', 'or
           controller: 'OrderDetailsCtrl'
         }
       }
-    });
+    })
+	
+	.state('rateseller', {
+	      url: "/rateseller",
+	      templateUrl: "templates/rateSeller.html",
+	      controller: 'RateSellerCtrl'
+	})
+	  ;
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/start');
+  //$urlRouterProvider.otherwise('/app/start');
+  
+  document.addEventListener("deviceready", function () {
+	var prefs = {
+		language: 'en',
+		openStoreInApp: true,
+		appName: 'Pillocate',
+		iosURL: '0',
+		androidURL: 'market://details?id=com.wealthspectrum.app',
+		windowsURL: ''
+	};
+
+	$cordovaAppRateProvider.setPreferences(prefs);
+  }, false);
 })
-
-.provider('myCSRF',[function(){
-    var headerName = 'X-CSRFToken';
-    var cookieName = 'csrftoken';
-    var allowedMethods = ['GET'];
-
-    this.setHeaderName = function(n) {
-        headerName = n;
-    }
-    this.setCookieName = function(n) {
-        cookieName = n;
-    }
-    this.setAllowedMethods = function(n) {
-        allowedMethods = n;
-    }
-    this.$get = ['$cookies', function($cookies){
-        return {
-            'request': function(config) {
-                if(allowedMethods.indexOf(config.method) === -1) {
-                    // do something on success
-                    config.headers[headerName] = $cookies[cookieName];
-                }
-                return config;
-            }
-        }
-    }];
-}]).config(function($httpProvider) {
-    $httpProvider.interceptors.push('myCSRF');
-});
-
+.run(['OrderDetailsService','$state','$rootScope', function($OrderDetailsService,$state,$rootScope) {
+	
+	$rootScope.hideTabFooterCls = '';
+	
+	$OrderDetailsService.getOrdersForReview().then(function(passCodeReq) {
+		console.log('Order detail found for review ');
+		
+		$state.go('rateseller');
+		
+	},function(errorStatus){
+		console.log('Order detail not found for review');
+		$state.go('app.start');
+	});
+			
+}])
+;
 

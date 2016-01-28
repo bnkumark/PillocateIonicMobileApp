@@ -3,3 +3,57 @@
     margin-top: 8px;
     height: 7px;
 }
+
+.ion-pill-tab:before {
+  content: url('../img/TAB.png') !important;
+} 
+
+.ion-pill-ijn:before {
+  content: url('../img/INJ.png') !important;
+}
+
+.ion-pill-cap:before {
+  content: url('../img/CAP.png') !important;
+}
+
+.ion-pill-powd:before {
+  content: url('../img/POWD.png') !important;
+}
+
+.ion-pill-dps:before {
+  content: url('../img/DPS.png') !important;
+}
+
+.ion-pill-syr:before {
+  content: url('../img/SYR.png') !important;
+}
+
+.ion-pill-vial:before {
+  content: url('../img/VIAL.png') !important;
+}
+
+.ion-pill-susp:before {
+  content: url('../img/SUSP.png') !important;
+}
+
+.image-list-thumb {
+    padding: 2px 2px 2px 2px;
+    height: 100px;
+}
+
+.ionic_ratings {
+	text-align: left;
+}
+
+.ionic_ratings .icon {
+  font-size:28px;
+}
+
+.ionic_ratings .read_only {
+  pointer-events:none;
+}
+
+.hide-tab-footer {
+	display:none;
+}
+

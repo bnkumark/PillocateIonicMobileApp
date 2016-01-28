@@ -1,16 +1,30 @@
 ﻿<ion-view view-title="Upload your prescription here" cache-view="false">
+
 <ion-header-bar>
 <h1 class="title" >Upload your prescription here</h1>
 </ion-header-bar>
+
 <ion-content >
  <div class="item-input-inset">
 <button ng-click="imgUpload(1)" class="item-input-wrapper ion-camera button button-calm"> Use Camera</button>
 <button ng-click="imgUpload(0)" class="item-input-wrapper ion-image button button-royal"> Use Gallery</button>
 </div>
+<!--
 <div class="padding"><img id="myImage" class="item full-image" ng-show="source" ng-src="{{source}}"></div>
-
+-->
+<a ng-if="source.length > 0" class="item item-list-detail">
+ <ion-scroll direction="x">
+ <img ng-repeat="image in source" ng-src="{{image}}" class="image-list-thumb"/>
+ </ion-scroll>
+ </a>
+ <div ng-if="source.length > 0" class="item-input-inset">
+<button  ng-click="clearAllAttachment()" class="item-input-wrapper item button button-positive">Remove selected photos</button>
+</div>
+ <div class="item">
+	<textarea type="textarea" placeholder="Enter instructions about prescription here." ng-model="data.note" style="width:100%;" rows="4" ></textarea>
+ </div>
    <div class="item-input-inset">
-<button ng-disabled="!source" ng-click="goToOrderDetails()" class="item-input-wrapper item button button-positive">Next</button>
+<button ng-disabled="source.length <= 0" ng-click="goToOrderDetails()" class="item-input-wrapper item button button-positive">Next</button>
 </div>
 <br/><br/><br/><br/><br/><br/> <!--for scrollining-->
 </ion-content></ion-view>

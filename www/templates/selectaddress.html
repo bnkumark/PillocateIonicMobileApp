@@ -2,7 +2,7 @@
   <ion-content>
     
    			<div ng-show="addresses.length!=0" class="item positive" style="border-width:0px">Select saved address or Skip for new address</div>
-            <!--  <ion-list>-->
+            <!--  <ion-list>
             <div ng-repeat="address in addresses" >
                    
 					 <div class="item-input-inset">
@@ -15,6 +15,35 @@
                     </div>
 
                 </div>
+				-->
+			<ion-list>
+				
+				<div ng-repeat="address in addresses"  >
+					<div class="item item-divider"> {{address.key}}</div>
+					<div class="item" style="padding: 10px; font-size: 14px;">
+						<div class="row">
+							{{address.name}}  
+						</div>
+						<div ng-if="address.addressline1" class="row" style="padding-top: 5px;">
+						   {{address.addressline1}}   
+						</div>
+						<div ng-if="address.addressline2" class="row" style="padding-top: 5px;">
+						   {{address.addressline2}}                        
+						</div>
+						<div ng-if="address.phone" class="row" style="padding-top: 5px;">
+						   {{address.phone}}                        
+						</div>
+						<div class="row">
+							<div class="col col-20"></div>
+							<div class="col col-20" style="text-align: center;" ><button ng-click="addressSelected(address.key)" class="button button-small button-calm" style="width: 70px;">Select</button> </div>
+							<div class="col col-20" style="text-align: center;" ><button ng-click="addressSelected(address.key)" class="button button-small button-outline button-calm" style="width: 70px;">  Edit  </button> </div>
+							<div class="col col-20" style="text-align: center;"><button  ng-click="destroy(address.key,$index)" class="button button-small button-outline button-calm" style="width: 70px;">Delete</button> </div>
+							<div class="col col-20"></div>
+						</div>
+					</div>
+
+                </div>
+			</ion-list>
               
                  <div  class="item-input-inset">
             <a class="item-input-wrapper button button-calm" ng-click="skip()">Skip</a>

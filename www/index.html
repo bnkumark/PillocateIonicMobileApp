@@ -11,13 +11,12 @@
     <!-- compiled css output -->
     <link href="css/ionic.app.css" rel="stylesheet">
     <link href="css/ionicons.min.css" rel="stylesheet">
+	<link href="css/style.css" rel="stylesheet">
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <!-- cordova script (this will be a 404 during development) -->
     <script src="lib/ngCordova/dist/ng-cordova.js"></script>
     <script src="cordova.js"></script>
-    <script src="lib/angular/angular.js"></script>
-    <script src="lib/angular-cookies/angular-cookies.js"></script>
 
     <!-- your app's js -->
     <script src="js/location.js"></script>
@@ -27,13 +26,7 @@
     <script src="js/searchresultslist.js"></script>
     <script src="js/selectaddress.js"></script>
     <script src="js/SearchResults.js"></script>
-    <script src="js/cart.js"></script>
-    <script src="js/PrescriptionChoice.js"></script>
-    <script src="js/SellerDetails.js"></script>
-    <script src="js/orders.js"></script>
-    <script src="js/OrderDetails.js"></script>
-    <script src="js/TrackOrder.js"></script>
-    <script src="js/OrderCompletion.js"></script>
+	<script src="js/RateSeller.js"></script>
     <script src="js/app.js"></script>
     <script src="controllers.js"></script>
     <!--<script src="location.js"></script>-->
@@ -49,7 +42,7 @@
         </div>
     </ion-footer-bar>
 -->    
-  <div class="tabs tabs-icon-left positive" ng-controller="FooterCtrl">
+  <div class="tabs tabs-icon-left positive" ng-class="hideTabFooterCls" ng-controller="FooterCtrl">
   <a href="#/app/buynow" class="tab-item">
     <i class="icon ion-android-cart"></i>
         <span class="assertive">{{cartItems}}</span>

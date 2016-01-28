@@ -1,10 +1,29 @@
 var myApp = angular.module('UploadpageModule', [])
-.controller('UploadpageCtrl', ['$scope', 'config', '$cordovaCamera', '$http', '$state', 'CheckNetwork', 'SelectedValues', 'OrderDetailsService', '$ionicLoading', function ($scope, $config, $cordovaCamera, $http, $state, $CheckNetwork, $SelectedValues, $OrderDetailsService, $ionicLoading) {
+.controller('UploadpageCtrl', ['$scope', 'config', '$cordovaCamera', '$http', '$state', 'CheckNetwork', 'SelectedValues', 'OrderDetailsService', '$ionicLoading','$timeout', function ($scope, $config, $cordovaCamera, $http, $state, $CheckNetwork, $SelectedValues, $OrderDetailsService, $ionicLoading, $timeout) {
 
-    $scope.source = null;
+    $scope.source = [];
     $scope.canGoToNext = false;
-
-    $scope.goToOrderDetails = function () {
+	$scope.data = {};
+	$scope.data.note = '';
+	
+	$scope.source = $SelectedValues.getAttachmentFiles();
+	
+	//alert(' File '+$scope.source[0]);
+	
+	if($scope.source && $scope.source.length > 0)
+	{
+		$scope.canGoToNext = true;
+	}
+		
+	$scope.clearAllAttachment = function () {
+		console.log('Clearing attachments');
+		$scope.source = [];
+		$SelectedValues.clearAttachmentId();
+		$scope.canGoToNext = false;
+	};
+	
+	
+	$scope.goToOrderDetails = function () {
         if ($scope.canGoToNext == true) {
             if ($OrderDetailsService.getAllAddressKey().length > 0) {
                 $state.go('app.selectaddress');
@@ -17,6 +36,26 @@ var myApp = angular.module('UploadpageModule', [])
             alert("Upload the prescription first!");
         }
     };
+	
+	$scope.imgUpload1 = function (sourceTypevalue) {
+	
+		var fileUrl = 'file:///C:/Users/kamlesh/Pictures/'+sourceTypevalue+'.jpg';
+		$scope.source.push(fileUrl);
+		$SelectedValues.setAttachmentId(1745);
+		$SelectedValues.setAttachmentFile(fileUrl);
+		
+		$ionicLoading.show({
+			template: 'Uploading prescription...'
+		});
+		
+		
+				
+		$timeout(function () {
+			$ionicLoading.hide();
+			alert("Network error, please try again");
+		}, 1000);
+		$scope.canGoToNext = true;
+	};
 
     $scope.imgUpload = function (sourceTypevalue) {
 
@@ -25,38 +64,46 @@ var myApp = angular.module('UploadpageModule', [])
                 quality: 100,
                 destinationType: Camera.DestinationType.FILE_URI,
                 sourceType: sourceTypevalue,
-                allowEdit: true,
+                allowEdit: false,
                 encodingType: Camera.EncodingType.JPEG,
                 targetWidth: 100,
                 targetHeight: 100,
                 popoverOptions: CameraPopoverOptions,
-                saveToPhotoAlbum: false
+                saveToPhotoAlbum: true
             };
 
             $cordovaCamera.getPicture(options).then(function (imageURI) {
-                $scope.source = imageURI;
+                $scope.source.push(imageURI);
 
                 var fnSuccess = function (r) {
                     $ionicLoading.hide();
                     var parsedResponse = JSON.parse(r.response);
 
                     console.log("upload success:" + r.response);
+					//alert('Upload success ');
+					//alert('Attachment id '+parsedResponse.attachmentId);
 
                     $SelectedValues.setAttachmentId(parsedResponse.attachmentId);
+					$SelectedValues.setAttachmentFile(imageURI);
+					//alert(' File '+imageURI);
                     $scope.canGoToNext = true;
+					$ionicLoading.hide();
                 }
 
                 var fnError = function (r) {
+					$scope.source.pop();
                     $ionicLoading.hide();
                     console.log("upload failed:" + r);
-                    alert("upload failed:" + r);
+                    //alert("Upload failed, try again");
+					alert("Network error, please try again");
+					$ionicLoading.hide();
                 }
 
                 $ionicLoading.show({
                     template: 'Uploading prescription...'
                 });
 
-                var formURL = 'http://localhost:8100/api/webservice/uploadPrescriptionFile';
+                var formURL = $config.serverUrl+'webservice/uploadPrescriptionFile';
                 var encodedURI = encodeURI(formURL);
                 var fileURI = imageURI;
                 var options = new FileUploadOptions();
@@ -65,8 +112,11 @@ var myApp = angular.module('UploadpageModule', [])
                 //options.mimeType = "text/plain";
                 var ft = new FileTransfer();
                 ft.upload(fileURI, encodedURI, fnSuccess, fnError, options);
-                $ionicLoading.hide();
-
+				
+				$timeout(function () {
+					ft.abort();
+				}, $config.photoUploadTimeout);
+                
             }, function (err) {
                 // error
                 alert("Sorry!No picture was selected");
